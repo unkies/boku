@@ -48,6 +48,14 @@ bun run compile            # writes pkg/ch for the current platform
 bun run compile:all        # writes pkg/ch-{linux,darwin}-{x64,arm64}
 ```
 
+To compile the current source and install it as `~/.local/bin/ch`:
+
+```sh
+bun run install:local
+```
+
+Ensure `~/.local/bin` is included in your `PATH` before invoking `ch`.
+
 ## Getting Hashes for the Homebrew Tap
 
 Download all 3 binaries and then run:
