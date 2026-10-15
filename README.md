@@ -48,6 +48,10 @@ bk --help
 
 In-place upgrades from Charcoal or earlier installations are intentionally unsupported. Remove the prior installation and install Boku, then run `bk init` in each repository and reconfigure your user preferences. Legacy configuration and state files are ignored; Boku does not migrate, warn about, or delete them.
 
+## Versioning
+
+Boku uses calendar versions in the form `YYYY.M.X`, where `YYYY` is the release year, `M` is the release month, and `X` is the release number within that month. The release number starts at `0` each month and increments for subsequent releases. Numeric components are not zero-padded so that versions remain compatible with Semantic Versioning and package registries. For example, the first release in October 2026 is `2026.10.0`, and the first release in January 2027 is `2027.1.0`.
+
 ## Quick Start
 
 Run these commands inside a Git repository that already has an initial commit:
