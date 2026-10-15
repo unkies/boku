@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { cachedMetaSchema } from '../engine/cached_meta';
-import { CHARCOAL_CACHE_FILENAME } from '../product_config';
+import { BOKU_CACHE_FILENAME } from '../product_config';
 import { spiffy } from './spiffy';
 
 export const cachePersistenceFactory = spiffy({
@@ -10,7 +10,7 @@ export const cachePersistenceFactory = spiffy({
   }),
   defaultLocations: [
     {
-      relativePath: CHARCOAL_CACHE_FILENAME,
+      relativePath: BOKU_CACHE_FILENAME,
       relativeTo: 'REPO',
     },
   ],

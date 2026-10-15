@@ -12,7 +12,7 @@ const args = {
     hidden: true,
   },
   force: {
-    describe: `Delete the branch even if Charcoal cannot determine that deletion is safe.`,
+    describe: `Delete the branch even if Boku cannot determine that deletion is safe.`,
     demandOption: false,
     type: 'boolean',
     alias: 'f',
@@ -24,7 +24,7 @@ type argsT = yargs.Arguments<yargs.InferredOptionTypes<typeof args>>;
 export const aliases = ['dl'];
 export const command = 'delete [name]';
 export const description =
-  'Delete a branch and its corresponding Charcoal metadata.';
+  'Delete a branch and its corresponding Boku metadata.';
 export const builder = args;
 export const handler = async (argv: argsT): Promise<void> =>
   runWithRepo(argv, async (context) =>

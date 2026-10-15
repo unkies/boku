@@ -1,9 +1,9 @@
 import fs from 'fs-extra';
 import path from 'node:path';
 import {
-  CHARCOAL_REPO_CONFIG_FILENAME,
-  CHARCOAL_USER_CONFIG_FILENAME,
-  CHARCOAL_USER_CONFIG_PATH_ENV,
+  BOKU_REPO_CONFIG_FILENAME,
+  BOKU_USER_CONFIG_FILENAME,
+  BOKU_USER_CONFIG_PATH_ENV,
 } from '../../../src/lib/product_config';
 import {
   createTempDirectory,
@@ -38,16 +38,16 @@ export abstract class AbstractScene {
     this.dir = this.tmpDir.name;
     this.repo = new GitRepo(this.dir);
     fs.writeFileSync(
-      path.join(this.dir, '.git', CHARCOAL_REPO_CONFIG_FILENAME),
+      path.join(this.dir, '.git', BOKU_REPO_CONFIG_FILENAME),
       cuteString({ trunk: 'main' })
     );
     const userConfigPath = path.join(
       this.dir,
       '.git',
-      CHARCOAL_USER_CONFIG_FILENAME
+      BOKU_USER_CONFIG_FILENAME
     );
     fs.writeFileSync(userConfigPath, cuteString({ tips: false }));
-    process.env[CHARCOAL_USER_CONFIG_PATH_ENV] = userConfigPath;
+    process.env[BOKU_USER_CONFIG_PATH_ENV] = userConfigPath;
     this.oldDir = process.cwd();
     process.chdir(this.dir);
   }

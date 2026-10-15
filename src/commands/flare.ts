@@ -30,7 +30,7 @@ function formatFlare(context: TContext): string {
   return [
     '## System information',
     '',
-    `- Charcoal: \`${version}\``,
+    `- Boku: \`${version}\``,
     `- Bun: \`${Bun.version}\``,
     `- Git: \`${gitVersion}\``,
     `- OS: \`${os.type()} ${os.release()} (${os.arch()})\``,

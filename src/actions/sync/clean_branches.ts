@@ -4,7 +4,7 @@ import { deleteBranchAction } from '../delete_branch';
 
 /**
  * This method is assumed to be idempotent -- if a merge conflict interrupts
- * execution of this method, we simply restart the method upon running `ch
+ * execution of this method, we simply restart the method upon running `bk
  * continue`.
  *
  * It returns a list of branches whose parents have changed so that we know

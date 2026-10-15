@@ -11,7 +11,7 @@ for (const scene of [new TrailingProdScene()]) {
       const output = scene.repo.runCliCommandAndGetOutput(['flare']);
 
       expect(output).toContain('## System information');
-      expect(output).toContain(`- Charcoal: \`${version}\``);
+      expect(output).toContain(`- Boku: \`${version}\``);
       expect(output).toMatch(/- Bun: `[^`]+`/);
       expect(output).toMatch(/- Git: `[^`]+`/);
       expect(output).toMatch(/- OS: `[^`]+`/);

@@ -1,8 +1,8 @@
 import fs from 'fs-extra';
 import path from 'node:path';
 import {
-  CHARCOAL_REPO_CONFIG_FILENAME,
-  CHARCOAL_USER_CONFIG_FILENAME,
+  BOKU_REPO_CONFIG_FILENAME,
+  BOKU_USER_CONFIG_FILENAME,
 } from '../../../src/lib/product_config';
 import {
   createTempDirectory,
@@ -33,11 +33,11 @@ export class CloneScene extends AbstractScene {
     this.dir = createTempDirectory().name;
     this.repo = new GitRepo(this.dir, { repoUrl: this.originDir });
     fs.writeFileSync(
-      path.join(this.dir, '.git', CHARCOAL_REPO_CONFIG_FILENAME),
+      path.join(this.dir, '.git', BOKU_REPO_CONFIG_FILENAME),
       cuteString({ trunk: 'main' })
     );
     fs.writeFileSync(
-      path.join(this.dir, '.git', CHARCOAL_USER_CONFIG_FILENAME),
+      path.join(this.dir, '.git', BOKU_USER_CONFIG_FILENAME),
       cuteString({})
     );
 

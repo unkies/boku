@@ -1,10 +1,10 @@
 {
-  "name": "@unkies/charcoal",
+  "name": "@unkies/boku",
   "version": "0.2.4",
   "license": "AGPL-3.0-or-later",
   "type": "module",
-  "homepage": "https://github.com/unkies/charcoal",
-  "repository": "github:unkies/charcoal",
+  "homepage": "https://github.com/unkies/boku",
+  "repository": "github:unkies/boku",
   "packageManager": "bun@1.4.3",
   "engines": {
     "bun": ">=1.4.3"
@@ -23,7 +23,7 @@
     "smoke": "bun scripts/smoke.ts",
     "ci": "bun run format:check && bun run lint && bun run check && bun run test:coverage && bun run build && bun run smoke",
     "cli": "bun src/index.ts",
-    "compile": "rm -rf pkg && bun build --compile src/index.ts --outfile pkg/ch",
+    "compile": "rm -rf pkg && bun build --compile src/index.ts --outfile pkg/bk",
     "install:local": "bun scripts/install_local.ts",
     "compile:all": "bun scripts/compile_all.ts",
     "prepack": "bun run build"
@@ -32,7 +32,7 @@
     "dist"
   ],
   "bin": {
-    "ch": "dist/index.js"
+    "bk": "dist/index.js"
   },
   "dependencies": {
     "chalk": "6.0.1",

@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "@unkies/charcoal",
+      "name": "@unkies/boku",
       "dependencies": {
         "chalk": "6.0.1",
         "fast-json-stable-hash": "1.0.3",

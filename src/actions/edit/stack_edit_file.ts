@@ -1,7 +1,7 @@
 import fs from 'fs-extra';
 import path from 'path';
 import { TContext } from '../../lib/context';
-import { CHARCOAL_STACK_EDIT_FILENAME } from '../../lib/product_config';
+import { BOKU_STACK_EDIT_FILENAME } from '../../lib/product_config';
 
 const FILE_FOOTER = [
   '#',
@@ -31,7 +31,7 @@ export function createStackEditFile(
     ...FILE_FOOTER,
   ].join('\n');
 
-  const filePath = path.join(opts.tmpDir, CHARCOAL_STACK_EDIT_FILENAME);
+  const filePath = path.join(opts.tmpDir, BOKU_STACK_EDIT_FILENAME);
   fs.writeFileSync(filePath, fileContents);
   return filePath;
 }

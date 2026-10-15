@@ -1,4 +1,4 @@
-### Installation: ch fish >> ~/.config/fish/completions/ch.fish
+### Installation: bk fish >> ~/.config/fish/completions/bk.fish
 # git helpers adapted from fish git completion
 function __fish_git_local_branches
     command git for-each-ref --format='%(refname:strip=2)' refs/heads/ 2>/dev/null
@@ -8,8 +8,8 @@ function __fish_git_remote_branches
     command git for-each-ref --format="%(refname:strip=3)" refs/remotes/ 2>/dev/null
 end
 
-# Charcoal helpers
-function __ch_command_completions
+# Boku helpers
+function __bk_command_completions
     set -lx SHELL (type -p fish)
     set -l command (commandline -opc)
     # uncomment to include options, e.g. -q, --help
@@ -19,13 +19,13 @@ function __ch_command_completions
 end
 
 # disable file completions for the entire command
-complete -c ch -f
+complete -c bk -f
 
 # add completions as provided by CLI
-complete -c ch -a "(__ch_command_completions)"
+complete -c bk -a "(__bk_command_completions)"
 
 # commands that take branches
-complete -c ch -x -n "__fish_seen_subcommand_from checkout co bco delete onto track untrack" -a "(__fish_git_local_branches)"
+complete -c bk -x -n "__fish_seen_subcommand_from checkout co bco delete onto track untrack" -a "(__fish_git_local_branches)"
 
-# ch downstack get takes remote branches
-complete -c ch -x -n "__fish_seen_subcommand_from downstack ds dsg" -n "__fish_seen_subcommand_from get dsg" -a "(__fish_git_remote_branches)"
+# bk downstack get takes remote branches
+complete -c bk -x -n "__fish_seen_subcommand_from downstack ds dsg" -n "__fish_seen_subcommand_from get dsg" -a "(__fish_git_remote_branches)"

@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'bun:test';
 import fs from 'fs-extra';
 import path from 'node:path';
-import { CHARCOAL_REPO_CONFIG_FILENAME } from '../../../src/lib/product_config';
+import { BOKU_REPO_CONFIG_FILENAME } from '../../../src/lib/product_config';
 import { TrailingProdScene } from '../../lib/scenes/trailing_prod_scene';
 import { configureTest } from '../../lib/utils/configure_test';
 
@@ -9,11 +9,11 @@ for (const scene of [new TrailingProdScene()]) {
   describe(`(${scene}): repo init`, function () {
     configureTest(scene);
 
-    it('Initializes fresh Charcoal state non-interactively and quietly', () => {
+    it('Initializes fresh Boku state non-interactively and quietly', () => {
       const repoConfigPath = path.join(
         scene.repo.dir,
         '.git',
-        CHARCOAL_REPO_CONFIG_FILENAME
+        BOKU_REPO_CONFIG_FILENAME
       );
       fs.removeSync(repoConfigPath);
       scene.repo.runCliCommand([
@@ -34,7 +34,7 @@ for (const scene of [new TrailingProdScene()]) {
       const repoConfigPath = path.join(
         scene.repo.dir,
         '.git',
-        CHARCOAL_REPO_CONFIG_FILENAME
+        BOKU_REPO_CONFIG_FILENAME
       );
       scene.repo.runCliCommand([
         `repo`,

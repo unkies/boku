@@ -31,7 +31,7 @@ DEBUG=1 bun test "test/<path>.test.ts"
 ## Run CLI from Local Build
 
 ```
-bun run cli <command> # (to run `ch <command>`)
+bun run cli <command> # (to run `bk <command>`)
 ```
 
 Or run the bundled build directly:
@@ -44,21 +44,21 @@ bun dist/index.js <command>
 ## Compiling a Standalone Binary
 
 ```
-bun run compile            # writes pkg/ch for the current platform
-bun run compile:all        # writes pkg/ch-{linux,darwin}-{x64,arm64}
+bun run compile            # writes pkg/bk for the current platform
+bun run compile:all        # writes pkg/bk-{linux,darwin}-{x64,arm64}
 ```
 
-To compile the current source and install it as `~/.local/bin/ch`:
+To compile the current source and install it as `~/.local/bin/bk`:
 
 ```sh
 bun run install:local
 ```
 
-Ensure `~/.local/bin` is included in your `PATH` before invoking `ch`.
+Ensure `~/.local/bin` is included in your `PATH` before invoking `bk`.
 
 ## Getting Hashes for the Homebrew Tap
 
-Download all 3 binaries and then run:
+Download the release binaries and then run:
 
 ```
 shasum -a 256 /path/to/mybinary

@@ -2,10 +2,10 @@ import { $ } from 'bun';
 import fs from 'node:fs';
 
 const targets = [
-  ['bun-linux-x64', 'ch-linux-x64'],
-  ['bun-linux-arm64', 'ch-linux-arm64'],
-  ['bun-darwin-x64', 'ch-darwin-x64'],
-  ['bun-darwin-arm64', 'ch-darwin-arm64'],
+  ['bun-linux-x64', 'bk-linux-x64'],
+  ['bun-linux-arm64', 'bk-linux-arm64'],
+  ['bun-darwin-x64', 'bk-darwin-x64'],
+  ['bun-darwin-arm64', 'bk-darwin-arm64'],
 ] as const;
 
 fs.rmSync('pkg', { recursive: true, force: true });

@@ -1,6 +1,6 @@
 import path from 'node:path';
 
-process.env.CHARCOAL_CLI_ENTRYPOINT = path.join(
+process.env.BOKU_CLI_ENTRYPOINT = path.join(
   import.meta.dir,
   '..',
   'src',

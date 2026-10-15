@@ -16,16 +16,16 @@ export async function init(
 
   context.splog.info(
     context.repoConfig.isInitialized()
-      ? `Reinitializing Charcoal...`
-      : `Welcome to Charcoal!`
+      ? `Reinitializing Boku...`
+      : `Welcome to Boku!`
   );
   context.splog.newline();
 
   if (allBranchNames.length === 0) {
     throw new PreconditionsFailedError(
       [
-        `No branches found in current repo; cannot initialize Charcoal.`,
-        `Please create your first commit and then re-run your Charcoal command.`,
+        `No branches found in current repo; cannot initialize Boku.`,
+        `Please create your first commit and then re-run your Boku command.`,
       ].join('\n')
     );
   }
@@ -96,9 +96,9 @@ function findCommonlyNamedTrunk(context: TContext): string | undefined {
 async function branchOnboardingFlow(context: TContext) {
   context.splog.tip(
     [
-      "If you have an existing branch or stack that you'd like to start working on with Charcoal, you can begin tracking it now!",
-      'To add other non-Charcoal branches to Charcoal later, check out `ch branch track`.',
-      'If you only want to use Charcoal for new branches, feel free to exit now and use `ch branch create`.',
+      "If you have an existing branch or stack that you'd like to start working on with Boku, you can begin tracking it now!",
+      'To add other non-Boku branches to Boku later, check out `bk track`.',
+      'If you only want to use Boku for new branches, feel free to exit now and use `bk create`.',
     ].join('\n')
   );
   if (

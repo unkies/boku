@@ -10,14 +10,14 @@ const args = {
     optional: true,
     alias: 'r',
     describe:
-      'Accepts a JSON debug-context block produced by `ch flare`. Recreates a debug repo in a temp folder with a commit tree matching the state JSON.',
+      'Accepts a JSON debug-context block produced by `bk flare`. Recreates a debug repo in a temp folder with a commit tree matching the state JSON.',
   },
   'recreate-from-file': {
     type: 'string',
     optional: true,
     alias: 'f',
     describe:
-      'Accepts a file containing a JSON debug-context block produced by `ch flare`. Recreates a debug repo in a temp folder with a commit tree matching the state JSON.',
+      'Accepts a file containing a JSON debug-context block produced by `bk flare`. Recreates a debug repo in a temp folder with a commit tree matching the state JSON.',
   },
 } as const;
 type argsT = yargs.Arguments<yargs.InferredOptionTypes<typeof args>>;

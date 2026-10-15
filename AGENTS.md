@@ -1,4 +1,4 @@
-# Agent Guidelines for Charcoal
+# Agent Guidelines for Boku
 
 ## Build & Test Commands
 

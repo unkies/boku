@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { execSync } from 'child_process';
 import { getGitEditor, getGitPager } from '../git/git_editor';
 import { CommandFailedError } from '../git/runner';
-import { CHARCOAL_USER_CONFIG_FILENAME } from '../product_config';
+import { BOKU_USER_CONFIG_FILENAME } from '../product_config';
 import { spiffy } from './spiffy';
 
 const schema = z.object({
@@ -19,7 +19,7 @@ export const userConfigFactory = spiffy({
   schema,
   defaultLocations: [
     {
-      relativePath: CHARCOAL_USER_CONFIG_FILENAME,
+      relativePath: BOKU_USER_CONFIG_FILENAME,
       relativeTo: 'USER_HOME',
     },
   ],
@@ -29,9 +29,9 @@ export const userConfigFactory = spiffy({
   helperFunctions: (data) => {
     const getEditor = () => {
       return (
-        process.env.GT_EDITOR ?? // single command override
+        process.env.BOKU_EDITOR ?? // single command override
         data.editor ??
-        process.env.TEST_GT_EDITOR ?? // for tests
+        process.env.TEST_BOKU_EDITOR ?? // for tests
         // If we don't have an editor set, do what git would do
         getGitEditor() ??
         process.env.GIT_EDITOR ??
@@ -43,9 +43,9 @@ export const userConfigFactory = spiffy({
     const getPager = () => {
       // If we don't have a pager set, do what git would do
       const pager =
-        process.env.GT_PAGER ?? // single command override
+        process.env.BOKU_PAGER ?? // single command override
         data.pager ??
-        process.env.TEST_GT_PAGER ?? // for tests
+        process.env.TEST_BOKU_PAGER ?? // for tests
         // If we don't have a pager set, do what git would do
         getGitPager() ??
         process.env.GIT_PAGER ??

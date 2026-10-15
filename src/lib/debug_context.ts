@@ -17,7 +17,7 @@ import { getCommitTree } from './git/commit_tree';
 import { getShaOrThrow } from './git/get_sha';
 import { runGitCommand } from './git/runner';
 import { getBranchNamesAndRevisions } from './git/sorted_branch_names';
-import { CHARCOAL_REPO_CONFIG_FILENAME } from './product_config';
+import { BOKU_REPO_CONFIG_FILENAME } from './product_config';
 import { TRepoConfig } from './spiffy/repo_config_spf';
 import { TUserConfig } from './spiffy/user_config_spf';
 import { cuteString } from './utils/cute_string';
@@ -89,7 +89,7 @@ export function recreateState(stateJson: string, splog: TSplog): string {
 
   splog.info(`Creating the repo config`);
   fs.writeFileSync(
-    path.join(tmpDir, '.git', CHARCOAL_REPO_CONFIG_FILENAME),
+    path.join(tmpDir, '.git', BOKU_REPO_CONFIG_FILENAME),
     cuteString(state.repoConfig)
   );
 

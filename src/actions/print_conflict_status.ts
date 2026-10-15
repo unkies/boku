@@ -29,18 +29,18 @@ export function printConflictStatus(
   }
 
   context.splog.info(
-    chalk.yellow(`To fix and continue your previous Charcoal command:`)
+    chalk.yellow(`To fix and continue your previous Boku command:`)
   );
   context.splog.info(`(1) resolve the listed merge conflicts`);
   context.splog.info(
-    `(2) mark them as resolved with ${chalk.cyan(`ch add .`)}`
+    `(2) mark them as resolved with ${chalk.cyan(`bk add .`)}`
   );
   context.splog.info(
     `(3) run ${chalk.cyan(
-      `ch continue`
-    )} to continue executing your previous Charcoal command`
+      `bk continue`
+    )} to continue executing your previous Boku command`
   );
   context.splog.info(
-    "It's safe to cancel the ongoing rebase with `ch rebase --abort`."
+    "It's safe to cancel the ongoing rebase with `bk rebase --abort`."
   );
 }

@@ -97,7 +97,7 @@ async function runRepoCommand(
   try {
     if (!handler.skipAutoInit && !context.repoConfig.isInitialized()) {
       context.splog.info(
-        `Charcoal has not been initialized, attempting to setup now...`
+        `Boku has not been initialized, attempting to setup now...`
       );
       context.splog.newline();
       await init({}, context);
@@ -110,7 +110,7 @@ async function runRepoCommand(
       context.engine.rebaseInProgress()
     ) {
       throw new DetachedError(
-        `Did you mean to run ${chalk.cyan(`ch continue`)}?`
+        `Did you mean to run ${chalk.cyan(`bk continue`)}?`
       );
     }
     throw err;
@@ -119,7 +119,7 @@ async function runRepoCommand(
       context.engine.persist();
     } catch {
       context.engine.clear();
-      context.splog.debug(`Failed to persist Charcoal cache`);
+      context.splog.debug(`Failed to persist Boku cache`);
     }
     handler.cacheLock.release();
   }
@@ -131,7 +131,7 @@ async function runRepoCommand(
 function handleCommandError(err: any, context: TContextLite): void {
   switch (err.constructor) {
     case CommandKilledError:
-    case KilledError: // the user doesn't need a message if they ended ch
+    case KilledError: // the user doesn't need a message if they ended bk
     case RebaseConflictError: // we've already logged a message
       // pass
       return;

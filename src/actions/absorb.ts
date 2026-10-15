@@ -30,7 +30,7 @@ export async function absorbAction(
   if (!context.engine.isBranchTracked(currentBranch)) {
     throw new PreconditionsFailedError(
       `Branch ${chalk.cyan(currentBranch)} is not tracked. Run ${chalk.cyan(
-        'ch track'
+        'bk track'
       )} first.`
     );
   }

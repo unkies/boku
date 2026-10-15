@@ -19,7 +19,7 @@ const commands = [
 
 export const command = 'user <command>';
 export const desc =
-  "Read or write Charcoal's user configuration settings. Run `ch user --help` to learn more.";
+  "Read or write Boku's user configuration settings. Run `bk user --help` to learn more.";
 
 export const builder = function (yargs: Argv): Argv {
   return yargs.command(commands).strict().demandCommand();

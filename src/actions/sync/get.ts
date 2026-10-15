@@ -10,7 +10,7 @@ export async function getAction(
   context: TContext
 ): Promise<void> {
   context.splog.message(
-    '⚠️ This command is not not yet implemented in Charcoal :-( \n\nPlease check out the issue on GitHub https://github.com/unkies/charcoal/issues/6'
+    'This command is not yet implemented in Boku.\n\nPlease check the issue tracker at https://github.com/unkies/boku/issues'
   );
 }
 
@@ -52,7 +52,7 @@ async function handleUntrackedLocally(
     [
       `${chalk.yellow(
         branchName
-      )} shares a name with a local branch that not tracked by Charcoal.`,
+      )} shares a name with a local branch that not tracked by Boku.`,
       `In order to sync it, you must overwrite your local copy of the branch.`,
       `If you do not wish to overwrite your copy, the command will be aborted.`,
     ].join('\n')

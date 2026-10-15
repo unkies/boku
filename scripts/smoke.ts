@@ -26,7 +26,7 @@ const steps: SmokeStep[] = [
   },
   {
     name: 'binary --help',
-    cmd: ['./pkg/ch', '--help'],
+    cmd: ['./pkg/bk', '--help'],
     expectCommandsOutput: true,
   },
 ];

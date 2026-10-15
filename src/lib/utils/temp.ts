@@ -42,7 +42,7 @@ function trackRemoval(remove: () => void): () => void {
 export function createTempDirectory(options?: {
   cleanupOnExit?: boolean;
 }): TempDirectory {
-  const name = fs.mkdtempSync(path.join(os.tmpdir(), 'charcoal-'));
+  const name = fs.mkdtempSync(path.join(os.tmpdir(), 'boku-'));
   const remove = (): void => fs.rmSync(name, { recursive: true, force: true });
   let removed = false;
   const removeCallback = (): void => {
@@ -66,8 +66,7 @@ export function createTempFile(options: {
   postfix?: string;
 }): TempFile {
   const dir =
-    options.dir ??
-    fs.mkdtempSync(path.join(os.tmpdir(), 'charcoal-')).toString();
+    options.dir ?? fs.mkdtempSync(path.join(os.tmpdir(), 'boku-')).toString();
   const baseName =
     options.name ?? `tmp-${crypto.randomBytes(8).toString('hex')}`;
   const name = path.join(dir, `${baseName}${options.postfix ?? ''}`);

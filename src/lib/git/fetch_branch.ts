@@ -1,8 +1,8 @@
 import { runGitCommand } from './runner';
 import { getShaOrThrow } from './get_sha';
 
-const FETCH_HEAD = 'refs/charcoal-metadata/FETCH_HEAD';
-const FETCH_BASE = 'refs/charcoal-metadata/FETCH_BASE';
+const FETCH_HEAD = 'refs/boku-metadata/FETCH_HEAD';
+const FETCH_BASE = 'refs/boku-metadata/FETCH_BASE';
 export function fetchBranch(remote: string, branchName: string): void {
   runGitCommand({
     args: [

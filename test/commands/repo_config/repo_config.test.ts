@@ -2,7 +2,7 @@ import { describe, expect, it } from 'bun:test';
 import fs from 'fs-extra';
 import path from 'path';
 import { createTempDirectory } from '../../../src/lib/utils/temp';
-import { CHARCOAL_REPO_CONFIG_FILENAME } from '../../../src/lib/product_config';
+import { BOKU_REPO_CONFIG_FILENAME } from '../../../src/lib/product_config';
 import { repoConfigFactory } from '../../../src/lib/spiffy/repo_config_spf';
 import { cuteString } from '../../../src/lib/utils/cute_string';
 import { BasicScene } from '../../lib/scenes/basic_scene';
@@ -39,7 +39,7 @@ for (const scene of [new BasicScene()]) {
         ).not.toThrow(Error);
         expect(
           fs.existsSync(
-            path.join(scene.repo.dir, '.git', CHARCOAL_REPO_CONFIG_FILENAME)
+            path.join(scene.repo.dir, '.git', BOKU_REPO_CONFIG_FILENAME)
           )
         ).toBe(true);
       } finally {
@@ -57,21 +57,24 @@ for (const scene of [new BasicScene()]) {
       const currentConfigPath = path.join(
         scene.repo.dir,
         '.git',
-        CHARCOAL_REPO_CONFIG_FILENAME
+        BOKU_REPO_CONFIG_FILENAME
       );
-      const legacyConfigPath = path.join(
-        scene.repo.dir,
-        '.git',
-        ['.graph', 'ite_repo_config'].join('')
-      );
+      const legacyConfigPaths = [
+        ['.graph', 'ite_repo_config'].join(''),
+        ['.char', 'coal_repo_config'].join(''),
+      ].map((filename) => path.join(scene.repo.dir, '.git', filename));
       fs.removeSync(currentConfigPath);
-      fs.writeFileSync(legacyConfigPath, cuteString({ trunk: 'legacy' }));
+      for (const legacyConfigPath of legacyConfigPaths) {
+        fs.writeFileSync(legacyConfigPath, cuteString({ trunk: 'legacy' }));
+      }
 
       const config = repoConfigFactory.load();
 
       expect(config.isInitialized()).toBe(false);
       expect(fs.existsSync(currentConfigPath)).toBe(false);
-      expect(fs.existsSync(legacyConfigPath)).toBe(true);
+      for (const legacyConfigPath of legacyConfigPaths) {
+        expect(fs.existsSync(legacyConfigPath)).toBe(true);
+      }
     });
   });
 }

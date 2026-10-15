@@ -26,7 +26,7 @@ export const clearPromptResultLine = (): void => {
 /**
  * Abstraction to hold onto any logic we want to enforce runs for all prompts
  */
-export const gtPrompts = async (
+export const runPrompts = async (
   ...[questions, options]: Parameters<TPrompts>
 ): ReturnType<TPrompts> => {
   // Non-interactive: Bun's prompts never resolves when stdin is already at

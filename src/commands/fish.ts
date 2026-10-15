@@ -1,6 +1,6 @@
 import * as yargs from 'yargs';
 
-import fishCompletion from '../lib/ch.fish' with { type: 'text' };
+import fishCompletion from '../lib/bk.fish' with { type: 'text' };
 import { runWithoutRepo } from '../lib/runner';
 const args = {} as const;
 

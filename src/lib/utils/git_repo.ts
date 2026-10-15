@@ -2,14 +2,14 @@ import { spawnSync } from 'child_process';
 import fs from 'fs-extra';
 import path from 'path';
 import {
-  CHARCOAL_USER_CONFIG_FILENAME,
-  CHARCOAL_USER_CONFIG_PATH_ENV,
+  BOKU_USER_CONFIG_FILENAME,
+  BOKU_USER_CONFIG_PATH_ENV,
 } from '../product_config';
 
 const TEXT_FILE_NAME = 'test.txt';
 
 function cliCommand(args: string[]): string[] {
-  const testEntrypoint = process.env.CHARCOAL_CLI_ENTRYPOINT;
+  const testEntrypoint = process.env.BOKU_CLI_ENTRYPOINT;
   const command = testEntrypoint
     ? [process.execPath, testEntrypoint, ...args]
     : Bun.main === process.execPath
@@ -27,7 +27,7 @@ export class GitRepo {
     opts?: { existingRepo?: boolean; repoUrl?: string }
   ) {
     this.dir = dir;
-    this.userConfigPath = path.join(dir, '.git', CHARCOAL_USER_CONFIG_FILENAME);
+    this.userConfigPath = path.join(dir, '.git', BOKU_USER_CONFIG_FILENAME);
     if (opts?.existingRepo) {
       return;
     }
@@ -51,7 +51,7 @@ export class GitRepo {
       cwd: opts?.cwd || this.dir,
       env: {
         ...process.env,
-        [CHARCOAL_USER_CONFIG_PATH_ENV]: this.userConfigPath,
+        [BOKU_USER_CONFIG_PATH_ENV]: this.userConfigPath,
       },
     });
     if (result.status) {
@@ -84,7 +84,7 @@ export class GitRepo {
         cwd: this.dir,
         env: {
           ...process.env,
-          [CHARCOAL_USER_CONFIG_PATH_ENV]: this.userConfigPath,
+          [BOKU_USER_CONFIG_PATH_ENV]: this.userConfigPath,
         },
       }).stdout?.trim() ?? ''
     );

@@ -30,8 +30,8 @@ type argsT = yargs.Arguments<yargs.InferredOptionTypes<typeof args>>;
 export const command = 'track [branch]';
 export const aliases = ['tr'];
 export const description = [
-  'Start tracking the current (or provided) branch with Charcoal by selecting its parent.',
-  'This command can also be used to fix corrupted Charcoal metadata.',
+  'Start tracking the current (or provided) branch with Boku by selecting its parent.',
+  'This command can also be used to fix corrupted Boku metadata.',
 ].join(' ');
 export const builder = args;
 export const handler = async (argv: argsT): Promise<void> =>

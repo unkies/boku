@@ -51,7 +51,7 @@ for (const scene of allScenes) {
       });
     });
 
-    describe('During a Charcoal initiated rebase', function () {
+    describe('During a Boku initiated rebase', function () {
       beforeEach(function () {
         scene.repo.checkoutBranch('b');
         expect(() => scene.repo.runCliCommand(['stack', 'restack'])).toThrow();

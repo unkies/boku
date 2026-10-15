@@ -1,9 +1,9 @@
 import { z } from 'zod';
-import { CHARCOAL_CONTINUATION_FILENAME } from '../product_config';
+import { BOKU_CONTINUATION_FILENAME } from '../product_config';
 import { spiffy } from './spiffy';
 
 /**
- * After Charcoal is interrupted by a merge conflict, upon continuing, there
+ * After Boku is interrupted by a merge conflict, upon continuing, there
  * are 3 main things we need to do, in the following order.
  *
  * 1) Complete the original rebase operation.
@@ -11,7 +11,7 @@ import { spiffy } from './spiffy';
  * 3) Restack any remaining branches that were queued.
  *
  * The below object persists the queue of branches to be restacked.
- * We also store the Charcoal current branch, so that we can switch back to it.
+ * We also store the Boku current branch, so that we can switch back to it.
  * We need to keep track of the new parentBranchRevision for the branch that
  * hit a merge conflict, as we cannot pull this information from Git.
  */
@@ -26,7 +26,7 @@ export const continueConfigFactory = spiffy({
   schema: ContinueSchema,
   defaultLocations: [
     {
-      relativePath: CHARCOAL_CONTINUATION_FILENAME,
+      relativePath: BOKU_CONTINUATION_FILENAME,
       relativeTo: 'REPO',
     },
   ],
