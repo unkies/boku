@@ -7,14 +7,6 @@ import {
 } from './spiffy/continuation_spf';
 import { prInfoConfigFactory } from './spiffy/pr_info_spf';
 import { repoConfigFactory, TRepoConfig } from './spiffy/repo_config_spf';
-import {
-  surveyConfigFactory,
-  TSurveyConfig,
-} from './spiffy/survey_responses_spf';
-import {
-  messageConfigFactory,
-  TMessageConfig,
-} from './spiffy/upgrade_message_spf';
 import { TUserConfig, userConfigFactory } from './spiffy/user_config_spf';
 import { composeSplog, TSplog } from './utils/splog';
 import { NonInteractiveError } from './errors';
@@ -25,9 +17,7 @@ export const USER_CONFIG_OVERRIDE_ENV = 'GRAPHITE_USER_CONFIG_PATH' as const;
 export type TContextLite = {
   splog: TSplog;
   interactive: boolean;
-  surveyConfig: TSurveyConfig;
   userConfig: TUserConfig;
-  messageConfig: TMessageConfig;
   userEmail?: string;
   prompts: TPrompts;
 };
@@ -67,9 +57,7 @@ export function initContextLite(opts?: {
       }
       return gtPrompts(...args);
     },
-    surveyConfig: surveyConfigFactory.load(),
     userConfig,
-    messageConfig: messageConfigFactory.load(),
     userEmail: opts?.userEmail,
   };
 }

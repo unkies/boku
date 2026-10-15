@@ -49,8 +49,6 @@ export class GitRepo {
       env: {
         ...process.env,
         [USER_CONFIG_OVERRIDE_ENV]: this.userConfigPath,
-        GRAPHITE_DISABLE_UPGRADE_PROMPT: '1',
-        GRAPHITE_DISABLE_SURVEY: '1',
       },
     });
     if (result.status) {
@@ -84,7 +82,6 @@ export class GitRepo {
         env: {
           ...process.env,
           [USER_CONFIG_OVERRIDE_ENV]: this.userConfigPath,
-          GRAPHITE_DISABLE_UPGRADE_PROMPT: '1',
         },
       }).stdout?.trim() ?? ''
     );
