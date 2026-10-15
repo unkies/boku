@@ -13,28 +13,7 @@ const schema = z.object({
   pager: z.string().optional(),
   restackCommitterDateIsAuthorDate: z.boolean().optional(),
   submitIncludeCommitMessages: z.boolean().optional(),
-  connectCliToLocalServer: z.boolean().optional(),
-  alternativeProfiles: z
-    .array(
-      z.object({
-        name: z.string(),
-        hostPrefix: z.string(),
-      })
-    )
-    .optional(),
 });
-
-export type TProfile = Required<
-  z.infer<typeof schema>
->['alternativeProfiles'][number];
-
-export type TApiServerUrl = string;
-export type TAppServerUrl = string;
-export const DEFAULT_GRAPHITE_API_SERVER: TApiServerUrl =
-  'https://api.graphite.dev/v1';
-
-export const DEFAULT_GRAPHITE_APP_SERVER: TAppServerUrl =
-  'https://app.graphite.dev';
 
 export const userConfigFactory = spiffy({
   schema,
@@ -48,51 +27,6 @@ export const userConfigFactory = spiffy({
     return {};
   },
   helperFunctions: (data) => {
-    // Read the user config and return a host prefix.
-    // If none specified, default to empty string.
-    const getDefaultProfile = (): TProfile => {
-      const alternativeProfiles = data.alternativeProfiles ?? [];
-      if (process.env.GRAPHITE_PROFILE) {
-        const alternativeProfile = alternativeProfiles.find(
-          (p) => p.name === process.env.GRAPHITE_PROFILE
-        );
-        if (alternativeProfile) {
-          return alternativeProfile;
-        } else {
-          throw new Error(`Unknown profile ${process.env.GRAPHITE_PROFILE}`);
-        }
-      }
-      const optionalDefaultProfile = alternativeProfiles.find(
-        (p) => p.name === 'default'
-      );
-      if (optionalDefaultProfile) {
-        return optionalDefaultProfile;
-      } else {
-        return {
-          name: 'default',
-          hostPrefix: '',
-        };
-      }
-    };
-
-    const getApiServerUrl = (): TApiServerUrl => {
-      if (data.connectCliToLocalServer) {
-        process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-        return 'https://localhost:8000/v1';
-      }
-      const hostPrefix = getDefaultProfile().hostPrefix;
-      return hostPrefix
-        ? `https://api.${hostPrefix}.graphite.dev/v1`
-        : DEFAULT_GRAPHITE_API_SERVER;
-    };
-
-    const getAppServerUrl = (): TAppServerUrl => {
-      const hostPrefix = getDefaultProfile().hostPrefix;
-      return hostPrefix
-        ? `https://app.${hostPrefix}.graphite.dev`
-        : DEFAULT_GRAPHITE_APP_SERVER;
-    };
-
     const getEditor = () => {
       return (
         process.env.GT_EDITOR ?? // single command override
@@ -122,8 +56,6 @@ export const userConfigFactory = spiffy({
 
     return {
       getEditor,
-      getApiServerUrl,
-      getAppServerUrl,
       getPager,
       execEditor: (editFilePath: string) => {
         const command = `${getEditor()} ${editFilePath}`;
