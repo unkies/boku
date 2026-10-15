@@ -1,12 +1,10 @@
 import { z } from 'zod';
 import { BadTrunkOperationError, UntrackedBranchError } from '../errors';
-import { prInfoSchema } from './metadata_ref';
 
 // Base schema with common fields
 const baseCachedMetaSchema = z.object({
   children: z.array(z.string()),
   branchRevision: z.string(),
-  prInfo: prInfoSchema.optional(),
 });
 
 // Discriminated union schema

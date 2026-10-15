@@ -1,9 +1,5 @@
 import { describe, it, expect } from 'bun:test';
 import fs from 'fs-extra';
-import {
-  readMetadataRef,
-  writeMetadataRef,
-} from '../../../src/lib/engine/metadata_ref';
 import { allScenes } from '../../lib/scenes/all_scenes';
 import { configureTest } from '../../lib/utils/configure_test';
 import { expectBranches } from '../../lib/utils/expect_branches';
@@ -11,7 +7,6 @@ import { expectCommits } from '../../lib/utils/expect_commits';
 import { fakeGitSquashAndMerge } from '../../lib/utils/fake_squash_and_merge';
 
 for (const scene of allScenes) {
-  // eslint-disable-next-line max-lines-per-function
   describe(`(${scene}): repo sync`, function () {
     configureTest(scene);
 
@@ -27,37 +22,15 @@ for (const scene of allScenes) {
       expectBranches(scene.repo, 'main');
     });
 
-    it('Can delete a branch marked as merged', async () => {
-      scene.repo.createChange('2', 'a');
-      scene.repo.runCliCommand([`create`, `a`, `-m`, `a`]);
+    it('Does not automatically delete an empty unmerged branch', () => {
+      scene.repo.createAndCheckoutBranch('empty');
+      scene.repo.runGitCommand(['commit', '--allow-empty', '-m', 'empty']);
+      scene.repo.trackBranch('empty', 'main');
+      scene.repo.checkoutBranch('main');
 
-      expectBranches(scene.repo, 'a, main');
+      scene.repo.runCliCommand(['repo', 'sync', '-f', '--no-pull']);
 
-      writeMetadataRef(
-        'a',
-        { ...readMetadataRef('a', scene.dir), prInfo: { state: 'MERGED' } },
-        scene.dir
-      );
-
-      scene.repo.runCliCommand([`repo`, `sync`, `-f`, `--no-pull`]);
-
-      expectBranches(scene.repo, 'main');
-    });
-
-    it('Can delete a branch marked as closed', async () => {
-      scene.repo.createChange('2', 'a');
-      scene.repo.runCliCommand([`create`, `a`, `-m`, `a`]);
-
-      expectBranches(scene.repo, 'a, main');
-      writeMetadataRef(
-        'a',
-        { ...readMetadataRef('a', scene.dir), prInfo: { state: 'CLOSED' } },
-        scene.dir
-      );
-
-      scene.repo.runCliCommand([`repo`, `sync`, `-f`, `--no-pull`]);
-
-      expectBranches(scene.repo, 'main');
+      expectBranches(scene.repo, 'empty, main');
     });
 
     it('Can noop sync if there are no stacks', () => {

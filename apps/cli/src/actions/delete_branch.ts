@@ -34,27 +34,17 @@ export function deleteBranchAction(
   restackBranches(branchesToRestack, context);
 }
 
-// Stored metadata can mark a branch safe before its changes appear in trunk.
 export function isSafeToDelete(
   branchName: string,
   context: TContext
 ): { result: true; reason: string } | { result: false } {
-  const prInfo = context.engine.getPrInfo(branchName);
-
-  const reason =
-    prInfo?.state === 'CLOSED'
-      ? `${chalk.redBright(branchName)} is marked closed`
-      : prInfo?.state === 'MERGED'
-        ? `${chalk.green(branchName)} is merged into ${chalk.cyan(
-            prInfo?.base ?? context.engine.trunk
-          )}`
-        : context.engine.isMergedIntoTrunk(branchName)
-          ? `${chalk.green(branchName)} is merged into ${chalk.cyan(
-              context.engine.trunk
-            )}`
-          : context.engine.isBranchEmpty(branchName)
-            ? `${chalk.yellow(branchName)} is empty`
-            : undefined;
+  const reason = context.engine.isMergedIntoTrunk(branchName)
+    ? `${chalk.green(branchName)} is merged into ${chalk.cyan(
+        context.engine.trunk
+      )}`
+    : context.engine.isBranchEmpty(branchName)
+      ? `${chalk.yellow(branchName)} is empty`
+      : undefined;
 
   return reason ? { result: true, reason } : { result: false };
 }

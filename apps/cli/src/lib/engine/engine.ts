@@ -20,7 +20,6 @@ import { TChangedFile, TStatusFile } from '../git/changed_files';
 import {
   deleteMetadataRef,
   getMetadataRefList,
-  TBranchPRInfo,
   writeMetadataRef,
 } from './metadata_ref';
 import { validateOrFixParentBranchRevision } from './parse_branches_and_meta';
@@ -71,10 +70,6 @@ export type TEngine = {
 
   getCommitDate: (branchName: string) => Promise<Date>;
   getCommitAuthor: (branchName: string) => Promise<string>;
-
-  getPrInfo: (branchName: string) => TBranchPRInfo | undefined;
-  upsertPrInfo: (branchName: string, prInfo: Partial<TBranchPRInfo>) => void;
-  clearPrInfo: (branchName: string) => void;
 
   getChildren: (branchName: string) => string[];
 
@@ -357,7 +352,6 @@ export function composeEngine({
     writeMetadataRef(branchName, {
       parentBranchName: newCachedMeta.parentBranchName,
       parentBranchRevision: newCachedMeta.parentBranchRevision,
-      prInfo: newCachedMeta.prInfo,
     });
 
     splog.debug(
@@ -580,30 +574,6 @@ export function composeEngine({
     },
     getCommitDate: git.getCommitDate,
     getCommitAuthor: git.getCommitAuthor,
-    getPrInfo: (branchName: string) => {
-      const meta = cache.branches[branchName];
-      return meta?.validationResult === 'TRUNK' ? undefined : meta?.prInfo;
-    },
-    upsertPrInfo: (branchName: string, prInfo: Partial<TBranchPRInfo>) => {
-      const meta = cache.branches[branchName];
-      if (meta?.validationResult !== 'VALID') {
-        return;
-      }
-      updateMeta(branchName, {
-        ...meta,
-        prInfo: { ...meta.prInfo, ...prInfo },
-      });
-    },
-    clearPrInfo: (branchName: string) => {
-      const meta = cache.branches[branchName];
-      if (meta?.validationResult !== 'VALID') {
-        return;
-      }
-      updateMeta(branchName, {
-        ...meta,
-        prInfo: {},
-      });
-    },
     getChildren,
     setParent,
     getParent,
@@ -645,7 +615,7 @@ export function composeEngine({
         assertBranchIsValidAndNotTrunkAndGetMeta(currentBranchName);
 
       git.moveBranch(branchName);
-      updateMeta(branchName, { ...cachedMeta, prInfo: {} });
+      updateMeta(branchName, cachedMeta);
 
       cachedMeta.children.forEach((childBranchName) =>
         setParent(childBranchName, branchName)
@@ -803,7 +773,6 @@ export function composeEngine({
           parentBranchName: lastBranch.name,
           parentBranchRevision: lastBranch.revision,
           children: [],
-          prInfo: branchName === branchToSplit ? cachedMeta.prInfo : undefined,
         });
         lastBranch.name = branchName;
         lastBranch.revision = branchRevision;

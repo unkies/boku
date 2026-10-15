@@ -1,6 +1,5 @@
 import chalk from 'chalk';
 import { TContext } from '../lib/context';
-import { ExitFailedError } from '../lib/errors';
 import { replaceUnsupportedCharacters } from '../lib/utils/branch_name';
 
 async function getNewBranchName(
@@ -27,7 +26,7 @@ async function getNewBranchName(
 }
 
 export async function renameCurrentBranch(
-  args: { newBranchName?: string; force?: boolean },
+  args: { newBranchName?: string },
   context: TContext
 ): Promise<void> {
   const oldBranchName = context.engine.currentBranchPrecondition;
@@ -42,16 +41,6 @@ export async function renameCurrentBranch(
       `Current branch is already named ${chalk.cyan(oldBranchName)}`
     );
     return;
-  }
-
-  if (context.engine.getPrInfo(oldBranchName)?.number && !args.force) {
-    context.splog.tip(
-      `Renaming a branch that is already associated with a PR removes the association.`
-    );
-
-    throw new ExitFailedError(
-      'Renaming a branch for a submitted PR requires the `--force` option'
-    );
   }
 
   const newBranchName = replaceUnsupportedCharacters(branchName, context);

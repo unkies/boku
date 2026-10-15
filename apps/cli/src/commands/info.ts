@@ -17,13 +17,6 @@ const args = {
     type: 'boolean',
     alias: 'd',
   },
-  body: {
-    describe: `Show the PR body, if it exists.`,
-    demandOption: false,
-    default: false,
-    type: 'boolean',
-    alias: 'b',
-  },
 } as const;
 type argsT = yargs.Arguments<yargs.InferredOptionTypes<typeof args>>;
 
@@ -35,7 +28,7 @@ export const handler = async (argv: argsT): Promise<void> => {
   return graphite(argv, async (context) => {
     await showBranchInfo(
       context.engine.currentBranchPrecondition,
-      { patch: argv.patch, diff: argv.diff, body: argv.body },
+      { patch: argv.patch, diff: argv.diff },
       context
     );
   });

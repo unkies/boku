@@ -2,24 +2,9 @@ import { z } from 'zod';
 import { cuteString } from '../utils/cute_string';
 import { runGitCommand, runGitCommandAndSplitLines } from '../git/runner';
 
-export const prInfoSchema = z.object({
-  number: z.number().optional(),
-  base: z.string().optional(),
-  url: z.string().optional(),
-  title: z.string().optional(),
-  body: z.string().optional(),
-  state: z.enum(['OPEN', 'CLOSED', 'MERGED']).optional(),
-  reviewDecision: z
-    .enum(['APPROVED', 'REVIEW_REQUIRED', 'CHANGES_REQUESTED'])
-    .optional(),
-  isDraft: z.boolean().optional(),
-});
-export type TBranchPRInfo = z.infer<typeof prInfoSchema>;
-
 const metaSchema = z.object({
   parentBranchName: z.string().optional(),
   parentBranchRevision: z.string().optional(),
-  prInfo: prInfoSchema.optional(),
 });
 export type TMeta = z.infer<typeof metaSchema>;
 

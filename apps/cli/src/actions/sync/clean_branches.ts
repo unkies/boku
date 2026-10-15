@@ -1,6 +1,6 @@
 import { default as chalk } from 'chalk';
 import { TContext } from '../../lib/context';
-import { deleteBranchAction, isSafeToDelete } from '../delete_branch';
+import { deleteBranchAction } from '../delete_branch';
 
 /**
  * This method is assumed to be idempotent -- if a merge conflict interrupts
@@ -177,18 +177,13 @@ async function shouldDeleteBranch(
   },
   context: TContext
 ): Promise<boolean> {
-  const shouldDelete = isSafeToDelete(args.branchName, context);
-  if (!shouldDelete.result) {
+  if (!context.engine.isMergedIntoTrunk(args.branchName)) {
     return false;
   }
 
-  // Sync only deletes empty branches when stored metadata marks them safe.
-  if (
-    context.engine.isBranchEmpty(args.branchName) &&
-    !context.engine.getPrInfo(args.branchName)?.number
-  ) {
-    return false;
-  }
+  const reason = `${chalk.green(args.branchName)} is merged into ${chalk.cyan(
+    context.engine.trunk
+  )}`;
 
   if (args.force) {
     return true;
@@ -203,7 +198,7 @@ async function shouldDeleteBranch(
       await context.prompts({
         type: 'confirm',
         name: 'value',
-        message: `${shouldDelete.reason}. Delete it?`,
+        message: `${reason}. Delete it?`,
         initial: true,
       })
     ).value === true

@@ -74,7 +74,6 @@ export function parseBranchesAndMeta(
       branchRevision,
       parentBranchName,
       parentBranchRevision,
-      prInfo,
     } = current;
 
     if (branchName === args.trunkName) {
@@ -99,7 +98,6 @@ export function parseBranchesAndMeta(
       parsedBranches[branchName] = {
         validationResult: 'BAD_PARENT_NAME',
         branchRevision,
-        prInfo,
         children: [],
       };
       continue;
@@ -125,7 +123,6 @@ export function parseBranchesAndMeta(
         parentBranchName,
         parentBranchRevision,
         branchRevision,
-        prInfo,
         children: [],
       };
       continue;
@@ -145,7 +142,6 @@ export function parseBranchesAndMeta(
       ...{
         parentBranchName,
         branchRevision,
-        prInfo,
         children: [],
       },
       ...result,
@@ -165,7 +161,6 @@ export function validateOrFixParentBranchRevision(
     branchName,
     parentBranchName,
     parentBranchRevision,
-    prInfo,
     parentBranchCurrentRevision,
   }: TBranchToParseWithValidatedParent,
   splog: TSplog
@@ -187,7 +182,6 @@ export function validateOrFixParentBranchRevision(
       writeMetadataRef(branchName, {
         parentBranchName,
         parentBranchRevision: parentBranchCurrentRevision,
-        prInfo,
       });
       splog.debug(
         `validated and updated parent rev: ${branchName}\n\t${parentBranchCurrentRevision}`
@@ -216,7 +210,6 @@ export function validateOrFixParentBranchRevision(
   writeMetadataRef(branchName, {
     parentBranchName,
     parentBranchRevision: parentBranchCurrentRevision,
-    prInfo,
   });
   splog.debug(
     `validated and fixed parent rev: ${branchName}\n\t${parentBranchCurrentRevision}`

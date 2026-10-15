@@ -91,7 +91,7 @@ async function splitByCommit(
   branchToSplit: string,
   context: TContext
 ): Promise<TSplit> {
-  const instructions = getSplitByCommitInstructions(branchToSplit, context);
+  const instructions = getSplitByCommitInstructions(branchToSplit);
   context.splog.info(instructions);
 
   const readableCommits = context.engine.getAllCommits(
@@ -129,23 +129,11 @@ async function splitByCommit(
   return { branchNames, branchPoints };
 }
 
-function getSplitByCommitInstructions(
-  branchToSplit: string,
-  context: TContext
-): string {
+function getSplitByCommitInstructions(branchToSplit: string): string {
   return [
     `Splitting the commits of ${chalk.cyan(
       branchToSplit
     )} into multiple branches.`,
-    ...(context.engine.getPrInfo(branchToSplit)?.number
-      ? [
-          `If any of the new branches keeps the name ${chalk.cyan(
-            branchToSplit
-          )}, it will be linked to PR #${
-            context.engine.getPrInfo(branchToSplit)?.number
-          }.`,
-        ]
-      : []),
     ``,
     chalk.yellow(`For each branch you'd like to create:`),
     `1. Choose which commit it begins at using the below prompt.`,
@@ -255,7 +243,7 @@ async function splitByHunk(
 
   const branchNames: string[] = [];
   try {
-    const instructions = getSplitByHunkInstructions(branchToSplit, context);
+    const instructions = getSplitByHunkInstructions(branchToSplit);
     const defaultCommitMessage = context.engine
       .getAllCommits(branchToSplit, 'MESSAGE')
       .reverse()
@@ -301,23 +289,11 @@ async function splitByHunk(
   };
 }
 
-function getSplitByHunkInstructions(
-  branchToSplit: string,
-  context: TContext
-): string {
+function getSplitByHunkInstructions(branchToSplit: string): string {
   return [
     `Splitting ${chalk.cyan(
       branchToSplit
     )} into multiple single-commit branches.`,
-    ...(context.engine.getPrInfo(branchToSplit)?.number
-      ? [
-          `If any of the new branches keeps the name ${chalk.cyan(
-            branchToSplit
-          )}, it will be linked to PR #${
-            context.engine.getPrInfo(branchToSplit)?.number
-          }.`,
-        ]
-      : []),
     ``,
     chalk.yellow(`For each branch you'd like to create:`),
     `1. Follow the prompts to stage the changes that you'd like to include.`,
