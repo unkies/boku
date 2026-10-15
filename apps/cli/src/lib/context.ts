@@ -5,7 +5,6 @@ import {
   continueConfigFactory,
   TContinueConfig,
 } from './spiffy/continuation_spf';
-import { prInfoConfigFactory } from './spiffy/pr_info_spf';
 import { repoConfigFactory, TRepoConfig } from './spiffy/repo_config_spf';
 import { TUserConfig, userConfigFactory } from './spiffy/user_config_spf';
 import { composeSplog, TSplog } from './utils/splog';
@@ -86,10 +85,6 @@ export function initContext(
     restackCommitterDateIsAuthorDate:
       contextLite.userConfig.data.restackCommitterDateIsAuthorDate,
   });
-  const prInfoConfig = prInfoConfigFactory.loadIfExists();
-  if (prInfoConfig) {
-    prInfoConfig.delete();
-  }
   return {
     ...contextLite,
     repoConfig,
