@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-const repoRoot = path.resolve(import.meta.dir, '..');
+const repoRoot = (await $`git rev-parse --show-toplevel`.text()).trim();
 const compiledBinary = path.join(repoRoot, 'pkg', 'ch');
 const installDirectory = path.join(os.homedir(), '.local', 'bin');
 const installedBinary = path.join(installDirectory, 'ch');
