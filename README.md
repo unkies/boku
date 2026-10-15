@@ -1,47 +1,120 @@
 # Charcoal
 
-> A CLI for managing stacked pull requests
+**An open-source CLI for stacked Git branches and pull requests.**
 
-<img width="1346" alt="CleanShot 2023-09-09 at 19 48 49@2x" src="https://github.com/danerwilliams/graphite-cli/assets/22798229/17385828-f235-4b56-84dd-ad73350d55b9">
+Charcoal helps you break large changes into small, reviewable branches while preserving the relationships between them. It manages stack metadata locally, automates rebases and restacks, and can create or update GitHub pull requests for an entire stack.
+
+> This repository is an independent continuation maintained under the [`unkies`](https://github.com/unkies) namespace. It is not affiliated with or endorsed by Graphite or the maintainers of the original Charcoal project.
+
+## Features
+
+- Create, edit, move, squash, split, and restack branches without losing their stack relationships.
+- Visualize the branches and dependencies in a stack.
+- Track existing branches or start new stacks from your trunk branch.
+- Push a complete stack and create or update its GitHub pull requests.
+- Absorb staged changes into the commits where they belong.
+- Run directly with Bun or as a standalone compiled executable.
+
+## Requirements
+
+- [Git](https://git-scm.com/)
+- [Bun](https://bun.com/) 1.4.3 or newer when installing the package or working from source
+- [GitHub CLI](https://cli.github.com/) 2.0 or newer for authentication and pull request commands
+
+The Homebrew release is a standalone executable and does not require a separate Bun installation.
 
 ## Install
 
-`brew install unkies/tap/charcoal`
+### Homebrew
 
-Or with Bun:
+```sh
+brew install unkies/tap/charcoal
+```
 
-`bun install --global @unkies/charcoal`
+### Bun
 
-## Announcement
+```sh
+bun add --global @unkies/charcoal
+```
 
-Check out my blog post announcement [here](https://danewilliams.com/announcing-charcoal) 🙂
+After installation, confirm that the `gt` command is available:
 
-## What is Graphite?
+```sh
+gt --help
+```
 
-From Graphite:
+## Quick Start
 
-> [Graphite](https://graphite.dev) is a **fast, simple code review platform** designed for engineers who want to **write and review smaller pull requests, stay unblocked, and ship faster**. Anyone can start using Graphite individually without needing their coworkers to change tools - we'll seamlessly sync your code changes and reviews. We built Graphite because we missed internal code review tools like Phabricator (at Facebook) and Critique (Google) that help engineers create, approve, and ship small, incremental changes, and long-term we’re passionate about creating products & workflows that help fast-moving eng teams achieve more.
+Run these commands inside a Git repository that already has an initial commit:
 
-## What is Charcoal?
+```sh
+# Select or infer the trunk branch.
+gt init
 
-Charcoal is simply the Graphite CLI, but open source!
+# Make a change, then create a branch and commit all changed files.
+gt create feature-name --all --message "Describe the change"
 
-On 7/14/2023 the Graphite team announced that they closed open source development of the Graphite CLI and [moved development to their private monorepo](https://github.com/withgraphite/graphite-cli). They also added a pay wall limiting free users to 10 open stacks at a time per organization starting 8/7/2023.
+# Inspect the current stack.
+gt log
 
-Graphite is an amazing company and you should absolutely check out their products. In addition to a stacking CLI, they have an entire code review platform, merge queue, and more developer productivity tools.
+# Authenticate before using GitHub pull request features.
+gt auth
 
-However, many organizations aren't interested in paying for Graphite's team plan at this time.
+# Push every branch in the current stack and create or update its PR.
+gt stack submit
+```
 
-The Graphite CLI does not need to depend on Graphite's API, so this project allows for use of the CLI with any git repository (even ones hosted on platforms other than GitHub!), entirely for free.
+Charcoal can also track existing branches. Check out a branch and run `gt track` to select its parent.
 
-## User guide
+## Core Commands
 
-<https://graphite.dev/docs/graphite-cli/>
+| Command           | Purpose                                                                     |
+| ----------------- | --------------------------------------------------------------------------- |
+| `gt init`         | Initialize Charcoal and select the repository's trunk branch.               |
+| `gt create`       | Create a branch on top of the current branch and optionally commit changes. |
+| `gt track`        | Add an existing branch to a stack.                                          |
+| `gt log`          | Display tracked branches and their dependencies.                            |
+| `gt restack`      | Rebase a branch onto its recorded parent.                                   |
+| `gt move`         | Move a branch to a new parent and restack its descendants.                  |
+| `gt sync`         | Update trunk and clean up branches merged upstream.                         |
+| `gt stack submit` | Push a stack and create or update its GitHub pull requests.                 |
+| `gt absorb`       | Amend staged hunks into the matching commits in the current stack.          |
 
-Right now, the Graphite Docs are more or less in sync with the features available in Charcoal.
+Run `gt --help` for the complete command list or `gt <command> --help` for command-specific options.
 
-As Graphite continues to develop their private version of the CLI, however, these will become out of sync. Ideally we can add our own open source docs to accompany this project.
+## Stack Vocabulary
+
+- **Trunk** is the branch that stacks ultimately merge into, usually `main` or `master`.
+- **Downstack** means the ancestors between the current branch and trunk.
+- **Upstack** means branches that depend on the current branch.
+- **Restacking** rebases branches so each branch is based on the latest version of its recorded parent.
+
+## History and Attribution
+
+Charcoal has a longer history than this repository:
+
+1. [Graphite](https://graphite.dev/) originally released its stacking CLI as open-source software. The workflow, command model, and much of the foundation of this codebase originated there.
+2. In 2023, Graphite moved active CLI development into a private monorepo. The former public repository remains available at [`withgraphite/graphite-cli`](https://github.com/withgraphite/graphite-cli) as a historical reference.
+3. [Dane Williams](https://github.com/danerwilliams) created [the original Charcoal project](https://github.com/danerwilliams/charcoal) as an open-source continuation of that CLI. The original [Charcoal announcement](https://danewilliams.com/announcing-charcoal) explains the motivation for the fork.
+4. This repository is a further fork maintained under `unkies`. It keeps the Charcoal name and stacked-branch workflow while moving the project to a modern, Bun-native toolchain and continuing development independently.
+
+Previous authorship remains represented in the Git history and license notices. References to Graphite in historical names, concepts, or compatibility surfaces do not imply sponsorship or endorsement of this fork.
+
+## Documentation
+
+Charcoal's current command help is the source of truth:
+
+```sh
+gt --help
+gt <command> --help
+```
+
+The current Graphite documentation describes Graphite's separately developed product and may not match this fork.
 
 ## Contributing
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md)
+Contributions are welcome. See [CONTRIBUTING.md](./CONTRIBUTING.md) for local setup, testing, and build instructions.
+
+## License
+
+Charcoal is licensed under the [GNU Affero General Public License v3.0 or later](./LICENSE).
