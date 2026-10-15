@@ -1,6 +1,5 @@
 import type { CommandModule } from 'yargs';
 import * as absorb from './absorb';
-import * as auth from './auth';
 import * as bottom from './bottom';
 import * as checkout from './checkout';
 import * as commit from './commit';
@@ -24,7 +23,6 @@ import * as restack from './restack';
 import * as split from './split';
 import * as squash from './squash';
 import * as stack from './stack';
-import * as submit from './submit';
 import * as sync from './sync';
 import * as top from './top';
 import * as track from './track';
@@ -35,7 +33,6 @@ import * as user from './user';
 
 export const commands: CommandModule[] = [
   absorb,
-  auth,
   bottom,
   checkout,
   commit,
@@ -59,7 +56,6 @@ export const commands: CommandModule[] = [
   split,
   squash,
   stack,
-  submit,
   sync,
   top,
   track,

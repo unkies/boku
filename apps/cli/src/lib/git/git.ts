@@ -29,7 +29,7 @@ import { getFilesChanged } from './files_changed';
 import { getFileContents } from './file_contents';
 import { findRemoteBranch } from './find_remote_branch';
 import { getUserEmail } from './get_email';
-import { getShaOrThrow, getSha, composeGetRemoteSha } from './get_sha';
+import { getShaOrThrow, getSha } from './get_sha';
 import { getGitEditor, getGitPager } from './git_editor';
 import { unstagedChanges, trackedUncommittedChanges } from './git_status_utils';
 import { isMerged } from './is_merged';
@@ -60,7 +60,6 @@ export function composeGit(): TGit {
 
 function composeGitInternal() {
   return {
-    ...composeGetRemoteSha(),
     addAll,
     getCommitAuthor,
     getCommitDate,

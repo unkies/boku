@@ -12,7 +12,6 @@ const schema = z.object({
   editor: z.string().optional(),
   pager: z.string().optional(),
   restackCommitterDateIsAuthorDate: z.boolean().optional(),
-  submitIncludeCommitMessages: z.boolean().optional(),
 });
 
 export const userConfigFactory = spiffy({

@@ -71,7 +71,7 @@ async function selectTrunkBranch(
     await context.prompts({
       type: 'autocomplete',
       name: 'branch',
-      message: `Select a trunk branch, which you open pull requests against${
+      message: `Select the trunk branch that your stacks are based on${
         inferredTrunk ? ` - inferred trunk ${chalk.green(inferredTrunk)}` : ''
       } (autocomplete or arrow keys)`,
       choices: allBranchNames.map((b) => {

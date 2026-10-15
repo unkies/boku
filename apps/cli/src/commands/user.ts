@@ -5,7 +5,6 @@ import * as branchReplacement from './user-commands/branch_replacement';
 import * as editor from './user-commands/editor';
 import * as pager from './user-commands/pager';
 import * as restackDate from './user-commands/restack_date';
-import * as submitBody from './user-commands/submit_body';
 import * as tips from './user-commands/tips';
 
 const commands = [
@@ -15,7 +14,6 @@ const commands = [
   editor,
   pager,
   restackDate,
-  submitBody,
   tips,
 ] as unknown as CommandModule[];
 

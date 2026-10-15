@@ -18,7 +18,7 @@ export function deleteBranchAction(
   if (!args.force && !isSafeToDelete(args.branchName, context).result) {
     throw new ExitFailedError(
       [
-        `The branch ${args.branchName} is neither merged nor closed.  Use the \`--force\` option to delete it.`,
+        `The branch ${args.branchName} cannot be safely deleted. Use the \`--force\` option to delete it.`,
         `Note that its changes will be lost, as its children will be restacked onto its parent.`,
       ].join('\n')
     );
@@ -34,11 +34,7 @@ export function deleteBranchAction(
   restackBranches(branchesToRestack, context);
 }
 
-// Where did we merge this? If it was merged on GitHub, we see where it was
-// merged into. If we don't detect that it was merged in GitHub but we do
-// see the code in trunk, we fallback to say that it was merged into trunk.
-// This extra check (rather than just saying trunk) is used to catch the
-// case where one feature branch is merged into another on GitHub.
+// Stored metadata can mark a branch safe before its changes appear in trunk.
 export function isSafeToDelete(
   branchName: string,
   context: TContext
@@ -47,7 +43,7 @@ export function isSafeToDelete(
 
   const reason =
     prInfo?.state === 'CLOSED'
-      ? `${chalk.redBright(branchName)} is closed on GitHub`
+      ? `${chalk.redBright(branchName)} is marked closed`
       : prInfo?.state === 'MERGED'
         ? `${chalk.green(branchName)} is merged into ${chalk.cyan(
             prInfo?.base ?? context.engine.trunk

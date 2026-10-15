@@ -1,8 +1,8 @@
 # Charcoal
 
-**An open-source CLI for stacked Git branches and pull requests.**
+**An open-source CLI for local stacked Git branch workflows.**
 
-Charcoal helps you break large changes into small, reviewable branches while preserving the relationships between them. It manages stack metadata locally, automates rebases and restacks, and can create or update GitHub pull requests for an entire stack.
+Charcoal helps you break large changes into small, reviewable branches while preserving the relationships between them. It manages stack metadata locally and automates rebases, restacks, and synchronization with ordinary Git remotes.
 
 > This repository is an independent continuation maintained under the [`unkies`](https://github.com/unkies) namespace. It is not affiliated with or endorsed by Graphite or the maintainers of the original Charcoal project.
 
@@ -11,7 +11,7 @@ Charcoal helps you break large changes into small, reviewable branches while pre
 - Create, edit, move, squash, split, and restack branches without losing their stack relationships.
 - Visualize the branches and dependencies in a stack.
 - Track existing branches or start new stacks from your trunk branch.
-- Push a complete stack and create or update its GitHub pull requests.
+- Synchronize trunk from a configured Git remote and clean up branches merged into trunk.
 - Absorb staged changes into the commits where they belong.
 - Run directly with Bun or as a standalone compiled executable.
 
@@ -19,7 +19,6 @@ Charcoal helps you break large changes into small, reviewable branches while pre
 
 - [Git](https://git-scm.com/)
 - [Bun](https://bun.com/) 1.4.3 or newer when installing the package or working from source
-- [GitHub CLI](https://cli.github.com/) 2.0 or newer for authentication and pull request commands
 
 The Homebrew release is a standalone executable and does not require a separate Bun installation.
 
@@ -57,28 +56,24 @@ gt create feature-name --all --message "Describe the change"
 # Inspect the current stack.
 gt log
 
-# Authenticate before using GitHub pull request features.
-gt auth
-
-# Push every branch in the current stack and create or update its PR.
-gt stack submit
+# Rebase the current stack onto its recorded parents.
+gt stack restack
 ```
 
 Charcoal can also track existing branches. Check out a branch and run `gt track` to select its parent.
 
 ## Core Commands
 
-| Command           | Purpose                                                                     |
-| ----------------- | --------------------------------------------------------------------------- |
-| `gt init`         | Initialize Charcoal and select the repository's trunk branch.               |
-| `gt create`       | Create a branch on top of the current branch and optionally commit changes. |
-| `gt track`        | Add an existing branch to a stack.                                          |
-| `gt log`          | Display tracked branches and their dependencies.                            |
-| `gt restack`      | Rebase a branch onto its recorded parent.                                   |
-| `gt move`         | Move a branch to a new parent and restack its descendants.                  |
-| `gt sync`         | Update trunk and clean up branches merged upstream.                         |
-| `gt stack submit` | Push a stack and create or update its GitHub pull requests.                 |
-| `gt absorb`       | Amend staged hunks into the matching commits in the current stack.          |
+| Command      | Purpose                                                                     |
+| ------------ | --------------------------------------------------------------------------- |
+| `gt init`    | Initialize Charcoal and select the repository's trunk branch.               |
+| `gt create`  | Create a branch on top of the current branch and optionally commit changes. |
+| `gt track`   | Add an existing branch to a stack.                                          |
+| `gt log`     | Display tracked branches and their dependencies.                            |
+| `gt restack` | Rebase a branch onto its recorded parent.                                   |
+| `gt move`    | Move a branch to a new parent and restack its descendants.                  |
+| `gt sync`    | Update trunk and clean up branches merged upstream.                         |
+| `gt absorb`  | Amend staged hunks into the matching commits in the current stack.          |
 
 Run `gt --help` for the complete command list or `gt <command> --help` for command-specific options.
 
@@ -108,8 +103,6 @@ Charcoal's current command help is the source of truth:
 gt --help
 gt <command> --help
 ```
-
-The current Graphite documentation describes Graphite's separately developed product and may not match this fork.
 
 ## Contributing
 

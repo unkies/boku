@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'bun:test';
+import { describe, it, expect } from 'bun:test';
 import fs from 'fs-extra';
 import {
   readMetadataRef,
@@ -15,12 +15,6 @@ for (const scene of allScenes) {
   describe(`(${scene}): repo sync`, function () {
     configureTest(scene);
 
-    beforeEach(() => {
-      // Set up repo owner and name for GitHub operations
-      scene.repo.runCliCommand([`repo`, `owner`, `-s`, `integration_test`]);
-      scene.repo.runCliCommand([`repo`, `name`, `-s`, `integration-test-repo`]);
-    });
-
     it('Can delete a single merged branch', async () => {
       scene.repo.createChange('2', 'a');
       scene.repo.runCliCommand([`create`, `a`, `-m`, `a`]);
@@ -28,7 +22,6 @@ for (const scene of allScenes) {
       expectBranches(scene.repo, 'a, main');
 
       fakeGitSquashAndMerge(scene.repo, 'a', 'squash');
-      scene.repo.runCliCommand([`repo`, `owner`]);
       scene.repo.runCliCommand([`repo`, `sync`, `-f`, `--no-pull`]);
 
       expectBranches(scene.repo, 'main');
@@ -46,7 +39,6 @@ for (const scene of allScenes) {
         scene.dir
       );
 
-      scene.repo.runCliCommand([`repo`, `owner`]);
       scene.repo.runCliCommand([`repo`, `sync`, `-f`, `--no-pull`]);
 
       expectBranches(scene.repo, 'main');
@@ -63,7 +55,6 @@ for (const scene of allScenes) {
         scene.dir
       );
 
-      scene.repo.runCliCommand([`repo`, `owner`]);
       scene.repo.runCliCommand([`repo`, `sync`, `-f`, `--no-pull`]);
 
       expectBranches(scene.repo, 'main');

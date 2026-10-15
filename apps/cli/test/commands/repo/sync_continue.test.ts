@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'bun:test';
+import { describe, it, expect } from 'bun:test';
 import { allScenes } from '../../lib/scenes/all_scenes';
 import { configureTest } from '../../lib/utils/configure_test';
 import { expectBranches } from '../../lib/utils/expect_branches';
@@ -7,22 +7,6 @@ import { fakeGitSquashAndMerge } from '../../lib/utils/fake_squash_and_merge';
 for (const scene of allScenes) {
   describe(`(${scene}): repo sync continue`, function () {
     configureTest(scene);
-
-    beforeEach(() => {
-      // Set up repo owner and name for GitHub operations
-      scene.repo.runCliCommandAndGetOutput([
-        `repo`,
-        `owner`,
-        `-s`,
-        `integration_test`,
-      ]);
-      scene.repo.runCliCommandAndGetOutput([
-        `repo`,
-        `name`,
-        `-s`,
-        `integration_test`,
-      ]);
-    });
 
     it('Can continue a repo sync with one merge conflict', async () => {
       scene.repo.checkoutBranch('main');

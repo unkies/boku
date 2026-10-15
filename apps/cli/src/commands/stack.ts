@@ -1,8 +1,7 @@
 import * as yargs from 'yargs';
 import * as restack from './stack-commands/restack';
-import * as submit from './stack-commands/submit';
 
-const commands = [restack, submit] as unknown as yargs.CommandModule[];
+const commands = [restack] as unknown as yargs.CommandModule[];
 
 export const command = 'stack <command>';
 export const desc =

@@ -5,7 +5,6 @@ import { KilledError } from '../../lib/errors';
 import { uncommittedTrackedChangesPrecondition } from '../../lib/preconditions';
 import { restackBranches } from '../restack';
 import { cleanBranches } from './clean_branches';
-import { syncPrInfo } from '../sync_pr_info';
 
 export async function syncAction(
   opts: {
@@ -26,11 +25,9 @@ export async function syncAction(
 
   const branchesToRestack: string[] = [];
 
-  await syncPrInfo(context.engine.allBranchNames, context);
-
   if (opts.delete) {
     context.splog.info(
-      `🧹 Checking if any branches have been merged/closed and can be deleted...`
+      `🧹 Checking for branches that can be safely deleted...`
     );
     const branchesWithNewParents = await cleanBranches(
       { showDeleteProgress: opts.showDeleteProgress, force: opts.force },

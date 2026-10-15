@@ -1,36 +1,30 @@
 import { describe, it } from 'bun:test';
-import { PublicRepoScene } from './lib/scenes/public_repo_scene';
+import { BasicScene } from './lib/scenes/basic_scene';
 import { configureTest } from './lib/utils/configure_test';
 
-for (const scene of [
-  new PublicRepoScene({
-    repoUrl: 'https://github.com/SmartThingsCommunity/SmartThingsPublic.git',
-    name: 'SmartThingsPublic',
-    timeout: 20000,
-  }),
-  new PublicRepoScene({
-    repoUrl: 'https://github.com/dagster-io/dagster.git',
-    name: 'Dagster',
-    timeout: 10000,
-  }),
-]) {
-  describe(`(${scene}): Run simple timed commands`, function () {
-    configureTest(scene);
+class LargeRepoScene extends BasicScene {
+  public toString(): string {
+    return 'LargeRepoScene';
+  }
 
-    it(
-      'Can run stacks quickly',
-      () => {
-        scene.repo.runCliCommand([`log`, `short`]);
-      },
-      scene.timeout
-    );
-
-    it(
-      'Can run log quickly',
-      () => {
-        scene.repo.runCliCommand([`log`]);
-      },
-      scene.timeout
-    );
-  });
+  public setup(): void {
+    super.setup();
+    for (let index = 0; index < 200; index++) {
+      this.repo.runGitCommand(['branch', `fixture-${index}`]);
+    }
+  }
 }
+
+const scene = new LargeRepoScene();
+
+describe(`(${scene}): Run simple timed commands`, function () {
+  configureTest(scene);
+
+  it('Can run stacks quickly', () => {
+    scene.repo.runCliCommand(['log', 'short']);
+  }, 10000);
+
+  it('Can run log quickly', () => {
+    scene.repo.runCliCommand(['log']);
+  }, 10000);
+});

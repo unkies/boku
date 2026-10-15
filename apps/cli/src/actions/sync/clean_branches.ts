@@ -19,7 +19,7 @@ export async function cleanBranches(
   context: TContext
 ): Promise<string[]> {
   /**
-   * To find and delete all of the merged/closed branches, we traverse all of
+   * To find and delete all of the branches that can be safely deleted, we traverse all of
    * the stacks off of trunk, greedily deleting the base branches and rebasing
    * the remaining branches.
    *
@@ -59,7 +59,7 @@ export async function cleanBranches(
 
     if (branchName in progressMarkers) {
       context.splog.info(
-        `${progressMarkers[branchName]} done searching for merged/closed branches to delete...`
+        `${progressMarkers[branchName]} done searching for branches that can be safely deleted...`
       );
     }
 
@@ -182,7 +182,7 @@ async function shouldDeleteBranch(
     return false;
   }
 
-  // Don't delete empty branches without an associated PR
+  // Sync only deletes empty branches when stored metadata marks them safe.
   if (
     context.engine.isBranchEmpty(args.branchName) &&
     !context.engine.getPrInfo(args.branchName)?.number

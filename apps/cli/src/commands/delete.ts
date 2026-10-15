@@ -12,7 +12,7 @@ const args = {
     hidden: true,
   },
   force: {
-    describe: `Delete the branch even if it is not merged or closed.`,
+    describe: `Delete the branch even if Charcoal cannot determine that deletion is safe.`,
     demandOption: false,
     type: 'boolean',
     alias: 'f',
