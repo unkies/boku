@@ -1,29 +1,52 @@
 {
-  "private": true,
-  "name": "charcoal",
+  "name": "@unkies/charcoal",
+  "version": "0.2.4",
+  "license": "AGPL-3.0-or-later",
   "type": "module",
-  "workspaces": [
-    "apps/*",
-    "libs/*"
-  ],
+  "homepage": "https://github.com/unkies/charcoal",
+  "repository": "github:unkies/charcoal",
   "packageManager": "bun@1.4.3",
   "engines": {
     "bun": ">=1.4.3"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
-    "build": "bun run --cwd apps/cli build",
-    "check": "bun run --cwd apps/cli check",
+    "build": "rm -rf dist && bun build --target=bun --format=esm --sourcemap --outdir=dist src/index.ts && chmod +x dist/index.js",
+    "check": "bun check --project tsconfig.json",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint .",
-    "test": "bun run --cwd apps/cli test",
-    "test:coverage": "bun run --cwd apps/cli test:coverage",
-    "smoke": "bun run --cwd apps/cli smoke",
+    "test": "bun test --timeout 600000 --parallel=8",
+    "test:coverage": "bun test --timeout 600000 --parallel=8 --coverage --coverage-reporter=lcov",
+    "smoke": "bun scripts/smoke.ts",
     "ci": "bun run format:check && bun run lint && bun run check && bun run test:coverage && bun run build && bun run smoke",
-    "cli": "bun run --cwd apps/cli cli"
+    "cli": "bun src/index.ts",
+    "compile": "rm -rf pkg && bun build --compile src/index.ts --outfile pkg/ch",
+    "compile:all": "bun scripts/compile_all.ts",
+    "prepack": "bun run build"
+  },
+  "files": [
+    "dist"
+  ],
+  "bin": {
+    "ch": "dist/index.js"
+  },
+  "dependencies": {
+    "chalk": "6.0.1",
+    "fast-json-stable-hash": "1.0.3",
+    "fs-extra": "11.4.1",
+    "prompts": "2.4.2",
+    "strip-ansi": "7.2.0",
+    "yargs": "18.2.0",
+    "zod": "4.6.7"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
+    "@types/fs-extra": "11.0.4",
+    "@types/prompts": "2.4.9",
+    "@types/yargs": "17.0.35",
     "bun-types": "1.4.3",
     "eslint": "10.12.0",
     "eslint-config-prettier": "10.1.8",

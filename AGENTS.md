@@ -2,13 +2,13 @@
 
 ## Build & Test Commands
 
-- **Build**: `bun run build` (or `bun run --cwd apps/cli build`)
+- **Build**: `bun run build`
 - **Lint**: `bun run lint` (ESLint flat config at repo root)
-- **Type check**: `bun run check` (`bun check` in each workspace)
+- **Type check**: `bun run check`
 - **Format check**: `bun run format:check`; auto-fix with `bun run format`
 - **Run tests**: `bun run test` (add `DEBUG=1` for verbose output)
-- **Run single test**: `cd apps/cli && DEBUG=1 bun test "test/<path>.test.ts"`
-- **Run CLI locally**: `bun run cli <command>` or `cd apps/cli && bun src/index.ts <command>`
+- **Run single test**: `DEBUG=1 bun test "test/<path>.test.ts"`
+- **Run CLI locally**: `bun run cli <command>` or `bun src/index.ts <command>`
 
 ## Code Style
 
@@ -20,4 +20,4 @@
 - **Naming**: Unused args prefix with `_`, descriptive names (e.g., `commitCreateAction`, `TContext`)
 - **Formatting**: Prettier with 2-space indent, single quotes, semicolons, trailing commas (ES5)
 - **Console**: No `console.log` (`no-console` error) - use proper logging/output mechanisms
-- **Commands**: Commands are registered statically in `apps/cli/src/commands/index.ts` and each command group's parent module - never use yargs `commandDir`
+- **Commands**: Commands are registered statically in `src/commands/index.ts` and each command group's parent module - never use yargs `commandDir`

@@ -25,7 +25,6 @@ DEBUG=1 bun run test
 Running one test file
 
 ```
-cd apps/cli
 DEBUG=1 bun test "test/<path>.test.ts"
 ```
 
@@ -38,7 +37,6 @@ bun run cli <command> # (to run `ch <command>`)
 Or run the bundled build directly:
 
 ```
-cd apps/cli
 bun run build
 bun dist/index.js <command>
 ```
@@ -46,7 +44,6 @@ bun dist/index.js <command>
 ## Compiling a Standalone Binary
 
 ```
-cd apps/cli
 bun run compile            # writes pkg/ch for the current platform
 bun run compile:all        # writes pkg/ch-{linux,darwin}-{x64,arm64}
 ```
