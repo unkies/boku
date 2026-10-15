@@ -24,7 +24,6 @@
         "gt": "dist/index.js",
       },
       "dependencies": {
-        "@unkies/gti-cli-shared-types": "workspace:*",
         "chalk": "6.0.1",
         "fast-json-stable-hash": "1.0.3",
         "fs-extra": "11.4.1",
@@ -38,10 +37,6 @@
         "@types/prompts": "2.4.9",
         "@types/yargs": "17.0.35",
       },
-    },
-    "libs/gti-cli-shared-types": {
-      "name": "@unkies/gti-cli-shared-types",
-      "version": "0.3.2",
     },
   },
   "packages": {
@@ -128,8 +123,6 @@
     "@typescript-eslint/visitor-keys": ["@typescript-eslint/visitor-keys@8.71.2", "", { "dependencies": { "@typescript-eslint/types": "8.71.2", "eslint-visitor-keys": "^5.0.0" } }, "sha512-zozlN0UA32bSG2zkKAgQyRYSbEISVoyU6vvkKYo2aSny74D8Jh4e+POkJ6Lk0dlezZi5x7TtD+88Xb06IB8nhg=="],
 
     "@unkies/charcoal": ["@unkies/charcoal@workspace:apps/cli"],
-
-    "@unkies/gti-cli-shared-types": ["@unkies/gti-cli-shared-types@workspace:libs/gti-cli-shared-types"],
 
     "@unrs/resolver-binding-android-arm-eabi": ["@unrs/resolver-binding-android-arm-eabi@1.12.2", "", { "os": "android", "cpu": "arm" }, "sha512-g5T90pqg1bo/7mytQx6F4iBNC0Wsh9cu+z9veDbFjc7HjpesJFWD7QMS0NGStXM075+7dJPPVvBbpZlnrdpi/w=="],
 

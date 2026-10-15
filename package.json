@@ -11,8 +11,8 @@
     "bun": ">=1.4.3"
   },
   "scripts": {
-    "build": "bun run --cwd libs/gti-cli-shared-types build && bun run --cwd apps/cli build",
-    "check": "bun run --cwd libs/gti-cli-shared-types check && bun run --cwd apps/cli check",
+    "build": "bun run --cwd apps/cli build",
+    "check": "bun run --cwd apps/cli check",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint .",

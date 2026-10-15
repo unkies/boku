@@ -6,7 +6,6 @@
   "homepage": "https://github.com/unkies/charcoal",
   "repository": "github:unkies/charcoal",
   "dependencies": {
-    "@unkies/gti-cli-shared-types": "workspace:*",
     "chalk": "6.0.1",
     "fast-json-stable-hash": "1.0.3",
     "fs-extra": "11.4.1",
