@@ -32,7 +32,7 @@ DEBUG=1 bun test "test/<path>.test.ts"
 ## Run CLI from Local Build
 
 ```
-bun run cli <command> # (to run `gt <command>`)
+bun run cli <command> # (to run `ch <command>`)
 ```
 
 Or run the bundled build directly:
@@ -47,8 +47,8 @@ bun dist/index.js <command>
 
 ```
 cd apps/cli
-bun run compile            # writes pkg/gt for the current platform
-bun run compile:all        # writes pkg/gt-{linux,darwin}-{x64,arm64}
+bun run compile            # writes pkg/ch for the current platform
+bun run compile:all        # writes pkg/ch-{linux,darwin}-{x64,arm64}
 ```
 
 ## Getting Hashes for the Homebrew Tap

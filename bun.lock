@@ -20,7 +20,7 @@
       "name": "@unkies/charcoal",
       "version": "0.2.4",
       "bin": {
-        "gt": "dist/index.js",
+        "ch": "dist/index.js",
       },
       "dependencies": {
         "chalk": "6.0.1",

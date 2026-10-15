@@ -36,15 +36,15 @@ brew install unkies/tap/charcoal
 bun add --global @unkies/charcoal
 ```
 
-After installation, confirm that the `gt` command is available:
+After installation, confirm that the `ch` command is available:
 
 ```sh
-gt --help
+ch --help
 ```
 
 ## Upgrading
 
-In-place upgrades from earlier installations are intentionally unsupported. Remove the prior installation and install Charcoal again, then run `gt init` in each repository and reconfigure your user preferences. Legacy configuration and state files are ignored; Charcoal does not migrate, warn about, or delete them.
+In-place upgrades from earlier installations are intentionally unsupported. Remove the prior installation and install Charcoal again, then run `ch init` in each repository and reconfigure your user preferences. Legacy configuration and state files are ignored; Charcoal does not migrate, warn about, or delete them.
 
 ## Quick Start
 
@@ -52,34 +52,34 @@ Run these commands inside a Git repository that already has an initial commit:
 
 ```sh
 # Select or infer the trunk branch.
-gt init
+ch init
 
 # Make a change, then create a branch and commit all changed files.
-gt create feature-name --all --message "Describe the change"
+ch create feature-name --all --message "Describe the change"
 
 # Inspect the current stack.
-gt log
+ch log
 
 # Rebase the current stack onto its recorded parents.
-gt stack restack
+ch stack restack
 ```
 
-Charcoal can also track existing branches. Check out a branch and run `gt track` to select its parent.
+Charcoal can also track existing branches. Check out a branch and run `ch track` to select its parent.
 
 ## Core Commands
 
 | Command      | Purpose                                                                     |
 | ------------ | --------------------------------------------------------------------------- |
-| `gt init`    | Initialize Charcoal and select the repository's trunk branch.               |
-| `gt create`  | Create a branch on top of the current branch and optionally commit changes. |
-| `gt track`   | Add an existing branch to a stack.                                          |
-| `gt log`     | Display tracked branches and their dependencies.                            |
-| `gt restack` | Rebase a branch onto its recorded parent.                                   |
-| `gt move`    | Move a branch to a new parent and restack its descendants.                  |
-| `gt sync`    | Update trunk and clean up branches merged upstream.                         |
-| `gt absorb`  | Amend staged hunks into the matching commits in the current stack.          |
+| `ch init`    | Initialize Charcoal and select the repository's trunk branch.               |
+| `ch create`  | Create a branch on top of the current branch and optionally commit changes. |
+| `ch track`   | Add an existing branch to a stack.                                          |
+| `ch log`     | Display tracked branches and their dependencies.                            |
+| `ch restack` | Rebase a branch onto its recorded parent.                                   |
+| `ch move`    | Move a branch to a new parent and restack its descendants.                  |
+| `ch sync`    | Update trunk and clean up branches merged upstream.                         |
+| `ch absorb`  | Amend staged hunks into the matching commits in the current stack.          |
 
-Run `gt --help` for the complete command list or `gt <command> --help` for command-specific options.
+Run `ch --help` for the complete command list or `ch <command> --help` for command-specific options.
 
 ## Stack Vocabulary
 
@@ -104,8 +104,8 @@ Previous authorship remains represented in the Git history and license notices. 
 Charcoal's current command help is the source of truth:
 
 ```sh
-gt --help
-gt <command> --help
+ch --help
+ch <command> --help
 ```
 
 ## Contributing

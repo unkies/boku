@@ -45,7 +45,7 @@ for (const scene of [new TrailingProdScene()]) {
 
       scene.repo.checkoutBranch(textFileName);
 
-      // gt log should work - using "test.txt" as a revision rather than a path
+      // ch log should work - using "test.txt" as a revision rather than a path
       expect(() => scene.repo.runCliCommand([`log`])).not.toThrow(Error);
       expect(() => scene.repo.runCliCommand([`ls`])).not.toThrow(Error);
     });

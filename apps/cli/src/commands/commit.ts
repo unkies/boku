@@ -6,7 +6,7 @@ const commands = [amend, create] as unknown as CommandModule[];
 
 export const command = 'commit <command>';
 export const desc =
-  'Commands that operate on commits. Run `gt commit --help` to learn more.';
+  'Commands that operate on commits. Run `ch commit --help` to learn more.';
 
 export const aliases = ['c'];
 export const builder = function (yargs: Argv): Argv {
