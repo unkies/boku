@@ -10,7 +10,7 @@ import * as dev from './dev';
 import * as down from './down';
 import * as downstack from './downstack';
 import * as edit from './edit';
-import * as feedback from './feedback';
+import * as flare from './flare';
 import * as fish from './fish';
 import * as fold from './fold';
 import * as info from './info';
@@ -43,7 +43,7 @@ export const commands: CommandModule[] = [
   down,
   downstack,
   edit,
-  feedback,
+  flare,
   fish,
   fold,
   info,

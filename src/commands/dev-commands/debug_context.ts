@@ -10,21 +10,20 @@ const args = {
     optional: true,
     alias: 'r',
     describe:
-      'Accepts a json block created by `ch feedback state`. Recreates a debug repo in a temp folder with a commit tree matching the state JSON.',
+      'Accepts a JSON debug-context block produced by `ch flare`. Recreates a debug repo in a temp folder with a commit tree matching the state JSON.',
   },
   'recreate-from-file': {
     type: 'string',
     optional: true,
     alias: 'f',
     describe:
-      'Accepts a file containing a json block created by `ch feedback state`. Recreates a debug repo in a temp folder with a commit tree matching the state JSON.',
+      'Accepts a file containing a JSON debug-context block produced by `ch flare`. Recreates a debug repo in a temp folder with a commit tree matching the state JSON.',
   },
 } as const;
 type argsT = yargs.Arguments<yargs.InferredOptionTypes<typeof args>>;
 
 export const command = 'debug-context';
-export const description =
-  'Print a debug summary of your repo. Useful for creating bug report details.';
+export const description = false;
 export const builder = args;
 
 export const handler = async (argv: argsT): Promise<void> => {

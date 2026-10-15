@@ -5,12 +5,12 @@ import { TrailingProdScene } from '../../lib/scenes/trailing_prod_scene';
 import { configureTest } from '../../lib/utils/configure_test';
 
 for (const scene of [new TrailingProdScene()]) {
-  describe(`(${scene}): feedback debug-context`, function () {
+  describe(`(${scene}): dev debug-context`, function () {
     configureTest(scene);
 
     it('Can create debug-context', () => {
       expect(() =>
-        scene.repo.runCliCommand([`feedback`, `debug-context`])
+        scene.repo.runCliCommand([`dev`, `debug-context`])
       ).not.toThrow(Error);
     });
 
@@ -22,13 +22,13 @@ for (const scene of [new TrailingProdScene()]) {
       scene.repo.runCliCommand([`create`, `b`, `-m`, `b`]);
 
       const context = scene.repo.runCliCommandAndGetOutput([
-        `feedback`,
+        `dev`,
         `debug-context`,
       ]);
 
       const outputLines = scene.repo
         .runCliCommandAndGetOutput([
-          `feedback`,
+          `dev`,
           `debug-context`,
           `--recreate`,
           context,

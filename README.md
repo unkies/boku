@@ -81,6 +81,10 @@ Charcoal can also track existing branches. Check out a branch and run `ch track`
 
 Run `ch --help` for the complete command list or `ch <command> --help` for command-specific options.
 
+## Support
+
+Run `ch flare` inside an initialized repository to generate a copy-and-paste-ready Markdown report containing Charcoal, Bun, Git, and operating-system versions plus the repository's debug context. Review the branch names and configuration in the report before sharing it.
+
 ## Stack Vocabulary
 
 - **Trunk** is the branch that stacks ultimately merge into, usually `main` or `master`.

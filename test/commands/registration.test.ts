@@ -6,8 +6,12 @@ import { BasicScene } from '../lib/scenes/basic_scene';
 import { configureTest } from '../lib/utils/configure_test';
 
 describe('command registration', () => {
-  it('does not register the removed demo command', () => {
-    expect(commands.map((command) => command.command)).not.toContain('demo');
+  it('registers flare instead of the removed demo and feedback commands', () => {
+    const commandNames = commands.map((command) => command.command);
+    expect(commandNames).not.toContain('demo');
+    expect(commandNames).toContain('flare');
+    expect(commandNames).not.toContain('feedback');
+    expect(commandNames).not.toContain('feedback <command>');
   });
 
   it('does not expose removed provider-specific options', () => {
