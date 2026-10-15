@@ -1,5 +1,5 @@
 import * as yargs from 'yargs';
-import { graphiteWithoutRepo } from '../../lib/runner';
+import { runWithoutRepo } from '../../lib/runner';
 import { getBranchDateEnabled } from '../../lib/utils/branch_name';
 
 const args = {
@@ -24,7 +24,7 @@ export const description =
   'Toggle prepending date to auto-generated branch names on branch creation.';
 export const builder = args;
 export const handler = async (argv: argsT): Promise<void> => {
-  return graphiteWithoutRepo(argv, async (context) => {
+  return runWithoutRepo(argv, async (context) => {
     if (argv.enable) {
       context.userConfig.update((data) => (data.branchDate = true));
       context.splog.info(`Enabled date`);

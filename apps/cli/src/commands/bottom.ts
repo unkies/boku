@@ -1,6 +1,6 @@
 import * as yargs from 'yargs';
 import { switchBranchAction } from '../actions/branch_traversal';
-import { graphite } from '../lib/runner';
+import { runWithRepo } from '../lib/runner';
 
 const args = {} as const;
 
@@ -12,7 +12,7 @@ export const description =
   'Switch to the first branch from trunk in the current stack.';
 export const builder = args;
 export const handler = async (argv: argsT): Promise<void> =>
-  graphite(
+  runWithRepo(
     argv,
     async (context) =>
       await switchBranchAction(

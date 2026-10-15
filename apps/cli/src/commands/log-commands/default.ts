@@ -1,6 +1,6 @@
 import * as yargs from 'yargs';
 import { logAction } from '../../actions/log';
-import { graphite } from '../../lib/runner';
+import { runWithRepo } from '../../lib/runner';
 
 const args = {
   reverse: {
@@ -37,7 +37,7 @@ export const builder = args;
 
 type argsT = yargs.Arguments<yargs.InferredOptionTypes<typeof args>>;
 export const handler = async (argv: argsT): Promise<void> =>
-  graphite(argv, async (context) =>
+  runWithRepo(argv, async (context) =>
     logAction(
       {
         style: 'FULL',

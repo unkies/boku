@@ -1,7 +1,7 @@
 import * as yargs from 'yargs';
 
 import fishCompletion from '../lib/gt.fish' with { type: 'text' };
-import { graphiteWithoutRepo } from '../lib/runner';
+import { runWithoutRepo } from '../lib/runner';
 const args = {} as const;
 
 type argsT = yargs.Arguments<yargs.InferredOptionTypes<typeof args>>;
@@ -11,6 +11,6 @@ export const aliases = ['fish'];
 export const description = 'Set up fish tab completion.';
 export const builder = args;
 export const handler = async (argv: argsT): Promise<void> =>
-  graphiteWithoutRepo(argv, async (context) => {
+  runWithoutRepo(argv, async (context) => {
     context.splog.page(fishCompletion);
   });

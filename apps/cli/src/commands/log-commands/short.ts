@@ -1,7 +1,7 @@
 import * as yargs from 'yargs';
 import { logAction } from '../../actions/log';
 import { logShortClassic } from '../../actions/log_short_classic';
-import { graphite } from '../../lib/runner';
+import { runWithRepo } from '../../lib/runner';
 
 const args = {
   classic: {
@@ -46,7 +46,7 @@ export const aliases = ['s'];
 
 type argsT = yargs.Arguments<yargs.InferredOptionTypes<typeof args>>;
 export const handler = async (argv: argsT): Promise<void> =>
-  graphite(argv, async (context) =>
+  runWithRepo(argv, async (context) =>
     argv.classic
       ? logShortClassic(context)
       : logAction(

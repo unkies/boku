@@ -1,6 +1,6 @@
 import * as yargs from 'yargs';
 import { continueAction } from '../actions/continue';
-import { graphite } from '../lib/runner';
+import { runWithRepo } from '../lib/runner';
 
 const args = {
   all: {
@@ -20,7 +20,7 @@ export const description =
   'Continues the most recent Charcoal command halted by a merge conflict.';
 export const builder = args;
 export const handler = async (argv: argsT): Promise<void> =>
-  graphite(
+  runWithRepo(
     argv,
     async (context) => await continueAction({ addAll: argv.all }, context)
   );

@@ -15,7 +15,7 @@ export async function init(
   const allBranchNames = context.engine.allBranchNames;
 
   context.splog.info(
-    context.repoConfig.graphiteInitialized()
+    context.repoConfig.isInitialized()
       ? `Reinitializing Charcoal...`
       : `Welcome to Charcoal!`
   );

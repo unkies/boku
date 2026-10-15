@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import stripAnsi from 'strip-ansi';
-import { GRAPHITE_COLORS } from '../lib/colors';
+import { STACK_COLORS } from '../lib/colors';
 import { TContext } from '../lib/context';
 import { clearPromptResultLine, suggest } from '../lib/utils/prompts_helpers';
 import { getBranchInfo } from './show_branch';
@@ -141,7 +141,7 @@ type TPrintStackArgs = {
 
 function getLogShortColor(toColor: string, index: number): string {
   return chalk.rgb(
-    ...GRAPHITE_COLORS[Math.floor(index / 2) % GRAPHITE_COLORS.length]
+    ...STACK_COLORS[Math.floor(index / 2) % STACK_COLORS.length]
   )(toColor);
 }
 

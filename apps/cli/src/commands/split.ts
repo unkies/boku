@@ -1,6 +1,6 @@
 import * as yargs from 'yargs';
 import { splitCurrentBranch } from '../actions/split';
-import { graphite } from '../lib/runner';
+import { runWithRepo } from '../lib/runner';
 
 const args = {
   ['by-commit']: {
@@ -26,7 +26,7 @@ export const description =
   'Split the current branch into multiple single-commit branches.';
 export const builder = args;
 export const handler = async (argv: argsT): Promise<void> =>
-  graphite(argv, async (context) =>
+  runWithRepo(argv, async (context) =>
     splitCurrentBranch(
       {
         style: argv['by-hunk']

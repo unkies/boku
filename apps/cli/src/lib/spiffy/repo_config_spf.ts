@@ -29,7 +29,7 @@ export const repoConfigFactory = spiffy({
         update((data) => (data.trunk = trunk));
       },
 
-      graphiteInitialized: (): boolean => !!data.trunk,
+      isInitialized: (): boolean => !!data.trunk,
     } as const;
   },
 });

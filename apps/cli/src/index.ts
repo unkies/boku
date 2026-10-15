@@ -19,7 +19,7 @@ await registerCompletion(yargs(getYargsInput()))
   .command(commands)
   .help()
   .usage(
-    'Charcoal is a command line tool that makes working with stacked changes fast & intuitive.\n\nhttps://docs.graphite.dev/guides/graphite-cli'
+    'Charcoal is a command line tool that makes working with stacked changes fast & intuitive.\n\nhttps://github.com/unkies/charcoal'
   )
   .options(globalArgumentsOptions)
   .global(Object.keys(globalArgumentsOptions))

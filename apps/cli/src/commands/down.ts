@@ -1,6 +1,6 @@
 import * as yargs from 'yargs';
 import { switchBranchAction } from '../actions/branch_traversal';
-import { graphite } from '../lib/runner';
+import { runWithRepo } from '../lib/runner';
 
 const args = {
   steps: {
@@ -19,7 +19,7 @@ export const aliases = ['d'];
 export const description = 'Switch to the parent of the current branch.';
 export const builder = args;
 export const handler = async (argv: argsT): Promise<void> =>
-  graphite(
+  runWithRepo(
     argv,
     async (context) =>
       await switchBranchAction(

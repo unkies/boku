@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import * as yargs from 'yargs';
-import { graphiteWithoutRepo } from '../../lib/runner';
+import { runWithoutRepo } from '../../lib/runner';
 
 const args = {
   set: {
@@ -22,7 +22,7 @@ export const command = 'editor';
 export const description = 'The editor opened by Charcoal.';
 export const builder = args;
 export const handler = async (argv: argsT): Promise<void> => {
-  return graphiteWithoutRepo(argv, async (context) => {
+  return runWithoutRepo(argv, async (context) => {
     if (argv.set) {
       context.userConfig.update((data) => (data.editor = argv.set));
       context.splog.info(`Editor set to ${chalk.cyan(argv.set)}`);

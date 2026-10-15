@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import fs from 'fs-extra';
 import * as yargs from 'yargs';
 import { captureState, recreateState } from '../../lib/debug_context';
-import { graphite } from '../../lib/runner';
+import { runWithRepo } from '../../lib/runner';
 
 const args = {
   recreate: {
@@ -28,7 +28,7 @@ export const description =
 export const builder = args;
 
 export const handler = async (argv: argsT): Promise<void> => {
-  return graphite(argv, async (context) => {
+  return runWithRepo(argv, async (context) => {
     if (argv['recreate-from-file']) {
       const dir = recreateState(
         fs.readFileSync(argv['recreate-from-file']).toString(),

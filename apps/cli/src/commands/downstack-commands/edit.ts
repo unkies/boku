@@ -1,6 +1,6 @@
 import * as yargs from 'yargs';
 import { editDownstack } from '../../actions/edit/edit_downstack';
-import { graphite } from '../../lib/runner';
+import { runWithRepo } from '../../lib/runner';
 
 const args = {
   input: {
@@ -19,7 +19,7 @@ export const builder = args;
 export const aliases = ['e'];
 
 export const handler = async (argv: argsT): Promise<void> => {
-  return graphite(argv, async (context) => {
+  return runWithRepo(argv, async (context) => {
     await editDownstack(argv.input, context);
   });
 };

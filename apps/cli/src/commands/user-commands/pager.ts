@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import * as yargs from 'yargs';
-import { graphiteWithoutRepo } from '../../lib/runner';
+import { runWithoutRepo } from '../../lib/runner';
 
 const args = {
   set: {
@@ -27,7 +27,7 @@ export const command = 'pager';
 export const description = 'The pager opened by Charcoal.';
 export const builder = args;
 export const handler = async (argv: argsT): Promise<void> => {
-  return graphiteWithoutRepo(argv, async (context) => {
+  return runWithoutRepo(argv, async (context) => {
     if (argv.disable) {
       context.userConfig.update((data) => (data.pager = ''));
       context.splog.info(`Pager disabled`);

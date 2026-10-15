@@ -1,5 +1,5 @@
 import * as yargs from 'yargs';
-import { graphiteWithoutRepo } from '../../lib/runner';
+import { runWithoutRepo } from '../../lib/runner';
 
 const args = {
   ['use-author-date']: {
@@ -20,7 +20,7 @@ export const description =
   'Configure how committer date is handled by restack internal rebases.';
 export const builder = args;
 export const handler = async (argv: argsT): Promise<void> => {
-  return graphiteWithoutRepo(argv, async (context) => {
+  return runWithoutRepo(argv, async (context) => {
     if (typeof argv['use-author-date'] === 'undefined') {
       context.splog.info(
         `\`--committer-date-is-author-date\` will ${

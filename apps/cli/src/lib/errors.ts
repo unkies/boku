@@ -94,7 +94,7 @@ export class BlockedDuringRebaseError extends Error {
   }
 }
 
-export class NoGraphiteContinue extends Error {
+export class NoContinuationError extends Error {
   constructor(didYouMean?: string) {
     const baseMsg = `No Charcoal operation to continue.`;
     super(
@@ -102,6 +102,6 @@ export class NoGraphiteContinue extends Error {
         ? [baseMsg, `Did you mean ${chalk.cyan(didYouMean)}?`].join('\n')
         : baseMsg
     );
-    this.name = 'NoGraphiteContinue';
+    this.name = 'NoContinuationError';
   }
 }

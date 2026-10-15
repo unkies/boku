@@ -1,6 +1,6 @@
 import * as yargs from 'yargs';
 import { absorbAction } from '../actions/absorb';
-import { graphite } from '../lib/runner';
+import { runWithRepo } from '../lib/runner';
 
 const args = {
   'dry-run': {
@@ -40,7 +40,7 @@ export const description =
 export const builder = args;
 type argsT = yargs.Arguments<yargs.InferredOptionTypes<typeof args>>;
 export const handler = async (argv: argsT): Promise<void> => {
-  return graphite(argv, async (context) =>
+  return runWithRepo(argv, async (context) =>
     absorbAction(
       {
         dryRun: argv['dry-run'],

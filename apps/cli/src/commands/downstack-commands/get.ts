@@ -1,6 +1,6 @@
 import * as yargs from 'yargs';
 import { getAction } from '../../actions/sync/get';
-import { graphite } from '../../lib/runner';
+import { runWithRepo } from '../../lib/runner';
 
 const args = {
   branch: {
@@ -26,7 +26,7 @@ export const description =
 export const builder = args;
 export const aliases = ['g'];
 export const handler = async (argv: argsT): Promise<void> =>
-  graphite(
+  runWithRepo(
     argv,
     async (context) =>
       await getAction({ branchName: argv.branch, force: argv.force }, context)

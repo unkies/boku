@@ -1,6 +1,6 @@
 import * as yargs from 'yargs';
 import { checkoutBranch } from '../actions/checkout_branch';
-import { graphite } from '../lib/runner';
+import { runWithRepo } from '../lib/runner';
 
 const args = {
   branch: {
@@ -27,7 +27,7 @@ export const aliases = ['co'];
 export const builder = args;
 
 export const handler = async (argv: argsT): Promise<void> =>
-  graphite(argv, async (context) =>
+  runWithRepo(argv, async (context) =>
     checkoutBranch(
       { branchName: argv.branch, showUntracked: argv['show-untracked'] },
       context

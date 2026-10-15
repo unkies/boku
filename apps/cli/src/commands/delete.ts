@@ -1,6 +1,6 @@
 import * as yargs from 'yargs';
 import { deleteBranchAction } from '../actions/delete_branch';
-import { graphite } from '../lib/runner';
+import { runWithRepo } from '../lib/runner';
 
 const args = {
   name: {
@@ -27,6 +27,6 @@ export const description =
   'Delete a branch and its corresponding Charcoal metadata.';
 export const builder = args;
 export const handler = async (argv: argsT): Promise<void> =>
-  graphite(argv, async (context) =>
+  runWithRepo(argv, async (context) =>
     deleteBranchAction({ branchName: argv.name, force: argv.force }, context)
   );

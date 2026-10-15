@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { GRAPHITE_COLORS } from '../lib/colors';
+import { STACK_COLORS } from '../lib/colors';
 import { TContext } from '../lib/context';
 import { SCOPE } from '../lib/engine/scope_spec';
 import { KilledError, PreconditionsFailedError } from '../lib/errors';
@@ -197,7 +197,7 @@ async function getBranchPoints({
               }
 
               const titleColor =
-                GRAPHITE_COLORS[(branchNumber - 1) % GRAPHITE_COLORS.length];
+                STACK_COLORS[(branchNumber - 1) % STACK_COLORS.length];
               const titleText = `${
                 shouldDisplayBranchNumber
                   ? `Branch ${branchNumber}: `

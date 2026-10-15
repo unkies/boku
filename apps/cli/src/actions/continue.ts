@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import { TContext } from '../lib/context';
-import { NoGraphiteContinue, RebaseConflictError } from '../lib/errors';
+import { NoContinuationError, RebaseConflictError } from '../lib/errors';
 import { clearContinuation, persistContinuation } from './persist_continuation';
 import { printConflictStatus } from './print_conflict_status';
 import { restackBranches } from './restack';
@@ -12,7 +12,7 @@ export async function continueAction(
 ): Promise<void> {
   if (!context.engine.rebaseInProgress()) {
     clearContinuation(context);
-    throw new NoGraphiteContinue();
+    throw new NoContinuationError();
   }
 
   if (opts.addAll) {
@@ -24,7 +24,7 @@ export async function continueAction(
 
   if (!rebasedBranchBase) {
     clearContinuation(context);
-    throw new NoGraphiteContinue('git rebase --continue');
+    throw new NoContinuationError('git rebase --continue');
   }
 
   const cont = context.engine.continueRebase(rebasedBranchBase);

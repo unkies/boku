@@ -1,7 +1,7 @@
 import * as yargs from 'yargs';
 import { renameCurrentBranch } from '../actions/rename_branch';
 import { ExitFailedError } from '../lib/errors';
-import { graphite } from '../lib/runner';
+import { runWithRepo } from '../lib/runner';
 
 const args = {
   name: {
@@ -21,7 +21,7 @@ export const description =
 export const builder = args;
 
 export const handler = async (args: argsT): Promise<void> => {
-  return graphite(args, async (context) => {
+  return runWithRepo(args, async (context) => {
     if (!args.name && !context.interactive) {
       throw new ExitFailedError(
         `Please supply a new branch name when in non-interactive mode`

@@ -1,5 +1,5 @@
 import * as yargs from 'yargs';
-import { graphite } from '../../lib/runner';
+import { runWithRepo } from '../../lib/runner';
 
 const args = {
   set: {
@@ -18,7 +18,7 @@ export const description =
   "Specifies the remote that Charcoal pushes to/pulls from (defaults to 'origin')";
 export const builder = args;
 export const handler = async (argv: argsT): Promise<void> => {
-  return graphite(argv, async (context) => {
+  return runWithRepo(argv, async (context) => {
     if (argv.set) {
       context.repoConfig.setRemote(argv.set);
     } else {

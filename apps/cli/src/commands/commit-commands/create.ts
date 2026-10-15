@@ -1,6 +1,6 @@
 import * as yargs from 'yargs';
 import { commitCreateAction } from '../../actions/commit_create';
-import { graphite } from '../../lib/runner';
+import { runWithRepo } from '../../lib/runner';
 
 const args = {
   all: {
@@ -32,7 +32,7 @@ export const aliases = ['c'];
 export const description = 'Create a new commit and restack upstack branches.';
 export const builder = args;
 export const handler = async (argv: argsT): Promise<void> => {
-  return graphite(argv, async (context) =>
+  return runWithRepo(argv, async (context) =>
     commitCreateAction(
       {
         message: argv.message,

@@ -1,6 +1,6 @@
 import * as yargs from 'yargs';
 import { trackBranch } from '../actions/track_branch';
-import { graphite } from '../lib/runner';
+import { runWithRepo } from '../lib/runner';
 
 const args = {
   branch: {
@@ -35,7 +35,7 @@ export const description = [
 ].join(' ');
 export const builder = args;
 export const handler = async (argv: argsT): Promise<void> =>
-  graphite(
+  runWithRepo(
     argv,
     async (context) =>
       await trackBranch(

@@ -1,6 +1,6 @@
 import * as yargs from 'yargs';
 import { createBranchAction } from '../actions/create_branch';
-import { graphite } from '../lib/runner';
+import { runWithRepo } from '../lib/runner';
 
 const args = {
   name: {
@@ -47,7 +47,7 @@ export const description =
   'Create a new branch stacked on top of the current branch and commit staged changes. If no branch name is specified but a commit message is passed, generate a branch name from the commit message.';
 export const builder = args;
 export const handler = async (argv: argsT): Promise<void> => {
-  return graphite(argv, async (context) => {
+  return runWithRepo(argv, async (context) => {
     await createBranchAction(
       {
         branchName: argv.name,

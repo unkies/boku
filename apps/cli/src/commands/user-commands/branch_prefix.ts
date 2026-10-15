@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import * as yargs from 'yargs';
-import { graphiteWithoutRepo } from '../../lib/runner';
+import { runWithoutRepo } from '../../lib/runner';
 import { setBranchPrefix } from '../../lib/utils/branch_name';
 
 const args = {
@@ -27,7 +27,7 @@ export const description =
   'The prefix which Charcoal will prepend to generated branch names.';
 export const builder = args;
 export const handler = async (argv: argsT): Promise<void> => {
-  return graphiteWithoutRepo(argv, async (context) => {
+  return runWithoutRepo(argv, async (context) => {
     if (argv.reset) {
       context.splog.info(`Reset branch-prefix`);
       setBranchPrefix('', context);

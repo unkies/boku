@@ -22,31 +22,31 @@ import { composeGit } from './git/git';
 import { TGlobalArguments } from './global_arguments';
 import { CommandFailedError, CommandKilledError } from './git/runner';
 
-export async function graphite(
+export async function runWithRepo(
   args: yargs.Arguments & TGlobalArguments,
   handler: (context: TContext) => Promise<void>,
   skipAutoInit?: boolean
 ): Promise<void> {
-  return graphiteInternal(args, {
+  return runCommand(args, {
     repo: true as const,
     run: handler,
     skipAutoInit,
   });
 }
 
-export async function graphiteWithoutRepo(
+export async function runWithoutRepo(
   args: yargs.Arguments & TGlobalArguments,
   handler: (context: TContextLite) => Promise<void>
 ): Promise<void> {
-  return graphiteInternal(args, {
+  return runCommand(args, {
     repo: false as const,
     run: handler,
   });
 }
 
-async function graphiteInternal(
+async function runCommand(
   args: yargs.Arguments & TGlobalArguments,
-  handler: TGraphiteCommandHandler
+  handler: TCommandHandler
 ): Promise<void> {
   const handlerMaybeWithCacheLock = handler.repo
     ? {
@@ -73,9 +73,9 @@ async function graphiteInternal(
     }
 
     const context = initContext(contextLite, git, args);
-    await graphiteHelper(handlerMaybeWithCacheLock, context);
+    await runRepoCommand(handlerMaybeWithCacheLock, context);
   } catch (err) {
-    handleGraphiteError(err, contextLite);
+    handleCommandError(err, contextLite);
     contextLite.splog.debug(err.stack);
     // print errors when debugging tests
     if (process.env.DEBUG) {
@@ -85,8 +85,8 @@ async function graphiteInternal(
   }
 }
 
-async function graphiteHelper(
-  handler: TGraphiteCommandHandlerWithCacheLock,
+async function runRepoCommand(
+  handler: TRepoCommandHandlerWithCacheLock,
   context: TContext
 ): Promise<{
   cacheBefore: string;
@@ -95,7 +95,7 @@ async function graphiteHelper(
   const cacheBefore = context.engine.debug;
 
   try {
-    if (!handler.skipAutoInit && !context.repoConfig.graphiteInitialized()) {
+    if (!handler.skipAutoInit && !context.repoConfig.isInitialized()) {
       context.splog.info(
         `Charcoal has not been initialized, attempting to setup now...`
       );
@@ -128,7 +128,7 @@ async function graphiteHelper(
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function handleGraphiteError(err: any, context: TContextLite): void {
+function handleCommandError(err: any, context: TContextLite): void {
   switch (err.constructor) {
     case CommandKilledError:
     case KilledError: // the user doesn't need a message if they ended gt
@@ -149,7 +149,7 @@ function handleGraphiteError(err: any, context: TContextLite): void {
 }
 
 // typescript is fun!
-type TGraphiteCommandHandler =
+type TCommandHandler =
   | {
       repo: true;
       run: (context: TContext) => Promise<void>;
@@ -159,7 +159,7 @@ type TGraphiteCommandHandler =
       repo: false;
       run: (contextLite: TContextLite) => Promise<void>;
     };
-type TGraphiteCommandHandlerWithCacheLock = {
+type TRepoCommandHandlerWithCacheLock = {
   run: (context: TContext) => Promise<void>;
   cacheLock: TCacheLock;
   skipAutoInit?: boolean;

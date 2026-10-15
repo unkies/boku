@@ -1,6 +1,6 @@
 import * as yargs from 'yargs';
 import { untrackBranch } from '../actions/untrack_branch';
-import { graphite } from '../lib/runner';
+import { runWithRepo } from '../lib/runner';
 
 const args = {
   branch: {
@@ -26,7 +26,7 @@ export const description =
   'Stop tracking a branch with Charcoal. If the branch has children, they will also be untracked. Default to the current branch if none is passed in.';
 export const builder = args;
 export const handler = async (argv: argsT): Promise<void> =>
-  graphite(argv, async (context) =>
+  runWithRepo(argv, async (context) =>
     untrackBranch(
       {
         branchName: argv.branch ?? context.engine.currentBranchPrecondition,

@@ -8,7 +8,7 @@ function __fish_git_remote_branches
     command git for-each-ref --format="%(refname:strip=3)" refs/remotes/ 2>/dev/null
 end
 
-# graphite helpers
+# Charcoal helpers
 function __gt_command_completions
     set -lx SHELL (type -p fish)
     set -l command (commandline -opc)
