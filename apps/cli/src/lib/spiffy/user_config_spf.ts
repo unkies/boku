@@ -14,14 +14,6 @@ const schema = z.object({
   restackCommitterDateIsAuthorDate: z.boolean().optional(),
   submitIncludeCommitMessages: z.boolean().optional(),
   connectCliToLocalServer: z.boolean().optional(),
-  gtiConfigs: z
-    .array(
-      z.object({
-        key: z.string(),
-        value: z.string(),
-      })
-    )
-    .optional(),
   alternativeProfiles: z
     .array(
       z.object({
