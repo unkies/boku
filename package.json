@@ -24,7 +24,8 @@
     "ci": "bun run format:check && bun run lint && bun run check && bun run test:coverage && bun run build && bun run smoke",
     "cli": "bun src/index.ts",
     "compile": "rm -rf pkg && bun build --compile src/index.ts --outfile pkg/bk",
-    "install:local": "bun scripts/install_local.ts",
+    "dev:install": "bun scripts/devinstall.ts install",
+    "dev:uninstall": "bun scripts/devinstall.ts uninstall",
     "compile:all": "bun scripts/compile_all.ts",
     "prepack": "bun run build"
   },
