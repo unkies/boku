@@ -7,7 +7,6 @@ import * as commit from './commit';
 import * as continueCommand from './continue';
 import * as create from './create';
 import * as deleteCommand from './delete';
-import * as demo from './demo';
 import * as dev from './dev';
 import * as down from './down';
 import * as downstack from './downstack';
@@ -43,7 +42,6 @@ export const commands: CommandModule[] = [
   continueCommand,
   create,
   deleteCommand,
-  demo,
   dev,
   down,
   downstack,

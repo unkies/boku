@@ -15,7 +15,7 @@ function cliCommand(args: string[]): string[] {
   return command;
 }
 
-// This class should only be used by tests and `gt demo`
+// This class should only be used by tests and debug tooling.
 export class GitRepo {
   dir: string;
   userConfigPath: string;
