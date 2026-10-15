@@ -1,5 +1,5 @@
-import { BranchInfo } from '@danerwilliams/gti-cli-shared-types';
-import yargs from 'yargs';
+import { BranchInfo } from '@unkies/gti-cli-shared-types';
+import * as yargs from 'yargs';
 import { TContext } from '../../lib/context';
 import { UntrackedBranchError } from '../../lib/errors';
 import { getMergeBaseAsync } from '../../lib/git/merge_base';

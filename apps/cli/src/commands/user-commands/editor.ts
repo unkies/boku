@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import yargs from 'yargs';
+import * as yargs from 'yargs';
 import { graphiteWithoutRepo } from '../../lib/runner';
 
 const args = {
@@ -34,13 +34,15 @@ export const handler = async (argv: argsT): Promise<void> => {
         )})`
       );
     } else {
-      context.userConfig.data.editor
-        ? context.splog.info(chalk.cyan(context.userConfig.data.editor))
-        : context.splog.info(
-            `Editor is not set. Charcoal will use your git editor (currently ${chalk.cyan(
-              context.userConfig.getEditor()
-            )})`
-          );
+      if (context.userConfig.data.editor) {
+        context.splog.info(chalk.cyan(context.userConfig.data.editor));
+      } else {
+        context.splog.info(
+          `Editor is not set. Charcoal will use your git editor (currently ${chalk.cyan(
+            context.userConfig.getEditor()
+          )})`
+        );
+      }
     }
   });
 };

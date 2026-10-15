@@ -1,13 +1,12 @@
-import yargs from 'yargs';
+import * as yargs from 'yargs';
+import * as restack from './stack-commands/restack';
+import * as submit from './stack-commands/submit';
+
+const commands = [restack, submit] as unknown as yargs.CommandModule[];
 
 export const command = 'stack <command>';
 export const desc =
   'Commands that operate on your current stack of branches. Run `gt stack --help` to learn more.';
 export const builder = function (yargs: yargs.Argv): yargs.Argv {
-  return yargs
-    .commandDir('stack-commands', {
-      extensions: ['js'],
-    })
-    .strict()
-    .demandCommand();
+  return yargs.command(commands).strict().demandCommand();
 };

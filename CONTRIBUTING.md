@@ -4,84 +4,51 @@ Contributions are welcome! Please first open an issue so that we can discuss bef
 
 ## Getting Started
 
-[Install nvm](https://github.com/nvm-sh/nvm?tab=readme-ov-file#installing-and-updating) to ensure you're using the right node version. Once that is installed, from the repository directory run:
+Install [Bun](https://bun.sh) (version 1.4.3 or later), then from the repository directory install dependencies:
 
 ```
-nvm use
-```
-
-You'll need to install yarn on your machine
-
-```
-npm install --global yarn
-```
-
-You'll also need to install turbo
-
-```
-npm install --global turbo
-```
-
-Build the monorepo
-
-```
-yarn install
-turbo run build
+bun install
 ```
 
 Build the CLI
 
 ```
-cd apps/cli
-yarn install
-yarn build
+bun run build
 ```
 
 ## Running Tests
 
 ```
-cd apps/cli
-DEBUG=1 yarn test --full-trace
+DEBUG=1 bun run test
 ```
 
-Running a subset of tests
-
-```
-cd apps/cli
-DEBUG=1 yarn test --full-trace -g "test pattern"
-```
-
-Running one test
+Running one test file
 
 ```
 cd apps/cli
-DEBUG=1 yarn test-one "<path to .js test file in dist folder>"
+DEBUG=1 bun test "test/<path>.test.ts"
 ```
 
 ## Run CLI from Local Build
 
 ```
+bun run cli <command> # (to run `gt <command>`)
+```
+
+Or run the bundled build directly:
+
+```
 cd apps/cli
-yarn cli <command> # (to run `gt <command>`)
+bun run build
+bun dist/index.js <command>
 ```
 
-Linking `gt` to a locally built version (includes a build)
+## Compiling a Standalone Binary
 
 ```
 cd apps/cli
-yarn dev
-# then to run commands:
-gt <command>
-```
-
-## Generating the MacOS ARM Binary
-
-Due to limitations with Github actions, we need to manually generate the MacOS ARM binary for a release.
-
-From the cli app directory:
-
-```
-yarn build-pkg -t node18-macos -o gt-macos-arm64
+bun run compile            # writes pkg/gt for the current platform
+bun run compile:all        # writes pkg/gt-{linux,darwin}-{x64,arm64}
 ```
 
 ## Getting Hashes for the Homebrew Tap

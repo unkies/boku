@@ -341,7 +341,7 @@ function applyFixups(
             options: { input: hunk.patch },
             onError: 'throw',
           });
-        } catch (error) {
+        } catch {
           context.splog.warn(
             `Failed to apply hunk in ${hunk.file}, skipping...`
           );
@@ -388,8 +388,14 @@ function applyFixups(
 function autosquashRebase(commits: Commit[], _context: TContext): void {
   if (commits.length === 0) return;
 
-  // Get the parent of the first commit in our downstack
-  const baseCommit = `${commits[0].sha}^`;
+  // Rebase onto the parent of the first commit in our downstack; if that
+  // commit is the root commit, rebase from --root instead
+  const firstSha = commits[0].sha;
+  const hasParent =
+    runGitCommand({
+      args: ['rev-parse', '--verify', '--quiet', `${firstSha}^`],
+      onError: 'ignore',
+    }).length > 0;
 
   runGitCommand({
     args: [
@@ -397,7 +403,8 @@ function autosquashRebase(commits: Commit[], _context: TContext): void {
       '--interactive',
       '--autosquash',
       '--keep-empty',
-      baseCommit,
+      '--update-refs',
+      ...(hasParent ? [`${firstSha}^`] : ['--root']),
     ],
     options: {
       env: { ...process.env, GIT_SEQUENCE_EDITOR: 'true' },

@@ -1,4 +1,4 @@
-import yargs from 'yargs';
+import * as yargs from 'yargs';
 import { renameCurrentBranch } from '../actions/rename_branch';
 import { ExitFailedError } from '../lib/errors';
 import { graphite } from '../lib/runner';

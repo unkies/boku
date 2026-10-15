@@ -1,15 +1,15 @@
-import { expect } from 'chai';
+import { describe, it, expect } from 'bun:test';
 import fs from 'fs-extra';
 import { BasicScene } from '../lib/scenes/basic_scene';
 import { configureTest } from '../lib/utils/configure_test';
 
 for (const scene of [new BasicScene()]) {
   describe(`merge conflict callstack config test`, function () {
-    configureTest(this, scene);
+    configureTest(scene);
 
     it('Can silently clean up invalid config', () => {
       // should work fine.
-      expect(() => scene.repo.runCliCommand([`log`, `short`])).to.not.throw(
+      expect(() => scene.repo.runCliCommand([`log`, `short`])).not.toThrow(
         Error
       );
       // write an invalid config
@@ -18,7 +18,7 @@ for (const scene of [new BasicScene()]) {
         'abc'
       );
       // Should still not error
-      expect(() => scene.repo.runCliCommand([`log`, `short`])).to.not.throw(
+      expect(() => scene.repo.runCliCommand([`log`, `short`])).not.toThrow(
         Error
       );
     });

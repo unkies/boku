@@ -1,4 +1,4 @@
-import yargs from 'yargs';
+import * as yargs from 'yargs';
 import { graphiteWithoutRepo } from '../../lib/runner';
 
 const args = {
@@ -28,11 +28,11 @@ export const handler = async (argv: argsT): Promise<void> => {
       );
       context.splog.info(`default PR body will not include commit messages`);
     } else {
-      context.userConfig.data.submitIncludeCommitMessages
-        ? context.splog.info(`default PR body will include commit messages`)
-        : context.splog.info(
-            `default PR body will not include commit messages`
-          );
+      if (context.userConfig.data.submitIncludeCommitMessages) {
+        context.splog.info(`default PR body will include commit messages`);
+      } else {
+        context.splog.info(`default PR body will not include commit messages`);
+      }
     }
   });
 };

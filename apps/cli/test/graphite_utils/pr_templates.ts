@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { describe, it, expect } from 'bun:test';
 import fs from 'fs-extra';
 import path from 'path';
 import { BasicScene } from '../lib/scenes/basic_scene';
@@ -6,7 +6,7 @@ import { configureTest } from '../lib/utils/configure_test';
 
 for (const scene of [new BasicScene()]) {
   describe(`(${scene}): find all PR templates`, function () {
-    configureTest(this, scene);
+    configureTest(scene);
 
     it('Can find single PR templates', () => {
       testPRTemplates(
@@ -76,11 +76,11 @@ function testPRTemplates(
     'repo',
     'pr-templates',
   ]);
-  args.templatePaths.forEach(
-    (template) => expect(foundPRTemplates.includes(template)).to.be.true
+  args.templatePaths.forEach((template) =>
+    expect(foundPRTemplates.includes(template)).toBe(true)
   );
-  args.nonTemplatePaths?.forEach(
-    (nonTemplate) => expect(foundPRTemplates.includes(nonTemplate)).to.be.false
+  args.nonTemplatePaths?.forEach((nonTemplate) =>
+    expect(foundPRTemplates.includes(nonTemplate)).toBe(false)
   );
 }
 

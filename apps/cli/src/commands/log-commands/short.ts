@@ -1,4 +1,4 @@
-import yargs from 'yargs';
+import * as yargs from 'yargs';
 import { logAction } from '../../actions/log';
 import { logShortClassic } from '../../actions/log_short_classic';
 import { graphite } from '../../lib/runner';

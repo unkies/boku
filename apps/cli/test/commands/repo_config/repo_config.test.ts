@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { describe, it, expect } from 'bun:test';
 import fs from 'fs-extra';
 import path from 'path';
 import { getOwnerAndNameFromURL } from '../../../src/lib/spiffy/repo_config_spf';
@@ -7,19 +7,19 @@ import { configureTest } from '../../lib/utils/configure_test';
 
 for (const scene of [new BasicScene()]) {
   describe(`(${scene}): infer repo owner/name`, function () {
-    configureTest(this, scene);
+    configureTest(scene);
 
     it('Can infer cloned repos', () => {
       const match = getOwnerAndNameFromURL(
         'https://github.com/withgraphite/graphite-cli.git'
       );
       if (match === null) {
-        expect.fail('Match should not be null');
+        throw new Error('Match should not be null');
       }
       const { owner, name } = match;
 
-      expect(owner === 'withgraphite').to.be.true;
-      expect(name === 'graphite-cli').to.be.true;
+      expect(owner === 'withgraphite').toBe(true);
+      expect(name === 'graphite-cli').toBe(true);
     });
 
     it('Can infer SSH cloned repos', () => {
@@ -27,11 +27,11 @@ for (const scene of [new BasicScene()]) {
         'git@github.com:withgraphite/graphite-cli.git'
       );
       if (match === null) {
-        expect.fail('Match should not be null');
+        throw new Error('Match should not be null');
       }
       const { owner, name } = match;
-      expect(owner === 'withgraphite').to.be.true;
-      expect(name === 'graphite-cli').to.be.true;
+      expect(owner === 'withgraphite').toBe(true);
+      expect(name === 'graphite-cli').toBe(true);
     });
 
     it('Can infer SSH cloned repos (with git@ configured separately)', () => {
@@ -39,20 +39,20 @@ for (const scene of [new BasicScene()]) {
         'github.com/withgraphite/graphite-cli.git'
       );
       if (match === null) {
-        expect.fail('Match should not be null');
+        throw new Error('Match should not be null');
       }
       const { owner, name } = match;
-      expect(owner === 'withgraphite').to.be.true;
-      expect(name === 'graphite-cli').to.be.true;
+      expect(owner === 'withgraphite').toBe(true);
+      expect(name === 'graphite-cli').toBe(true);
     });
 
     it('Can read the existing repo config when executing from a subfolder in the project', () => {
-      expect(() => scene.repo.runCliCommand([`ls`])).to.not.throw(Error);
+      expect(() => scene.repo.runCliCommand([`ls`])).not.toThrow(Error);
       const subDir = path.join(scene.dir, 'tmpDir');
       fs.mkdirSync(subDir);
       expect(() =>
         scene.repo.runCliCommand([`ls`], { cwd: subDir })
-      ).to.not.throw(Error);
+      ).not.toThrow(Error);
     });
 
     // Not sure where these are coming from but we should be able to handle
@@ -62,19 +62,19 @@ for (const scene of [new BasicScene()]) {
         'https://github.com/withgraphite/graphite-cli'
       );
       if (clone === null) {
-        expect.fail('Match should not be null');
+        throw new Error('Match should not be null');
       }
-      expect(clone.owner === 'withgraphite').to.be.true;
-      expect(clone.name === 'graphite-cli').to.be.true;
+      expect(clone.owner === 'withgraphite').toBe(true);
+      expect(clone.name === 'graphite-cli').toBe(true);
 
       const sshClone = getOwnerAndNameFromURL(
         'git@github.com:withgraphite/graphite-cli'
       );
       if (sshClone === null) {
-        expect.fail('Match should not be null');
+        throw new Error('Match should not be null');
       }
-      expect(sshClone.owner === 'withgraphite').to.be.true;
-      expect(sshClone.name === 'graphite-cli').to.be.true;
+      expect(sshClone.owner === 'withgraphite').toBe(true);
+      expect(sshClone.name === 'graphite-cli').toBe(true);
     });
   });
 }

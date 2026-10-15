@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect } from 'bun:test';
 import { GitRepo } from '../../../src/lib/utils/git_repo';
 export function expectCommits(repo: GitRepo, commitMessages: string): void {
   expect(
@@ -6,5 +6,5 @@ export function expectCommits(repo: GitRepo, commitMessages: string): void {
       .listCurrentBranchCommitMessages()
       .slice(0, commitMessages.split(',').length)
       .join(', ')
-  ).to.equal(commitMessages);
+  ).toBe(commitMessages);
 }

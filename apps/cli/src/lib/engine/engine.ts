@@ -489,7 +489,6 @@ export function composeEngine({
       // We have to fix validation state for any recursive children
       const childrenToUntrack = cachedMeta.children.slice();
       while (childrenToUntrack.length) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const childBranchName = childrenToUntrack.pop()!;
         const childCachedMeta = cache.branches[childBranchName];
         assertCachedMetaIsNotTrunk(childCachedMeta);

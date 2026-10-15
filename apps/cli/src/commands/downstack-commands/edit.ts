@@ -1,4 +1,4 @@
-import yargs from 'yargs';
+import * as yargs from 'yargs';
 import { editDownstack } from '../../actions/edit/edit_downstack';
 import { graphite } from '../../lib/runner';
 

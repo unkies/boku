@@ -79,7 +79,7 @@ async function requestServerToSubmitPR({
       };
     }
 
-    throw Error(`Unknown error: ${error}`);
+    throw Error(`Unknown error: ${error}`, { cause: error });
   }
 }
 

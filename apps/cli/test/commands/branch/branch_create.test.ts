@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { describe, it, expect } from 'bun:test';
 import { allScenes } from '../../lib/scenes/all_scenes';
 import { configureTest } from '../../lib/utils/configure_test';
 import { expectCommits } from '../../lib/utils/expect_commits';
@@ -6,15 +6,15 @@ import { removeUnsupportedTrailingCharacters } from '../../../src/lib/utils/bran
 
 for (const scene of allScenes) {
   describe(`(${scene}): branch create`, function () {
-    configureTest(this, scene);
+    configureTest(scene);
 
     it('Can run branch create', () => {
       scene.repo.runCliCommand([`create`, `a`, `-m`, `a`]);
-      expect(scene.repo.currentBranchName()).to.equal('a');
+      expect(scene.repo.currentBranchName()).toBe('a');
       scene.repo.createChangeAndCommit('2', '2');
 
       scene.repo.runCliCommand(['down']);
-      expect(scene.repo.currentBranchName()).to.equal('main');
+      expect(scene.repo.currentBranchName()).toBe('main');
     });
 
     it('Can rollback changes on a failed commit hook', () => {
@@ -23,15 +23,16 @@ for (const scene of allScenes) {
       scene.repo.createChange('2');
       expect(() => {
         scene.repo.runCliCommand([`create`, `a`, `-m`, `a`]);
-      }).to.throw(Error);
-      expect(scene.repo.currentBranchName()).to.equal('main');
+      }).toThrow(Error);
+      expect(scene.repo.currentBranchName()).toBe('main');
     });
 
     it('Can create a branch without providing a name', () => {
       scene.repo.createChange('2');
       scene.repo.runCliCommand([`create`, `-m`, `feat(test): info.`]);
-      expect(scene.repo.currentBranchName().includes('feat_test_info')).to.be
-        .true;
+      expect(scene.repo.currentBranchName().includes('feat_test_info')).toBe(
+        true
+      );
       expectCommits(scene.repo, 'feat(test): info.');
     });
 
@@ -55,14 +56,8 @@ for (const scene of allScenes) {
       scene.repo.runCliCommand(['down']);
 
       scene.repo.createChange('c', 'c');
-      scene.repo.runCliCommand([
-        `create`,
-        `c`,
-        `-m`,
-        `c`,
-        `--insert`,
-      ]);
-      expect(() => scene.repo.runCliCommand(['up'])).not.to.throw();
+      scene.repo.runCliCommand([`create`, `c`, `-m`, `c`, `--insert`]);
+      expect(() => scene.repo.runCliCommand(['up'])).not.toThrow();
 
       expectCommits(scene.repo, 'b, c, a');
     });
@@ -94,7 +89,7 @@ describe('removeUnsupportedTrailingCharacters', () => {
   ].forEach((tc) => {
     it(tc.name, () => {
       const strippedInput = removeUnsupportedTrailingCharacters(tc.input);
-      expect(strippedInput).equals(tc.expected);
+      expect(strippedInput).toBe(tc.expected);
     });
   });
 });

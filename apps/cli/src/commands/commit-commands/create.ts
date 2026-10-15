@@ -1,4 +1,4 @@
-import yargs from 'yargs';
+import * as yargs from 'yargs';
 import { commitCreateAction } from '../../actions/commit_create';
 import { graphite } from '../../lib/runner';
 

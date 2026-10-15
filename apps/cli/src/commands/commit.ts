@@ -1,4 +1,8 @@
-import { Argv } from 'yargs';
+import { Argv, CommandModule } from 'yargs';
+import * as amend from './commit-commands/amend';
+import * as create from './commit-commands/create';
+
+const commands = [amend, create] as unknown as CommandModule[];
 
 export const command = 'commit <command>';
 export const desc =
@@ -6,10 +10,5 @@ export const desc =
 
 export const aliases = ['c'];
 export const builder = function (yargs: Argv): Argv {
-  return yargs
-    .commandDir('commit-commands', {
-      extensions: ['js'],
-    })
-    .strict()
-    .demandCommand();
+  return yargs.command(commands).strict().demandCommand();
 };

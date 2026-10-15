@@ -144,15 +144,15 @@ async function getPRAction(
         ? 'NOOP'
         : 'CREATE'
       : parentBranchName !== prInfo?.base
-      ? 'RESTACK'
-      : !context.engine.branchMatchesRemote(args.branchName) ||
-        args.editPRFieldsInline
-      ? 'CHANGE'
-      : args.draft === true && prInfo.isDraft !== true
-      ? 'DRAFT'
-      : args.publish === true && prInfo.isDraft !== false
-      ? 'PUBLISH'
-      : 'NOOP';
+        ? 'RESTACK'
+        : !context.engine.branchMatchesRemote(args.branchName) ||
+            args.editPRFieldsInline
+          ? 'CHANGE'
+          : args.draft === true && prInfo.isDraft !== true
+            ? 'DRAFT'
+            : args.publish === true && prInfo.isDraft !== false
+              ? 'PUBLISH'
+              : 'NOOP';
 
   context.splog.info(
     {
@@ -235,8 +235,8 @@ async function getPRCreationInfo(
   const createAsDraft = args.publish
     ? false
     : args.draft || !context.interactive
-    ? true
-    : await getPRDraftStatus(context);
+      ? true
+      : await getPRDraftStatus(context);
 
   return {
     title: submitInfo.title,

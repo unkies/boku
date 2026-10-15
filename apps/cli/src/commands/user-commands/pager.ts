@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import yargs from 'yargs';
+import * as yargs from 'yargs';
 import { graphiteWithoutRepo } from '../../lib/runner';
 
 const args = {
@@ -44,15 +44,17 @@ export const handler = async (argv: argsT): Promise<void> => {
       );
     } else {
       const currentPager = context.userConfig.getPager();
-      !currentPager
-        ? context.splog.info(`Pager is disabled`)
-        : context.userConfig.data.pager
-        ? context.splog.info(chalk.cyan(context.userConfig.data.pager))
-        : context.splog.info(
-            `Pager is not set. Charcoal will use your git pager (currently ${chalk.cyan(
-              currentPager
-            )})`
-          );
+      if (!currentPager) {
+        context.splog.info(`Pager is disabled`);
+      } else if (context.userConfig.data.pager) {
+        context.splog.info(chalk.cyan(context.userConfig.data.pager));
+      } else {
+        context.splog.info(
+          `Pager is not set. Charcoal will use your git pager (currently ${chalk.cyan(
+            currentPager
+          )})`
+        );
+      }
     }
   });
 };

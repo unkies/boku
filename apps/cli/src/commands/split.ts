@@ -1,4 +1,4 @@
-import yargs from 'yargs';
+import * as yargs from 'yargs';
 import { splitCurrentBranch } from '../actions/split';
 import { graphite } from '../lib/runner';
 
@@ -32,8 +32,8 @@ export const handler = async (argv: argsT): Promise<void> =>
         style: argv['by-hunk']
           ? 'hunk'
           : argv['by-commit']
-          ? 'commit'
-          : undefined,
+            ? 'commit'
+            : undefined,
       },
       context
     )

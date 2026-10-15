@@ -1,4 +1,4 @@
-import yargs from 'yargs';
+import * as yargs from 'yargs';
 import { switchBranchAction } from '../actions/branch_traversal';
 import { graphite } from '../lib/runner';
 

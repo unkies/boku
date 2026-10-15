@@ -45,7 +45,7 @@ export function findTargetCommit(hunk: Hunk, commits: Commit[]): Commit | null {
     }
 
     return null;
-  } catch (error) {
+  } catch {
     // If blame fails (e.g., file doesn't exist at HEAD), skip this hunk
     return null;
   }

@@ -1,21 +1,13 @@
 .DS_STORE
 xcuserdata/
 **/node_modules
-.yarn/*
-.turbo/*
-turbo-build.log
-!.yarn/releases
-!.yarn/plugins
-!.yarn/sdks
-!.yarn/versions
-.pnp.*
 dist/
+coverage/
+pkg/
 .eslintcache
 .graphite_repo_config
 .idea/*
-.nyc_output/
-coverage/
-pkg/
+bun.lockb
 
-# we use yarn, not npm
+# we use bun, not npm
 package-lock.json

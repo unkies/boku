@@ -1,11 +1,14 @@
 import fs from 'fs-extra';
-import tmp from 'tmp';
+import {
+  createTempDirectory,
+  TempDirectory,
+} from '../../../src/lib/utils/temp';
 import { cuteString } from '../../../src/lib/utils/cute_string';
 import { GitRepo } from '../../../src/lib/utils/git_repo';
 import { AbstractScene } from './abstract_scene';
 
 export class CloneScene extends AbstractScene {
-  originTmpDir!: tmp.DirResult;
+  originTmpDir!: TempDirectory;
   originDir!: string;
   originRepo!: GitRepo;
 
@@ -22,7 +25,7 @@ export class CloneScene extends AbstractScene {
       this.tmpDir,
     ];
 
-    this.dir = tmp.dirSync().name;
+    this.dir = createTempDirectory().name;
     this.repo = new GitRepo(this.dir, { repoUrl: this.originDir });
     fs.writeFileSync(
       `${this.dir}/.git/.graphite_repo_config`,

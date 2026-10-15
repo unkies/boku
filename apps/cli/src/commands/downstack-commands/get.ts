@@ -1,4 +1,4 @@
-import yargs from 'yargs';
+import * as yargs from 'yargs';
 import { getAction } from '../../actions/sync/get';
 import { graphite } from '../../lib/runner';
 

@@ -1,4 +1,4 @@
-import yargs from 'yargs';
+import * as yargs from 'yargs';
 import { restackBranches } from '../../actions/restack';
 import { SCOPE } from '../../lib/engine/scope_spec';
 import { graphite } from '../../lib/runner';

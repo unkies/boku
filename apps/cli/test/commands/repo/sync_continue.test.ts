@@ -1,13 +1,12 @@
-import { expect } from 'chai';
+import { describe, it, expect, beforeEach } from 'bun:test';
 import { allScenes } from '../../lib/scenes/all_scenes';
 import { configureTest } from '../../lib/utils/configure_test';
 import { expectBranches } from '../../lib/utils/expect_branches';
 import { fakeGitSquashAndMerge } from '../../lib/utils/fake_squash_and_merge';
 
 for (const scene of allScenes) {
-  // eslint-disable-next-line max-lines-per-function
   describe(`(${scene}): repo sync continue`, function () {
-    configureTest(this, scene);
+    configureTest(scene);
 
     beforeEach(() => {
       // Set up repo owner and name for GitHub operations
@@ -62,8 +61,8 @@ for (const scene of allScenes) {
           `--no-pull`,
           `--restack`,
         ])
-      ).to.throw();
-      expect(scene.repo.rebaseInProgress()).to.be.true;
+      ).toThrow();
+      expect(scene.repo.rebaseInProgress()).toBe(true);
 
       scene.repo.resolveMergeConflicts();
       scene.repo.markMergeConflictsAsResolved();
@@ -110,14 +109,14 @@ for (const scene of allScenes) {
           `--no-pull`,
           `--restack`,
         ])
-      ).to.throw();
-      expect(scene.repo.rebaseInProgress()).to.be.true;
+      ).toThrow();
+      expect(scene.repo.rebaseInProgress()).toBe(true);
 
       scene.repo.resolveMergeConflicts();
       scene.repo.markMergeConflictsAsResolved();
 
-      expect(() => scene.repo.runCliCommand(['continue'])).to.throw();
-      expect(scene.repo.rebaseInProgress()).to.be.true;
+      expect(() => scene.repo.runCliCommand(['continue'])).toThrow();
+      expect(scene.repo.rebaseInProgress()).toBe(true);
 
       scene.repo.resolveMergeConflicts();
       scene.repo.markMergeConflictsAsResolved();

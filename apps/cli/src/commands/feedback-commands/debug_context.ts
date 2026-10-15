@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import fs from 'fs-extra';
-import yargs from 'yargs';
+import * as yargs from 'yargs';
 import { captureState, recreateState } from '../../lib/debug_context';
 import { graphite } from '../../lib/runner';
 

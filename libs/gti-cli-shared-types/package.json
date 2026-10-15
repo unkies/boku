@@ -1,19 +1,20 @@
 {
-  "name": "@danerwilliams/gti-cli-shared-types",
-  "main": "dist/src/index.js",
-  "types": "dist/src/index.d.ts",
+  "name": "@unkies/gti-cli-shared-types",
   "version": "0.3.2",
-  "devDependencies": {
-    "typescript": "^4.6.4"
+  "license": "AGPL-3.0-or-later",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
   },
-  "scripts": {
-    "eslint": "eslint . --ext .ts --ext .tsx",
-    "build": "rm -rf dist/ && tsc"
-  },
+  "types": "./src/index.ts",
   "files": [
-    "dist"
+    "src"
   ],
   "publishConfig": {
     "access": "public"
+  },
+  "scripts": {
+    "check": "bun check --project tsconfig.json",
+    "build": "bun check --project tsconfig.json"
   }
 }

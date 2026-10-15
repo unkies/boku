@@ -1,4 +1,4 @@
-import yargs from 'yargs';
+import * as yargs from 'yargs';
 import { deleteBranchAction } from '../actions/delete_branch';
 import { graphite } from '../lib/runner';
 

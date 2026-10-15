@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import yargs from 'yargs';
+import * as yargs from 'yargs';
 import { currentBranchOnto } from '../../actions/current_branch_onto';
 import { interactiveBranchSelection } from '../../actions/log';
 import { graphite } from '../../lib/runner';
@@ -32,7 +32,9 @@ export const handler = async (argv: argsT): Promise<void> => {
     const originalBranch = argv.source
       ? context.engine.currentBranch
       : undefined;
-    argv.source && context.engine.checkoutBranch(argv.source);
+    if (argv.source) {
+      context.engine.checkoutBranch(argv.source);
+    }
 
     const dest =
       argv.branch ??
@@ -48,6 +50,8 @@ export const handler = async (argv: argsT): Promise<void> => {
 
     currentBranchOnto(dest, context);
 
-    originalBranch && context.engine.checkoutBranch(originalBranch);
+    if (originalBranch) {
+      context.engine.checkoutBranch(originalBranch);
+    }
   });
 };

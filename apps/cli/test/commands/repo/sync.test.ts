@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { describe, it, expect, beforeEach } from 'bun:test';
 import fs from 'fs-extra';
 import {
   readMetadataRef,
@@ -13,7 +13,7 @@ import { fakeGitSquashAndMerge } from '../../lib/utils/fake_squash_and_merge';
 for (const scene of allScenes) {
   // eslint-disable-next-line max-lines-per-function
   describe(`(${scene}): repo sync`, function () {
-    configureTest(this, scene);
+    configureTest(scene);
 
     beforeEach(() => {
       // Set up repo owner and name for GitHub operations
@@ -72,7 +72,7 @@ for (const scene of allScenes) {
     it('Can noop sync if there are no stacks', () => {
       expect(() =>
         scene.repo.runCliCommand([`repo`, `sync`, `-f`, `--no-pull`])
-      ).to.not.throw(Error);
+      ).not.toThrow(Error);
     });
 
     it('Can delete the foundation of a double stack and restack it', async () => {
@@ -144,9 +144,9 @@ for (const scene of allScenes) {
         `${scene.repo.dir}/.git/refs/branch-metadata`
       );
 
-      expect(metadata.includes('a')).to.be.false;
-      expect(metadata.includes('b')).to.be.false;
-      expect(metadata.includes('c')).to.be.true;
+      expect(metadata.includes('a')).toBe(false);
+      expect(metadata.includes('b')).toBe(false);
+      expect(metadata.includes('c')).toBe(true);
     });
   });
 }

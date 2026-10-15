@@ -1,5 +1,5 @@
 import fs from 'fs-extra';
-import tmp from 'tmp';
+import { createTempDirectory, createTempFile } from '../../lib/utils/temp';
 import { TContext } from '../../lib/context';
 import { getPRTemplate } from '../../lib/utils/pr_templates';
 
@@ -88,8 +88,8 @@ export async function editPRBody(
   //
   //   autocmd BufNewFile,BufRead GRAPHITE_PR_DESCRIPTION.md set ft=gitcommit
   //
-  const dir = tmp.dirSync();
-  const file = tmp.fileSync({
+  const dir = createTempDirectory();
+  const file = createTempFile({
     dir: dir.name,
     name: 'GRAPHITE_PR_DESCRIPTION.md',
   });

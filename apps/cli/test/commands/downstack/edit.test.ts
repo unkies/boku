@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { describe, it, expect } from 'bun:test';
 import fs from 'fs-extra';
 import path from 'path';
 import { performInTmpDir } from '../../../src/lib/utils/perform_in_tmp_dir';
@@ -18,7 +18,7 @@ function createStackEditsInput(opts: {
 
 for (const scene of [new BasicScene()]) {
   describe(`(${scene}): downstack edit`, function () {
-    configureTest(this, scene);
+    configureTest(scene);
 
     it('Can make a no-op downstack edit without conflict or error', () => {
       scene.repo.createChange('2', 'a');
@@ -33,8 +33,8 @@ for (const scene of [new BasicScene()]) {
         });
         expect(() =>
           scene.repo.runCliCommand([`downstack`, `edit`, `--input`, inputPath])
-        ).to.not.throw(Error);
-        expect(scene.repo.rebaseInProgress()).to.be.false;
+        ).not.toThrow(Error);
+        expect(scene.repo.rebaseInProgress()).toBe(false);
       });
     });
 
@@ -51,14 +51,14 @@ for (const scene of [new BasicScene()]) {
         });
         expect(() =>
           scene.repo.runCliCommand([`downstack`, `edit`, `--input`, inputPath])
-        ).to.throw(Error);
-        expect(scene.repo.rebaseInProgress()).to.be.true;
+        ).toThrow(Error);
+        expect(scene.repo.rebaseInProgress()).toBe(true);
 
         scene.repo.resolveMergeConflicts();
         scene.repo.markMergeConflictsAsResolved();
 
-        expect(() => scene.repo.runCliCommand(['continue'])).to.throw();
-        expect(scene.repo.rebaseInProgress()).to.eq(true);
+        expect(() => scene.repo.runCliCommand(['continue'])).toThrow();
+        expect(scene.repo.rebaseInProgress()).toBe(true);
 
         scene.repo.resolveMergeConflicts();
         scene.repo.markMergeConflictsAsResolved();

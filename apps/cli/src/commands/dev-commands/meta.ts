@@ -1,7 +1,7 @@
 import fs from 'fs-extra';
 import path from 'path';
-import tmp from 'tmp';
-import yargs from 'yargs';
+import { createTempDirectory } from '../../lib/utils/temp';
+import * as yargs from 'yargs';
 import {
   readMetadataRef,
   writeMetadataRef,
@@ -36,7 +36,7 @@ export const handler = async (argv: argsT): Promise<void> => {
       context.splog.info(metaString);
       return;
     }
-    const tmpfilePath = path.join(tmp.dirSync().name, 'meta');
+    const tmpfilePath = path.join(createTempDirectory().name, 'meta');
     fs.writeFileSync(tmpfilePath, metaString);
     context.userConfig.execEditor(tmpfilePath);
     writeMetadataRef(argv.branch, fs.readJSONSync(tmpfilePath));

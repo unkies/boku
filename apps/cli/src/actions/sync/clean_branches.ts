@@ -10,7 +10,7 @@ import { deleteBranchAction, isSafeToDelete } from '../delete_branch';
  * It returns a list of branches whose parents have changed so that we know
  * which branches to restack.
  */
-// eslint-disable-next-line max-lines-per-function
+
 export async function cleanBranches(
   opts: {
     showDeleteProgress: boolean;
@@ -51,7 +51,6 @@ export async function cleanBranches(
     : {};
 
   while (branchesToProcess.length > 0) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const branchName = branchesToProcess.pop()!;
 
     if (branchName in branchesToDelete) {
@@ -133,7 +132,6 @@ function greedilyDeleteUnblockedBranches(
   context.splog.debug(`Unblocked branches: ${unblockedBranches}`);
 
   while (unblockedBranches.length > 0) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const branchName = unblockedBranches.pop()!;
     const parentBranchName = context.engine.getParentPrecondition(branchName);
 

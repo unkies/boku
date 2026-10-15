@@ -1,4 +1,4 @@
-import yargs from 'yargs';
+import * as yargs from 'yargs';
 import { foldCurrentBranch } from '../actions/fold_branch';
 import { graphite } from '../lib/runner';
 

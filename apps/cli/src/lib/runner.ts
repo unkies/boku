@@ -1,7 +1,6 @@
-import yargs from 'yargs';
+import * as yargs from 'yargs';
 import chalk from 'chalk';
 import { init } from '../actions/init';
-import { refreshPRInfoInBackground } from '../background_tasks/fetch_pr_info';
 import {
   initContext,
   initContextLite,
@@ -96,8 +95,6 @@ async function graphiteHelper(
   const cacheBefore = context.engine.debug;
 
   try {
-    refreshPRInfoInBackground(context);
-
     if (!handler.skipAutoInit && !context.repoConfig.graphiteInitialized()) {
       context.splog.info(
         `Charcoal has not been initialized, attempting to setup now...`
@@ -120,7 +117,7 @@ async function graphiteHelper(
   } finally {
     try {
       context.engine.persist();
-    } catch (persistError) {
+    } catch {
       context.engine.clear();
       context.splog.debug(`Failed to persist Charcoal cache`);
     }

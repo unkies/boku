@@ -1,4 +1,4 @@
-import yargs from 'yargs';
+import * as yargs from 'yargs';
 import { graphite } from '../../lib/runner';
 import { getPRTemplateFilepaths } from '../../lib/utils/pr_templates';
 import fs from 'fs';

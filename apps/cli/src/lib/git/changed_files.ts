@@ -7,12 +7,7 @@ export type TChangedFile = {
 export type TStatusFile = {
   path: string;
   status:
-    | 'added'
-    | 'deleted'
-    | 'copied'
-    | 'renamed'
-    | 'modified'
-    | 'unresolved';
+    'added' | 'deleted' | 'copied' | 'renamed' | 'modified' | 'unresolved';
   staged: 'full' | 'partial' | 'none';
   from: string | undefined;
 };

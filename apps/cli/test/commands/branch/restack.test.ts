@@ -1,12 +1,11 @@
-import { expect } from 'chai';
+import { describe, it, expect } from 'bun:test';
 import { allScenes } from '../../lib/scenes/all_scenes';
 import { configureTest } from '../../lib/utils/configure_test';
 import { expectCommits } from '../../lib/utils/expect_commits';
 
 for (const scene of allScenes) {
-  // eslint-disable-next-line max-lines-per-function
   describe(`(${scene}): branch restack`, function () {
-    configureTest(this, scene);
+    configureTest(scene);
 
     it('Can restack one branch', () => {
       scene.repo.createChange('a', 'a');
@@ -21,7 +20,7 @@ for (const scene of allScenes) {
       scene.repo.checkoutBranch('b');
       scene.repo.runCliCommand([`restack`]);
 
-      expect(scene.repo.currentBranchName()).to.eq('b');
+      expect(scene.repo.currentBranchName()).toBe('b');
       expectCommits(scene.repo, 'b, 1.5, a, 1');
     });
   });

@@ -1,4 +1,4 @@
-import yargs from 'yargs';
+import * as yargs from 'yargs';
 import { checkoutBranch } from '../actions/checkout_branch';
 import { graphite } from '../lib/runner';
 

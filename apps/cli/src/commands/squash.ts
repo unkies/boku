@@ -1,4 +1,4 @@
-import yargs from 'yargs';
+import * as yargs from 'yargs';
 import { squashCurrentBranch } from '../actions/squash';
 import { graphite } from '../lib/runner';
 

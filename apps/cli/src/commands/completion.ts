@@ -1,19 +1,21 @@
-import yargs, { Arguments } from 'yargs';
+import { Arguments, Argv } from 'yargs';
 import { composeGit } from '../lib/git/git';
 
-yargs.completion(
-  'completion',
-  'Set up bash or zsh tab completion.',
-  //@ts-expect-error types/yargs is out of date with yargs
-  // eslint-disable-next-line max-params
-  (current, argv, defaultCompletion, done) => {
-    return shouldCompleteBranch(current, argv)
-      ? // we don't want to load a full context here, so we'll just use the git call directly
-        // once we persist the meta cache to disk, we can consider using a context here
-        done(Object.keys(composeGit().getBranchNamesAndRevisions()))
-      : defaultCompletion();
-  }
-);
+export function registerCompletion(yargs: Argv): Argv {
+  return yargs.completion(
+    'completion',
+    'Set up bash or zsh tab completion.',
+    //@ts-expect-error types/yargs is out of date with yargs
+    // eslint-disable-next-line max-params
+    (current, argv, defaultCompletion, done) => {
+      return shouldCompleteBranch(current, argv)
+        ? // we don't want to load a full context here, so we'll just use the git call directly
+          // once we persist the meta cache to disk, we can consider using a context here
+          done(Object.keys(composeGit().getBranchNamesAndRevisions()))
+        : defaultCompletion();
+    }
+  );
+}
 
 function shouldCompleteBranch(current: string, argv: Arguments): boolean {
   // this handles both with and without --branch because it's the only string arg

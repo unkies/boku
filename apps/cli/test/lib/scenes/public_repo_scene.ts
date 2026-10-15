@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
 import fs from 'fs-extra';
-import tmp from 'tmp';
+import { createTempDirectory } from '../../../src/lib/utils/temp';
 import { cuteString } from '../../../src/lib/utils/cute_string';
 import { GitRepo } from '../../../src/lib/utils/git_repo';
 import { AbstractScene } from './abstract_scene';
@@ -21,7 +21,7 @@ export class PublicRepoScene extends AbstractScene {
     return this.name;
   }
   public setup(): void {
-    this.tmpDir = tmp.dirSync();
+    this.tmpDir = createTempDirectory();
     this.dir = this.tmpDir.name;
     this.repo = new GitRepo(this.dir, { repoUrl: this.repoUrl });
     execSync(`git -C ${this.dir} fetch --all`);

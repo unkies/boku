@@ -1,7 +1,6 @@
-import fs from 'fs-extra';
-import yargs from 'yargs';
+import * as yargs from 'yargs';
 
-import path from 'path';
+import fishCompletion from '../lib/gt.fish' with { type: 'text' };
 import { graphiteWithoutRepo } from '../lib/runner';
 const args = {} as const;
 
@@ -13,9 +12,5 @@ export const description = 'Set up fish tab completion.';
 export const builder = args;
 export const handler = async (argv: argsT): Promise<void> =>
   graphiteWithoutRepo(argv, async (context) => {
-    context.splog.page(
-      fs.readFileSync(path.join(__dirname, '..', 'lib', 'gt.fish'), {
-        encoding: 'utf-8',
-      })
-    );
+    context.splog.page(fishCompletion);
   });

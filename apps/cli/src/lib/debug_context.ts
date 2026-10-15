@@ -1,6 +1,6 @@
 import fs from 'fs-extra';
 import path from 'path';
-import tmp from 'tmp';
+import { createTempDirectory } from './utils/temp';
 import { TContext } from './context';
 import {
   getMetadataRefList,
@@ -54,7 +54,9 @@ export function recreateState(stateJson: string, splog: TSplog): string {
 
   splog.info(`Creating repo`);
   const tmpTrunk = `initial-debug-context-head-${Date.now()}`;
-  const tmpDir = tmp.dirSync().name;
+  // the recreated repo is printed for the user to inspect, so it must not be
+  // removed when the process exits
+  const tmpDir = createTempDirectory({ cleanupOnExit: false }).name;
 
   const oldDir = process.cwd();
   process.chdir(tmpDir);
@@ -166,7 +168,6 @@ function recreateCommits(
   const totalOldCommits = Object.keys(opts.commitTree).length;
 
   while (commitsToCreate.length > 0) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const originalCommitRef: string = commitsToCreate.shift()!;
 
     if (originalCommitRef in opts.refMappingsOldToNew) {

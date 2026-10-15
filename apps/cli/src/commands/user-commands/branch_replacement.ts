@@ -1,4 +1,4 @@
-import yargs from 'yargs';
+import * as yargs from 'yargs';
 import { graphiteWithoutRepo } from '../../lib/runner';
 import { getBranchReplacement } from '../../lib/utils/branch_name';
 

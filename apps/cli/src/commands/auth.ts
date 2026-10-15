@@ -1,4 +1,4 @@
-import yargs from 'yargs';
+import * as yargs from 'yargs';
 import { graphiteWithoutRepo } from '../lib/runner';
 import { execFileSync } from 'child_process';
 
@@ -62,7 +62,7 @@ const getGhVersion = (): string | null => {
     const output = execFileSync('gh', ['--version']).toString();
     const match = output.match(/gh version (\d+\.\d+\.\d+)/);
     return match ? match[1] : null;
-  } catch (error) {
+  } catch {
     return null;
   }
 };

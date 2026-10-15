@@ -6,7 +6,11 @@
 
 ## Install
 
-`brew install danerwilliams/tap/charcoal`
+`brew install unkies/tap/charcoal`
+
+Or with Bun:
+
+`bun install --global @unkies/charcoal`
 
 ## Announcement
 

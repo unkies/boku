@@ -1,5 +1,8 @@
-import { expect } from 'chai';
-import tmp from 'tmp';
+import { describe, it, expect, beforeEach, afterEach } from 'bun:test';
+import {
+  createTempDirectory,
+  TempDirectory,
+} from '../../../src/lib/utils/temp';
 import * as fs from 'fs-extra';
 import {
   TProfile,
@@ -10,11 +13,11 @@ import {
 describe('userConfigFactory', () => {
   let originalEnv: { [key: string]: string | undefined };
   let configPath: string;
-  let tmpDir: tmp.DirResult;
+  let tmpDir: TempDirectory;
 
   beforeEach(() => {
     originalEnv = { ...process.env };
-    tmpDir = tmp.dirSync();
+    tmpDir = createTempDirectory();
     configPath = `${tmpDir.name}/config.json`;
   });
 
@@ -73,8 +76,8 @@ describe('userConfigFactory', () => {
       Object.assign(process.env, { ...originalEnv, ...data.envVars });
       fs.writeFileSync(configPath, JSON.stringify(data.profile));
       const userConfig = userConfigFactory.load(configPath);
-      expect(userConfig.getApiServerUrl()).to.equal(data.results.apiServer);
-      expect(userConfig.getAppServerUrl()).to.equal(data.results.appServer);
+      expect(userConfig.getApiServerUrl()).toBe(data.results.apiServer);
+      expect(userConfig.getAppServerUrl()).toBe(data.results.appServer);
     });
   });
 });

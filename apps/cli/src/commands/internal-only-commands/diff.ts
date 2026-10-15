@@ -1,4 +1,4 @@
-import yargs from 'yargs';
+import * as yargs from 'yargs';
 import { PreconditionsFailedError } from '../../lib/errors';
 import { graphite } from '../../lib/runner';
 

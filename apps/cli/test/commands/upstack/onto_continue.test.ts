@@ -1,11 +1,11 @@
-import { expect } from 'chai';
+import { describe, it, expect } from 'bun:test';
 import { allScenes } from '../../lib/scenes/all_scenes';
 import { configureTest } from '../../lib/utils/configure_test';
 import { expectCommits } from '../../lib/utils/expect_commits';
 
 for (const scene of allScenes) {
   describe(`(${scene}): continue move`, function () {
-    configureTest(this, scene);
+    configureTest(scene);
 
     it('Can continue a move with single merge conflict', () => {
       scene.repo.createChange('a');
@@ -16,10 +16,8 @@ for (const scene of allScenes) {
       scene.repo.createChange('b');
       scene.repo.runCliCommand([`create`, `b`, `-m`, `b`]);
 
-      expect(() =>
-        scene.repo.runCliCommand(['move', 'a'])
-      ).to.throw();
-      expect(scene.repo.rebaseInProgress()).to.be.true;
+      expect(() => scene.repo.runCliCommand(['move', 'a'])).toThrow();
+      expect(scene.repo.rebaseInProgress()).toBe(true);
 
       scene.repo.resolveMergeConflicts();
       scene.repo.markMergeConflictsAsResolved();
@@ -28,9 +26,9 @@ for (const scene of allScenes) {
       // Continue should finish the work that move started, not only
       // completing the rebase but also re-checking out the original
       // branch.
-      expect(scene.repo.currentBranchName()).to.equal('b');
+      expect(scene.repo.currentBranchName()).toBe('b');
       expectCommits(scene.repo, 'b, a');
-      expect(scene.repo.rebaseInProgress()).to.be.false;
+      expect(scene.repo.rebaseInProgress()).toBe(false);
       output.includes('Successfully moved');
     });
 
@@ -49,16 +47,14 @@ for (const scene of allScenes) {
 
       scene.repo.checkoutBranch('b');
 
-      expect(() =>
-        scene.repo.runCliCommand(['move', 'a'])
-      ).to.throw();
-      expect(scene.repo.rebaseInProgress()).to.be.true;
+      expect(() => scene.repo.runCliCommand(['move', 'a'])).toThrow();
+      expect(scene.repo.rebaseInProgress()).toBe(true);
 
       scene.repo.resolveMergeConflicts();
       scene.repo.markMergeConflictsAsResolved();
 
-      expect(() => scene.repo.runCliCommand(['continue'])).to.throw();
-      expect(scene.repo.rebaseInProgress()).to.be.true;
+      expect(() => scene.repo.runCliCommand(['continue'])).toThrow();
+      expect(scene.repo.rebaseInProgress()).toBe(true);
 
       scene.repo.resolveMergeConflicts();
       scene.repo.markMergeConflictsAsResolved();
@@ -67,9 +63,9 @@ for (const scene of allScenes) {
       // Continue should finish the work that move started, not only
       // completing the rebase but also re-checking out the original
       // branch.
-      expect(scene.repo.currentBranchName()).to.equal('b');
+      expect(scene.repo.currentBranchName()).toBe('b');
       expectCommits(scene.repo, 'b, a');
-      expect(scene.repo.rebaseInProgress()).to.be.false;
+      expect(scene.repo.rebaseInProgress()).toBe(false);
 
       // Ensure that the move worked too (verify integrity of entire stack).
       scene.repo.checkoutBranch('c');

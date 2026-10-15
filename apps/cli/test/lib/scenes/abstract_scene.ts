@@ -1,5 +1,8 @@
 import fs from 'fs-extra';
-import tmp from 'tmp';
+import {
+  createTempDirectory,
+  TempDirectory,
+} from '../../../src/lib/utils/temp';
 import {
   initContext,
   initContextLite,
@@ -10,13 +13,13 @@ import { cuteString } from '../../../src/lib/utils/cute_string';
 import { GitRepo } from '../../../src/lib/utils/git_repo';
 
 export abstract class AbstractScene {
-  tmpDir: tmp.DirResult;
+  tmpDir: TempDirectory;
   repo: GitRepo;
   dir: string;
   oldDir: string;
 
   constructor() {
-    this.tmpDir = tmp.dirSync();
+    this.tmpDir = createTempDirectory();
     this.dir = this.tmpDir.name;
     this.repo = new GitRepo(this.dir);
     this.oldDir = process.cwd();
@@ -25,7 +28,7 @@ export abstract class AbstractScene {
   abstract toString(): string;
 
   public setup(): void {
-    this.tmpDir = tmp.dirSync();
+    this.tmpDir = createTempDirectory();
     this.dir = this.tmpDir.name;
     this.repo = new GitRepo(this.dir);
     fs.writeFileSync(

@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { describe, it, expect } from 'bun:test';
 import fs from 'fs-extra';
 import { GitRepo } from '../../../src/lib/utils/git_repo';
 import { TrailingProdScene } from '../../lib/scenes/trailing_prod_scene';
@@ -6,12 +6,12 @@ import { configureTest } from '../../lib/utils/configure_test';
 
 for (const scene of [new TrailingProdScene()]) {
   describe(`(${scene}): feedback debug-context`, function () {
-    configureTest(this, scene);
+    configureTest(scene);
 
     it('Can create debug-context', () => {
       expect(() =>
         scene.repo.runCliCommand([`feedback`, `debug-context`])
-      ).to.not.throw(Error);
+      ).not.toThrow(Error);
     });
 
     it('Can recreate a tmp repo based on debug context', () => {
@@ -41,10 +41,10 @@ for (const scene of [new TrailingProdScene()]) {
 
       const newRepo = new GitRepo(tmpDir);
       newRepo.checkoutBranch('b');
-      expect(newRepo.currentBranchName()).to.eq('b');
+      expect(newRepo.currentBranchName()).toBe('b');
 
       newRepo.runCliCommand([`down`]);
-      expect(newRepo.currentBranchName()).to.eq('a');
+      expect(newRepo.currentBranchName()).toBe('a');
 
       fs.emptyDirSync(tmpDir);
       fs.removeSync(tmpDir);

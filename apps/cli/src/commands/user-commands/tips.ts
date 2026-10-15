@@ -1,4 +1,4 @@
-import yargs from 'yargs';
+import * as yargs from 'yargs';
 import { graphiteWithoutRepo } from '../../lib/runner';
 
 const args = {
@@ -30,9 +30,11 @@ export const handler = async (argv: argsT): Promise<void> => {
       context.userConfig.update((data) => (data.tips = false));
       context.splog.info(`tips disabled`);
     } else {
-      context.userConfig.data.tips
-        ? context.splog.info(`tips enabled`)
-        : context.splog.info(`tips disabled`);
+      if (context.userConfig.data.tips) {
+        context.splog.info(`tips enabled`);
+      } else {
+        context.splog.info(`tips disabled`);
+      }
     }
   });
 };

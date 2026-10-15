@@ -1,10 +1,10 @@
-import { expect } from 'chai';
+import { describe, it, expect } from 'bun:test';
 import { allScenes } from '../lib/scenes/all_scenes';
 import { configureTest } from '../lib/utils/configure_test';
 
 for (const scene of allScenes) {
   describe(`(${scene}): absorb`, function () {
-    configureTest(this, scene);
+    configureTest(scene);
 
     it('Can absorb a simple change into a single commit', () => {
       // Create branch with commit A
@@ -20,8 +20,11 @@ for (const scene of allScenes) {
 
       // Verify the commit now has the fixed content
       scene.repo.runGitCommand(['checkout', 'main']);
-      const content = scene.repo.runGitCommandAndGetOutput(['show', 'HEAD:file.txt']);
-      expect(content.trim()).to.equal('fixed content');
+      const content = scene.repo.runGitCommandAndGetOutput([
+        'show',
+        'HEAD:file.txt_test.txt',
+      ]);
+      expect(content.trim()).toBe('fixed content');
     });
 
     it('Shows error when no staged changes', () => {
@@ -29,7 +32,7 @@ for (const scene of allScenes) {
       scene.repo.runCliCommand(['create', 'a', '-m', 'Add file']);
 
       // Try to absorb without staging
-      expect(() => scene.repo.runCliCommand(['absorb'])).to.throw();
+      expect(() => scene.repo.runCliCommand(['absorb'])).toThrow();
     });
 
     it('Shows error when branch is not tracked', () => {
@@ -41,13 +44,15 @@ for (const scene of allScenes) {
       scene.repo.runGitCommand(['add', 'file.txt']);
 
       // Try to absorb on untracked branch
-      expect(() => scene.repo.runCliCommand(['absorb'])).to.throw();
+      expect(() => scene.repo.runCliCommand(['absorb'])).toThrow();
     });
 
     it('Handles --dry-run without modifying commits', () => {
       scene.repo.createChangeAndCommit('original', 'file.txt');
-      const originalSha = scene.repo.runGitCommandAndGetOutput(['rev-parse', 'HEAD']).trim();
-      
+      const originalSha = scene.repo
+        .runGitCommandAndGetOutput(['rev-parse', 'HEAD'])
+        .trim();
+
       scene.repo.runCliCommand(['create', 'a', '-m', 'Branch a']);
 
       scene.repo.createChange('fixed', 'file.txt');
@@ -58,8 +63,10 @@ for (const scene of allScenes) {
 
       // Verify parent commit unchanged
       scene.repo.runGitCommand(['checkout', 'main']);
-      const newSha = scene.repo.runGitCommandAndGetOutput(['rev-parse', 'HEAD']).trim();
-      expect(newSha).to.equal(originalSha);
+      const newSha = scene.repo
+        .runGitCommandAndGetOutput(['rev-parse', 'HEAD'])
+        .trim();
+      expect(newSha).toBe(originalSha);
     });
 
     it('Handles --all flag to stage changes', () => {
@@ -72,8 +79,11 @@ for (const scene of allScenes) {
       scene.repo.runCliCommand(['absorb', '--all', '--force']);
 
       scene.repo.runGitCommand(['checkout', 'main']);
-      const content = scene.repo.runGitCommandAndGetOutput(['show', 'HEAD:file.txt']);
-      expect(content.trim()).to.equal('fixed');
+      const content = scene.repo.runGitCommandAndGetOutput([
+        'show',
+        'HEAD:file.txt_test.txt',
+      ]);
+      expect(content.trim()).toBe('fixed');
     });
 
     it('Warns when no hunks can be matched', () => {
@@ -85,8 +95,11 @@ for (const scene of allScenes) {
       scene.repo.runGitCommand(['add', '.']);
 
       // Should warn and not absorb
-      const output = scene.repo.runCliCommandAndGetOutput(['absorb', '--force']);
-      expect(output).to.include('No hunks could be matched');
+      const output = scene.repo.runCliCommandAndGetOutput([
+        'absorb',
+        '--force',
+      ]);
+      expect(output).toContain('No hunks could be matched');
     });
   });
 }

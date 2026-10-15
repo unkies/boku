@@ -1,4 +1,4 @@
-import yargs from 'yargs';
+import * as yargs from 'yargs';
 import { graphiteWithoutRepo } from '../../lib/runner';
 
 const args = {
@@ -21,7 +21,7 @@ export const description =
 export const builder = args;
 export const handler = async (argv: argsT): Promise<void> => {
   return graphiteWithoutRepo(argv, async (context) => {
-    if (typeof argv['use-author-date'] === undefined) {
+    if (typeof argv['use-author-date'] === 'undefined') {
       context.splog.info(
         `\`--committer-date-is-author-date\` will ${
           context.userConfig.data.restackCommitterDateIsAuthorDate ? '' : 'not '

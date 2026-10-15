@@ -1,4 +1,4 @@
-import yargs from 'yargs';
+import * as yargs from 'yargs';
 import { trackStack } from '../../actions/track_branch';
 import { graphite } from '../../lib/runner';
 

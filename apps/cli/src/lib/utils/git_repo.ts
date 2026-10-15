@@ -5,6 +5,16 @@ import { USER_CONFIG_OVERRIDE_ENV } from '../context';
 
 const TEXT_FILE_NAME = 'test.txt';
 
+function cliCommand(args: string[]): string[] {
+  const testEntrypoint = process.env.CHARCOAL_CLI_ENTRYPOINT;
+  const command = testEntrypoint
+    ? [process.execPath, testEntrypoint, ...args]
+    : Bun.main === process.execPath
+      ? [process.execPath, ...args]
+      : [process.execPath, Bun.main, ...args];
+  return command;
+}
+
 // This class should only be used by tests and `gt demo`
 export class GitRepo {
   dir: string;
@@ -31,33 +41,27 @@ export class GitRepo {
     });
   }
 
-  runCliCommand(command: string[], opts?: { cwd?: string }): void {
-    const result = spawnSync(
-      process.argv[0],
-      [
-        path.join(__dirname, `..`, `..`, `..`, `..`, `dist`, `src`, `index.js`),
-        ...command,
-      ],
-      {
-        stdio: process.env.DEBUG ? 'inherit' : 'pipe',
-        cwd: opts?.cwd || this.dir,
-        env: {
-          ...process.env,
-          [USER_CONFIG_OVERRIDE_ENV]: this.userConfigPath,
-          GRAPHITE_DISABLE_UPGRADE_PROMPT: '1',
-          GRAPHITE_DISABLE_SURVEY: '1',
-          GRAPHITE_PROFILE: undefined,
-        },
-      }
-    );
+  runCliCommand(args: string[], opts?: { cwd?: string }): void {
+    const command = cliCommand(args);
+    const result = spawnSync(command[0], command.slice(1), {
+      stdio: process.env.DEBUG ? 'inherit' : 'pipe',
+      cwd: opts?.cwd || this.dir,
+      env: {
+        ...process.env,
+        [USER_CONFIG_OVERRIDE_ENV]: this.userConfigPath,
+        GRAPHITE_DISABLE_UPGRADE_PROMPT: '1',
+        GRAPHITE_DISABLE_SURVEY: '1',
+        GRAPHITE_PROFILE: undefined,
+      },
+    });
     if (result.status) {
       throw new Error(
         [
           `command result: ${JSON.stringify(result)}`,
           'stdout:',
-          result.stdout.toString(),
+          result.stdout?.toString() ?? '',
           'stderr:',
-          result.stderr.toString(),
+          result.stderr?.toString() ?? '',
         ].join('\n')
       );
     }
@@ -73,32 +77,17 @@ export class GitRepo {
   }
 
   runCliCommandAndGetOutput(args: string[]): string {
+    const command = cliCommand(args);
     return (
-      spawnSync(
-        process.argv[0],
-        [
-          path.join(
-            __dirname,
-            `..`,
-            `..`,
-            `..`,
-            `..`,
-            `dist`,
-            `src`,
-            `index.js`
-          ),
-          ...args,
-        ],
-        {
-          encoding: 'utf-8',
-          cwd: this.dir,
-          env: {
-            ...process.env,
-            [USER_CONFIG_OVERRIDE_ENV]: this.userConfigPath,
-            GRAPHITE_DISABLE_UPGRADE_PROMPT: '1',
-          },
-        }
-      ).stdout?.trim() ?? ''
+      spawnSync(command[0], command.slice(1), {
+        encoding: 'utf-8',
+        cwd: this.dir,
+        env: {
+          ...process.env,
+          [USER_CONFIG_OVERRIDE_ENV]: this.userConfigPath,
+          GRAPHITE_DISABLE_UPGRADE_PROMPT: '1',
+        },
+      }).stdout?.trim() ?? ''
     );
   }
 

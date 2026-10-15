@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect } from 'bun:test';
 import { execSync } from 'child_process';
 import { GitRepo } from '../../../src/lib/utils/git_repo';
 
@@ -15,5 +15,5 @@ export function expectBranches(repo: GitRepo, sortedBranches: string): void {
 
       .sort()
       .join(', ')
-  ).to.equal(sortedBranches);
+  ).toBe(sortedBranches);
 }

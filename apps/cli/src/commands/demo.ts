@@ -1,5 +1,5 @@
-import tmp from 'tmp';
-import yargs from 'yargs';
+import { createTempDirectory } from '../lib/utils/temp';
+import * as yargs from 'yargs';
 import { graphiteWithoutRepo } from '../lib/runner';
 import { GitRepo } from '../lib/utils/git_repo';
 import { makeId } from '../lib/utils/make_id';
@@ -13,7 +13,7 @@ export const builder = args;
 type argsT = yargs.Arguments<yargs.InferredOptionTypes<typeof args>>;
 export const handler = async (argv: argsT): Promise<void> => {
   return graphiteWithoutRepo(argv, async (context) => {
-    const tmpDir = tmp.dirSync();
+    const tmpDir = createTempDirectory();
     context.splog.info(tmpDir.name);
     const repo = new GitRepo(tmpDir.name);
     const id = makeId(8);

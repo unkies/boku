@@ -278,8 +278,8 @@ function getBranchLines(
         args.skipBranchingLine || numChildren <= 1
           ? ''
           : args.reverse
-          ? '─┐'
-          : '─┘'
+            ? '─┐'
+            : '─┘'
       }▸${args.branchName}${
         args.noStyleBranchName || context.engine.isBranchFixed(args.branchName)
           ? ''
@@ -349,8 +349,8 @@ function getInfoLines(
               ? chalk.cyan('◉')
               : '◯'
             : args.noStem
-            ? ' '
-            : '│'
+              ? ' '
+              : '│'
         } ${line}`
     )
     .concat([getPrefix(args.indentLevel) + (args.noStem ? ' ' : '│')]);

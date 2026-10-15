@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import yargs from 'yargs';
+import * as yargs from 'yargs';
 import { graphiteWithoutRepo } from '../../lib/runner';
 import { setBranchPrefix } from '../../lib/utils/branch_name';
 

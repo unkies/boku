@@ -1,5 +1,5 @@
-import { ChangedFiles } from '@danerwilliams/gti-cli-shared-types';
-import yargs from 'yargs';
+import { ChangedFiles } from '@unkies/gti-cli-shared-types';
+import * as yargs from 'yargs';
 import { graphite } from '../../lib/runner';
 
 const args = {

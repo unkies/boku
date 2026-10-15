@@ -1,20 +1,12 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 /* eslint-disable no-console */
 
 import chalk from 'chalk';
-import tmp from 'tmp';
 import yargs from 'yargs';
+import { commands } from './commands';
+import { registerCompletion } from './commands/completion';
 import { globalArgumentsOptions } from './lib/global_arguments';
 import { getYargsInput } from './lib/pre-yargs/preprocess_command';
-
-// this line gets rid of warnings about "experimental fetch API" for our users
-// while still showing us warnings when we test with DEBUG=1
-if (!process.env.DEBUG) {
-  process.removeAllListeners('warning');
-}
-
-// https://www.npmjs.com/package/tmp#graceful-cleanup
-tmp.setGracefulCleanup();
 
 process.on('uncaughtException', (err) => {
   console.log(chalk.redBright(`UNCAUGHT EXCEPTION: ${err.message}`));
@@ -23,8 +15,8 @@ process.on('uncaughtException', (err) => {
   process.exit(1);
 });
 
-void yargs(getYargsInput())
-  .commandDir('commands')
+await registerCompletion(yargs(getYargsInput()))
+  .command(commands)
   .help()
   .usage(
     'Charcoal is a command line tool that makes working with stacked changes fast & intuitive.\n\nhttps://docs.graphite.dev/guides/graphite-cli'
@@ -32,4 +24,5 @@ void yargs(getYargsInput())
   .options(globalArgumentsOptions)
   .global(Object.keys(globalArgumentsOptions))
   .strict()
-  .demandCommand().argv;
+  .demandCommand()
+  .parseAsync();

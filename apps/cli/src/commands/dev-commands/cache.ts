@@ -1,4 +1,4 @@
-import yargs from 'yargs';
+import * as yargs from 'yargs';
 import { initContext, initContextLite } from '../../lib/context';
 import { getCacheLock } from '../../lib/engine/cache_lock';
 import { composeGit } from '../../lib/git/git';

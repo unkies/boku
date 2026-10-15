@@ -68,9 +68,9 @@ function getPotentialParents(
       return left === right
         ? 0
         : context.engine.isTrunk(right) ||
-          context.engine.isDescendantOf(left, right)
-        ? -1 // left is a descendant of right
-        : 1; // left is not a descendant of right
+            context.engine.isDescendantOf(left, right)
+          ? -1 // left is a descendant of right
+          : 1; // left is not a descendant of right
     })
     .map((b) => {
       return { title: b, value: b };

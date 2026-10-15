@@ -1,10 +1,10 @@
-import { expect } from 'chai';
+import { describe, it, expect, beforeEach } from 'bun:test';
 import { allScenes } from '../../lib/scenes/all_scenes';
 import { configureTest } from '../../lib/utils/configure_test';
 
 for (const scene of allScenes) {
   describe('(${scene}): continue', function () {
-    configureTest(this, scene);
+    configureTest(scene);
 
     beforeEach(function () {
       scene.repo.createAndCheckoutBranch('a');
@@ -21,7 +21,7 @@ for (const scene of allScenes) {
 
     describe('While not during a rebase', function () {
       it('Will error', () => {
-        expect(() => scene.repo.runCliCommand(['continue'])).to.throw();
+        expect(() => scene.repo.runCliCommand(['continue'])).toThrow();
       });
     });
 
@@ -32,11 +32,11 @@ for (const scene of allScenes) {
       });
 
       it('Stops during a rebase', function () {
-        expect(scene.repo.rebaseInProgress()).to.be.true;
+        expect(scene.repo.rebaseInProgress()).toBe(true);
       });
 
       it('Will not continue', () => {
-        expect(() => scene.repo.runCliCommand(['continue'])).to.throw();
+        expect(() => scene.repo.runCliCommand(['continue'])).toThrow();
       });
 
       describe('After resolving conflict', function () {
@@ -46,7 +46,7 @@ for (const scene of allScenes) {
         });
 
         it('Will not continue', () => {
-          expect(() => scene.repo.runCliCommand(['continue'])).to.throw();
+          expect(() => scene.repo.runCliCommand(['continue'])).toThrow();
         });
       });
     });
@@ -54,15 +54,15 @@ for (const scene of allScenes) {
     describe('During a Grahite initiated rebase', function () {
       beforeEach(function () {
         scene.repo.checkoutBranch('b');
-        expect(() => scene.repo.runCliCommand(['stack', 'restack'])).to.throw();
+        expect(() => scene.repo.runCliCommand(['stack', 'restack'])).toThrow();
       });
 
       it('Stops during a rebase conflict', function () {
-        expect(scene.repo.rebaseInProgress()).to.be.true;
+        expect(scene.repo.rebaseInProgress()).toBe(true);
       });
 
       it('Will not continue without resolving conflict', function () {
-        expect(() => scene.repo.runCliCommand(['continue'])).to.throw();
+        expect(() => scene.repo.runCliCommand(['continue'])).toThrow();
       });
 
       describe('After resolving conflict and continuing', function () {
@@ -73,11 +73,11 @@ for (const scene of allScenes) {
         });
 
         it('Lands on the restacked branch', function () {
-          expect(scene.repo.currentBranchName()).to.equal('b');
+          expect(scene.repo.currentBranchName()).toBe('b');
         });
 
         it('No longer is in a rebase', function () {
-          expect(scene.repo.rebaseInProgress()).to.be.false;
+          expect(scene.repo.rebaseInProgress()).toBe(false);
         });
       });
     });

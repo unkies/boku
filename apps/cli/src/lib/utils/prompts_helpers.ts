@@ -29,10 +29,37 @@ export const clearPromptResultLine = (): void => {
 export const gtPrompts = async (
   ...[questions, options]: Parameters<TPrompts>
 ): ReturnType<TPrompts> => {
-  return prompts(questions, {
+  // Non-interactive: Bun's prompts never resolves when stdin is already at
+  // EOF, so short-circuit with empty answers rather than constructing a
+  // prompt promise that can never settle.
+  if (!process.stdin.isTTY && process.stdin.readableEnded) {
+    return {} as Awaited<ReturnType<TPrompts>>;
+  }
+
+  const promptResult = prompts(questions, {
     onCancel: () => {
       throw new KilledError();
     },
     ...options,
+  });
+
+  // On a TTY, prompts works normally and needs no EOF handling.
+  if (process.stdin.isTTY) {
+    return promptResult;
+  }
+
+  return new Promise((resolve, reject) => {
+    const onEnd = (): void => resolve({} as Awaited<ReturnType<TPrompts>>);
+    process.stdin.once('end', onEnd);
+    void promptResult.then(
+      (answers) => {
+        process.stdin.off('end', onEnd);
+        resolve(answers);
+      },
+      (error: unknown) => {
+        process.stdin.off('end', onEnd);
+        reject(error);
+      }
+    );
   });
 };

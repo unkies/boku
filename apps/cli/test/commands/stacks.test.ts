@@ -1,13 +1,13 @@
-import { expect } from 'chai';
+import { describe, it, expect } from 'bun:test';
 import { allScenes } from '../lib/scenes/all_scenes';
 import { configureTest } from '../lib/utils/configure_test';
 
 for (const scene of allScenes) {
   describe(`(${scene}): log short`, function () {
-    configureTest(this, scene);
+    configureTest(scene);
 
     it('Can log short', () => {
-      expect(() => scene.repo.runCliCommand([`ls`])).to.not.throw(Error);
+      expect(() => scene.repo.runCliCommand([`ls`])).not.toThrow(Error);
     });
 
     it("Can print stacks if a branch's parent has been deleted", () => {
@@ -20,7 +20,7 @@ for (const scene of allScenes) {
       scene.repo.checkoutBranch('main');
       scene.repo.createChangeAndCommit('2', '2');
 
-      expect(() => scene.repo.runCliCommandAndGetOutput([`ls`])).to.not.throw(
+      expect(() => scene.repo.runCliCommandAndGetOutput([`ls`])).not.toThrow(
         Error
       );
     });

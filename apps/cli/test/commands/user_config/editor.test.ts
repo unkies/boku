@@ -1,13 +1,13 @@
-import { expect } from 'chai';
+import { describe, it, expect } from 'bun:test';
 import { BasicScene } from '../../lib/scenes/basic_scene';
 import { configureTest } from '../../lib/utils/configure_test';
 
 for (const scene of [new BasicScene()]) {
   describe(`(${scene}): user editor`, function () {
-    configureTest(this, scene);
+    configureTest(scene);
 
     it('Sanity check - can check editor', () => {
-      expect(() => scene.repo.runCliCommand([`user`, `editor`])).to.not.throw(
+      expect(() => scene.repo.runCliCommand([`user`, `editor`])).not.toThrow(
         Error
       );
     });
@@ -15,8 +15,8 @@ for (const scene of [new BasicScene()]) {
     it('Sanity check - can set editor', () => {
       expect(
         scene.repo.runCliCommandAndGetOutput([`user`, `editor`, `--set`, `vim`])
-      ).to.equal('Editor set to vim');
-      expect(scene.repo.runCliCommandAndGetOutput([`user`, `editor`])).to.equal(
+      ).toBe('Editor set to vim');
+      expect(scene.repo.runCliCommandAndGetOutput([`user`, `editor`])).toBe(
         'vim'
       );
     });
@@ -25,7 +25,7 @@ for (const scene of [new BasicScene()]) {
       process.env.TEST_GIT_EDITOR = 'vi';
       expect(
         scene.repo.runCliCommandAndGetOutput([`user`, `editor`, `--unset`])
-      ).to.equal(
+      ).toBe(
         'Editor preference erased. Defaulting to your git editor (currently vi)'
       );
     });

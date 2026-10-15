@@ -68,7 +68,6 @@ export function parseBranchesAndMeta(
       throw new PreconditionsFailedError('Cycle detected in Charcoal metadata');
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const current = branchesToParse.shift()!;
     const {
       branchName,

@@ -49,16 +49,16 @@ export function isSafeToDelete(
     prInfo?.state === 'CLOSED'
       ? `${chalk.redBright(branchName)} is closed on GitHub`
       : prInfo?.state === 'MERGED'
-      ? `${chalk.green(branchName)} is merged into ${chalk.cyan(
-          prInfo?.base ?? context.engine.trunk
-        )}`
-      : context.engine.isMergedIntoTrunk(branchName)
-      ? `${chalk.green(branchName)} is merged into ${chalk.cyan(
-          context.engine.trunk
-        )}`
-      : context.engine.isBranchEmpty(branchName)
-      ? `${chalk.yellow(branchName)} is empty`
-      : undefined;
+        ? `${chalk.green(branchName)} is merged into ${chalk.cyan(
+            prInfo?.base ?? context.engine.trunk
+          )}`
+        : context.engine.isMergedIntoTrunk(branchName)
+          ? `${chalk.green(branchName)} is merged into ${chalk.cyan(
+              context.engine.trunk
+            )}`
+          : context.engine.isBranchEmpty(branchName)
+            ? `${chalk.yellow(branchName)} is empty`
+            : undefined;
 
   return reason ? { result: true, reason } : { result: false };
 }

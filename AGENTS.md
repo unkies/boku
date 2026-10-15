@@ -2,13 +2,13 @@
 
 ## Build & Test Commands
 
-- **Build**: `cd apps/cli && yarn build` (lints, compiles TS, copies assets)
-- **Lint**: `cd apps/cli && yarn lint` (ESLint with cache)
-- **Type check**: `cd apps/cli && yarn check` (tsc --noEmit)
-- **Run tests**: `cd apps/cli && DEBUG=1 yarn test --full-trace`
-- **Run single test**: `cd apps/cli && DEBUG=1 yarn test-one "dist/test/<path>.test.js"`
-- **Run test pattern**: `cd apps/cli && DEBUG=1 yarn test -g "pattern"`
-- **Run CLI locally**: `cd apps/cli && yarn cli <command>`
+- **Build**: `bun run build` (or `bun run --cwd apps/cli build`)
+- **Lint**: `bun run lint` (ESLint flat config at repo root)
+- **Type check**: `bun run check` (`bun check` in each workspace)
+- **Format check**: `bun run format:check`; auto-fix with `bun run format`
+- **Run tests**: `bun run test` (add `DEBUG=1` for verbose output)
+- **Run single test**: `cd apps/cli && DEBUG=1 bun test "test/<path>.test.ts"`
+- **Run CLI locally**: `bun run cli <command>` or `cd apps/cli && bun src/index.ts <command>`
 
 ## Code Style
 
@@ -20,3 +20,4 @@
 - **Naming**: Unused args prefix with `_`, descriptive names (e.g., `commitCreateAction`, `TContext`)
 - **Formatting**: Prettier with 2-space indent, single quotes, semicolons, trailing commas (ES5)
 - **Console**: No `console.log` (`no-console` error) - use proper logging/output mechanisms
+- **Commands**: Commands are registered statically in `apps/cli/src/commands/index.ts` and each command group's parent module - never use yargs `commandDir`
