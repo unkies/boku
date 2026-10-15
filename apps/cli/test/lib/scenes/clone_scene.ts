@@ -1,4 +1,9 @@
 import fs from 'fs-extra';
+import path from 'node:path';
+import {
+  CHARCOAL_REPO_CONFIG_FILENAME,
+  CHARCOAL_USER_CONFIG_FILENAME,
+} from '../../../src/lib/product_config';
 import {
   createTempDirectory,
   TempDirectory,
@@ -28,10 +33,13 @@ export class CloneScene extends AbstractScene {
     this.dir = createTempDirectory().name;
     this.repo = new GitRepo(this.dir, { repoUrl: this.originDir });
     fs.writeFileSync(
-      `${this.dir}/.git/.graphite_repo_config`,
+      path.join(this.dir, '.git', CHARCOAL_REPO_CONFIG_FILENAME),
       cuteString({ trunk: 'main' })
     );
-    fs.writeFileSync(`${this.dir}/.git/.graphite_user_config`, cuteString({}));
+    fs.writeFileSync(
+      path.join(this.dir, '.git', CHARCOAL_USER_CONFIG_FILENAME),
+      cuteString({})
+    );
 
     process.chdir(this.dir);
   }

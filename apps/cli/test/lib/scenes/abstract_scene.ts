@@ -1,4 +1,10 @@
 import fs from 'fs-extra';
+import path from 'node:path';
+import {
+  CHARCOAL_REPO_CONFIG_FILENAME,
+  CHARCOAL_USER_CONFIG_FILENAME,
+  CHARCOAL_USER_CONFIG_PATH_ENV,
+} from '../../../src/lib/product_config';
 import {
   createTempDirectory,
   TempDirectory,
@@ -32,12 +38,16 @@ export abstract class AbstractScene {
     this.dir = this.tmpDir.name;
     this.repo = new GitRepo(this.dir);
     fs.writeFileSync(
-      `${this.dir}/.git/.graphite_repo_config`,
+      path.join(this.dir, '.git', CHARCOAL_REPO_CONFIG_FILENAME),
       cuteString({ trunk: 'main' })
     );
-    const userConfigPath = `${this.dir}/.git/.graphite_user_config`;
+    const userConfigPath = path.join(
+      this.dir,
+      '.git',
+      CHARCOAL_USER_CONFIG_FILENAME
+    );
     fs.writeFileSync(userConfigPath, cuteString({ tips: false }));
-    process.env.GRAPHITE_USER_CONFIG_PATH = userConfigPath;
+    process.env[CHARCOAL_USER_CONFIG_PATH_ENV] = userConfigPath;
     this.oldDir = process.cwd();
     process.chdir(this.dir);
   }

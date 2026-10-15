@@ -1,7 +1,10 @@
 import { spawnSync } from 'child_process';
 import fs from 'fs-extra';
 import path from 'path';
-import { USER_CONFIG_OVERRIDE_ENV } from '../context';
+import {
+  CHARCOAL_USER_CONFIG_FILENAME,
+  CHARCOAL_USER_CONFIG_PATH_ENV,
+} from '../product_config';
 
 const TEXT_FILE_NAME = 'test.txt';
 
@@ -24,7 +27,7 @@ export class GitRepo {
     opts?: { existingRepo?: boolean; repoUrl?: string }
   ) {
     this.dir = dir;
-    this.userConfigPath = path.join(dir, '.git/.graphite_user_config');
+    this.userConfigPath = path.join(dir, '.git', CHARCOAL_USER_CONFIG_FILENAME);
     if (opts?.existingRepo) {
       return;
     }
@@ -48,7 +51,7 @@ export class GitRepo {
       cwd: opts?.cwd || this.dir,
       env: {
         ...process.env,
-        [USER_CONFIG_OVERRIDE_ENV]: this.userConfigPath,
+        [CHARCOAL_USER_CONFIG_PATH_ENV]: this.userConfigPath,
       },
     });
     if (result.status) {
@@ -81,7 +84,7 @@ export class GitRepo {
         cwd: this.dir,
         env: {
           ...process.env,
-          [USER_CONFIG_OVERRIDE_ENV]: this.userConfigPath,
+          [CHARCOAL_USER_CONFIG_PATH_ENV]: this.userConfigPath,
         },
       }).stdout?.trim() ?? ''
     );

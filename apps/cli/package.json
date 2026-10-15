@@ -33,7 +33,6 @@
     "dist"
   ],
   "bin": {
-    "graphite": "dist/index.js",
     "gt": "dist/index.js"
   },
   "engines": {

@@ -1,5 +1,6 @@
 import * as yargs from 'yargs';
 import { init } from '../actions/init';
+import { CHARCOAL_REPO_CONFIG_FILENAME } from '../lib/product_config';
 import { runWithRepo } from '../lib/runner';
 
 const args = {
@@ -20,8 +21,7 @@ type argsT = yargs.Arguments<yargs.InferredOptionTypes<typeof args>>;
 
 export const command = 'init';
 export const aliases = ['i'];
-export const description =
-  'Create or regenerate a `.graphite_repo_config` file.';
+export const description = `Create or regenerate a \`${CHARCOAL_REPO_CONFIG_FILENAME}\` file.`;
 export const builder = args;
 export const handler = async (argv: argsT): Promise<void> =>
   runWithRepo(

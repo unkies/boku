@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { CHARCOAL_CACHE_LOCK_FILENAME } from '../product_config';
 import { spiffy } from './spiffy';
 
 const schema = z.object({
@@ -10,7 +11,7 @@ export const cacheLockConfigFactory = spiffy({
   schema,
   defaultLocations: [
     {
-      relativePath: '.graphite_cache_lock',
+      relativePath: CHARCOAL_CACHE_LOCK_FILENAME,
       relativeTo: 'REPO',
     },
   ],

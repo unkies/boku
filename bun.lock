@@ -20,7 +20,6 @@
       "name": "@unkies/charcoal",
       "version": "0.2.4",
       "bin": {
-        "graphite": "dist/index.js",
         "gt": "dist/index.js",
       },
       "dependencies": {

@@ -5,7 +5,7 @@ dist/
 coverage/
 pkg/
 .eslintcache
-.graphite_repo_config
+.charcoal_repo_config
 .idea/*
 bun.lockb
 

@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { execSync } from 'child_process';
 import { getGitEditor, getGitPager } from '../git/git_editor';
 import { CommandFailedError } from '../git/runner';
+import { CHARCOAL_USER_CONFIG_FILENAME } from '../product_config';
 import { spiffy } from './spiffy';
 
 const schema = z.object({
@@ -18,7 +19,7 @@ export const userConfigFactory = spiffy({
   schema,
   defaultLocations: [
     {
-      relativePath: '.graphite_user_config',
+      relativePath: CHARCOAL_USER_CONFIG_FILENAME,
       relativeTo: 'USER_HOME',
     },
   ],

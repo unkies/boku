@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { CHARCOAL_CONTINUATION_FILENAME } from '../product_config';
 import { spiffy } from './spiffy';
 
 /**
@@ -25,7 +26,7 @@ export const continueConfigFactory = spiffy({
   schema: ContinueSchema,
   defaultLocations: [
     {
-      relativePath: '.gtcontinue',
+      relativePath: CHARCOAL_CONTINUATION_FILENAME,
       relativeTo: 'REPO',
     },
   ],

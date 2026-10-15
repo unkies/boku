@@ -2,6 +2,10 @@ import { composeEngine, TEngine } from './engine/engine';
 import { TGit } from './git/git';
 import { rebaseInProgress } from './git/rebase_in_progress';
 import {
+  CHARCOAL_INTERACTIVE_ENV,
+  CHARCOAL_USER_CONFIG_PATH_ENV,
+} from './product_config';
+import {
   continueConfigFactory,
   TContinueConfig,
 } from './spiffy/continuation_spf';
@@ -10,8 +14,6 @@ import { TUserConfig, userConfigFactory } from './spiffy/user_config_spf';
 import { composeSplog, TSplog } from './utils/splog';
 import { NonInteractiveError } from './errors';
 import { gtPrompts, TPrompts } from './utils/prompts_helpers';
-
-export const USER_CONFIG_OVERRIDE_ENV = 'GRAPHITE_USER_CONFIG_PATH' as const;
 
 export type TContextLite = {
   splog: TSplog;
@@ -34,7 +36,7 @@ export function initContextLite(opts?: {
   userEmail?: string;
 }): TContextLite {
   const userConfig = userConfigFactory.load(
-    process.env[USER_CONFIG_OVERRIDE_ENV]
+    process.env[CHARCOAL_USER_CONFIG_PATH_ENV]
   );
   const splog = composeSplog({
     quiet: opts?.quiet,
@@ -44,8 +46,8 @@ export function initContextLite(opts?: {
   });
 
   const interactive =
-    // Confusing, but if invoked from GTI, behave as if `--no-interactive` was passed
-    !process.env.GRAPHITE_INTERACTIVE && (opts?.interactive ?? true);
+    // The environment override takes precedence over command arguments.
+    !process.env[CHARCOAL_INTERACTIVE_ENV] && (opts?.interactive ?? true);
 
   return {
     splog,

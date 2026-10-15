@@ -1,8 +1,8 @@
 import fs from 'fs-extra';
 import path from 'path';
 import { TContext } from '../../lib/context';
+import { CHARCOAL_STACK_EDIT_FILENAME } from '../../lib/product_config';
 
-const FILE_NAME = 'graphite_stack_edit';
 const FILE_FOOTER = [
   '#',
   '# Stack will be rearranged on trunk to match the above order.',
@@ -31,7 +31,7 @@ export function createStackEditFile(
     ...FILE_FOOTER,
   ].join('\n');
 
-  const filePath = path.join(opts.tmpDir, FILE_NAME);
+  const filePath = path.join(opts.tmpDir, CHARCOAL_STACK_EDIT_FILENAME);
   fs.writeFileSync(filePath, fileContents);
   return filePath;
 }

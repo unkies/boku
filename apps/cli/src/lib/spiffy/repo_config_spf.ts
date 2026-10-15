@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { CHARCOAL_REPO_CONFIG_FILENAME } from '../product_config';
 import { spiffy } from './spiffy';
 
 const schema = z.object({
@@ -10,7 +11,7 @@ export const repoConfigFactory = spiffy({
   schema,
   defaultLocations: [
     {
-      relativePath: '.graphite_repo_config',
+      relativePath: CHARCOAL_REPO_CONFIG_FILENAME,
       relativeTo: 'REPO',
     },
   ],

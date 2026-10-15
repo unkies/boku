@@ -42,6 +42,10 @@ After installation, confirm that the `gt` command is available:
 gt --help
 ```
 
+## Upgrading
+
+In-place upgrades from earlier installations are intentionally unsupported. Remove the prior installation and install Charcoal again, then run `gt init` in each repository and reconfigure your user preferences. Legacy configuration and state files are ignored; Charcoal does not migrate, warn about, or delete them.
+
 ## Quick Start
 
 Run these commands inside a Git repository that already has an initial commit:
