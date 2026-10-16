@@ -12,7 +12,6 @@ const GIT_COMMAND_ALLOWLIST = [
   'bundle',
   'cherry-pick',
   'clean',
-  'clone',
   'diff',
   'difftool',
   'fetch',

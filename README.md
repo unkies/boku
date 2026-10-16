@@ -74,11 +74,14 @@ bk stack restack
 
 Boku can also track existing branches. Check out a branch and run `bk track` to select its parent.
 
+Starting from a repository you have not cloned yet? Use `bk clone <repository> [directory]` instead: it runs `git clone` and initializes Boku in the new working tree with the checked-out branch as trunk. `bk clone` supports `--branch`, `--depth`, and `--recurse-submodules`. For other clone options, run `git clone` followed by `bk init`.
+
 ## Core Commands
 
 | Command      | Purpose                                                                     |
 | ------------ | --------------------------------------------------------------------------- |
 | `bk init`    | Initialize Boku and select the repository's trunk branch.                   |
+| `bk clone`   | Clone a Git repository and initialize its trunk.                            |
 | `bk create`  | Create a branch on top of the current branch and optionally commit changes. |
 | `bk track`   | Add an existing branch to a stack.                                          |
 | `bk log`     | Display tracked branches and their dependencies.                            |

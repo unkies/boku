@@ -2,6 +2,7 @@ import type { CommandModule } from 'yargs';
 import * as absorb from './absorb';
 import * as bottom from './bottom';
 import * as checkout from './checkout';
+import * as clone from './clone';
 import * as commit from './commit';
 import * as continueCommand from './continue';
 import * as create from './create';
@@ -35,6 +36,7 @@ export const commands: CommandModule[] = [
   absorb,
   bottom,
   checkout,
+  clone,
   commit,
   continueCommand,
   create,
