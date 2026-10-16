@@ -20,6 +20,11 @@ describe('command registration', () => {
     }
   });
 
+  it('uses the shared completion command instead of a fish command', () => {
+    const commandNames = commands.map((command) => command.command);
+    expect(commandNames).not.toContain('fish');
+  });
+
   it('does not expose removed provider-specific options', () => {
     expect(info.builder).not.toHaveProperty('body');
     expect(rename.builder).not.toHaveProperty('force');

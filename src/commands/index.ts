@@ -12,7 +12,6 @@ import * as down from './down';
 import * as downstack from './downstack';
 import * as edit from './edit';
 import * as flare from './flare';
-import * as fish from './fish';
 import * as fold from './fold';
 import * as info from './info';
 import * as init from './init';
@@ -46,7 +45,6 @@ export const commands: CommandModule[] = [
   downstack,
   edit,
   flare,
-  fish,
   fold,
   info,
   init,

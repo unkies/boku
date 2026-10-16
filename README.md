@@ -46,6 +46,37 @@ After installation, confirm that the `bk` command is available:
 bk --help
 ```
 
+## Shell Completion
+
+`bk completion` generates a completion script for the shell identified by `$SHELL`. Run the command for your shell once after installing Boku.
+
+### Bash
+
+```sh
+bk completion >> ~/.bashrc
+source ~/.bashrc
+```
+
+On macOS installations that use `.bash_profile`, write and source `~/.bash_profile` instead.
+
+### Zsh
+
+```sh
+bk completion >> ~/.zshrc
+source ~/.zshrc
+```
+
+On macOS, `.zprofile` can be used instead when that is where shell initialization is configured.
+
+### Fish
+
+```fish
+mkdir -p ~/.config/fish/completions
+bk completion > ~/.config/fish/completions/bk.fish
+```
+
+New Fish sessions load files in that directory automatically.
+
 ## Upgrading
 
 In-place upgrades from Charcoal or earlier installations are intentionally unsupported. Remove the prior installation and install Boku, then run `bk init` in each repository and reconfigure your user preferences. Legacy configuration and state files are ignored; Boku does not migrate, warn about, or delete them.
