@@ -1,6 +1,7 @@
 {
   "name": "@unkies/boku",
   "version": "2026.10.0",
+  "private": true,
   "license": "AGPL-3.0-or-later",
   "type": "module",
   "homepage": "https://github.com/unkies/boku",
@@ -8,9 +9,6 @@
   "packageManager": "bun@1.4.3",
   "engines": {
     "bun": ">=1.4.3"
-  },
-  "publishConfig": {
-    "access": "public"
   },
   "scripts": {
     "build": "rm -rf dist && bun build --target=bun --format=esm --sourcemap --outdir=dist src/index.ts && chmod +x dist/index.js",
@@ -27,13 +25,7 @@
     "dev:install": "bun scripts/devinstall.ts install",
     "dev:uninstall": "bun scripts/devinstall.ts uninstall",
     "compile:all": "bun scripts/compile_all.ts",
-    "prepack": "bun run build"
-  },
-  "files": [
-    "dist"
-  ],
-  "bin": {
-    "bk": "dist/index.js"
+    "release": "bun scripts/release.ts"
   },
   "dependencies": {
     "chalk": "6.0.1",

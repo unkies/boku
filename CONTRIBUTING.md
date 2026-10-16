@@ -51,15 +51,11 @@ bun run compile:all        # writes pkg/bk-{linux,darwin}-{x64,arm64}
 To compile the current source and install it as `~/.local/bin/bk`:
 
 ```sh
-bun run install:local
+bun run dev:install
 ```
 
 Ensure `~/.local/bin` is included in your `PATH` before invoking `bk`.
 
-## Getting Hashes for the Homebrew Tap
+## Releasing
 
-Download the release binaries and then run:
-
-```
-shasum -a 256 /path/to/mybinary
-```
+See [RELEASING.md](RELEASING.md).

@@ -3,6 +3,7 @@
 
 import chalk from 'chalk';
 import yargs from 'yargs';
+import { version } from '../package.json';
 import { commands } from './commands';
 import { registerCompletion } from './commands/completion';
 import { globalArgumentsOptions } from './lib/global_arguments';
@@ -16,6 +17,7 @@ process.on('uncaughtException', (err) => {
 });
 
 await registerCompletion(yargs(getYargsInput()))
+  .version(version)
   .command(commands)
   .help()
   .usage(

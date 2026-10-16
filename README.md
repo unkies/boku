@@ -20,22 +20,24 @@ Boku helps you break large changes into small, reviewable branches while preserv
 ## Requirements
 
 - [Git](https://git-scm.com/)
-- [Bun](https://bun.com/) 1.4.3 or newer when installing the package or working from source
 
-The Homebrew release is a standalone executable and does not require a separate Bun installation.
+Boku is distributed as a standalone executable and does not require Bun.
 
 ## Install
 
-### Homebrew
-
 ```sh
-brew install unkies/tap/boku
+curl --proto '=https' --tlsv1.2 -fsSL \
+  https://github.com/unkies/boku/releases/latest/download/install.sh | sh
 ```
 
-### Bun
+The installer detects macOS or Linux on x64 or arm64, verifies the SHA-256 checksum of the release archive, and installs `bk` to `~/.local/bin`. It accepts `--install-dir DIRECTORY` to change the install location and `--version VERSION` to install a specific release.
+
+To inspect the installer before running it:
 
 ```sh
-bun add --global @unkies/boku
+curl -fsSLO https://github.com/unkies/boku/releases/latest/download/install.sh
+less install.sh
+sh install.sh
 ```
 
 After installation, confirm that the `bk` command is available:

@@ -84,6 +84,7 @@ export class GitRepo {
         cwd: this.dir,
         env: {
           ...process.env,
+          FORCE_COLOR: '0',
           [BOKU_USER_CONFIG_PATH_ENV]: this.userConfigPath,
         },
       }).stdout?.trim() ?? ''
