@@ -15,7 +15,6 @@ const args = {
 type argsT = yargs.Arguments<yargs.InferredOptionTypes<typeof args>>;
 
 export const command = 'rename [name]';
-export const aliases = ['rn'];
 export const description =
   'Rename a branch and update metadata referencing it. If no branch name is supplied, you will be prompted for a new branch name.';
 export const builder = args;

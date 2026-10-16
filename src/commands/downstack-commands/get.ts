@@ -24,7 +24,6 @@ export const command = 'get [branch]';
 export const description =
   'Get branches from trunk to the specified branch from remote, prompting the user to resolve conflicts. If no branch is provided, get downstack from the current branch.';
 export const builder = args;
-export const aliases = ['g'];
 export const handler = async (argv: argsT): Promise<void> =>
   runWithRepo(
     argv,

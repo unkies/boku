@@ -1,31 +1,30 @@
 import { composeSplog } from '../utils/splog';
 
 const NAV_WARNING = [
-  'The `branch` commands `next` and `previous` (aka `bn` and `bp`) have been renamed.',
-  'Please use `up` and `down` (aka `bu` and `bd`) respectively.',
+  'The `branch` commands `next` and `previous` have been renamed.',
+  'Please use `up` and `down` respectively.',
 ].join('\n');
 
 const INFO_WARNING = [
   'The `branch` command `show` has been renamed.',
-  'Please use `info` (aka `bk bi`).',
+  'Please use `info`.',
 ].join('\n');
 
 const GET_WARNING = [
   'The `downstack` command `sync` has been renamed.',
-  'Please use `get` (aka `bk dsg`).',
+  'Please use `downstack get`.',
 ].join('\n');
 
 const FIX_WARNING = [
   'The `upstack` and `stack` command `fix` has been renamed.',
-  'Please use `restack` (aka `bk sr`/`bk usr`).',
-  'The `fix`/`f` alias will be removed in an upcoming version.',
+  'Please use `stack restack` or `upstack restack`.',
+  'The `fix` command name is no longer supported.',
 ].join('\n');
 
 export function handleDeprecatedCommandNames(command: string[]): void {
   switch (command[0]) {
     case 'branch':
-    case 'b':
-      if (['next', 'n', 'previous', 'p'].includes(command[1])) {
+      if (['next', 'previous'].includes(command[1])) {
         composeSplog().error(NAV_WARNING);
         // eslint-disable-next-line no-restricted-syntax
         process.exit(1);
@@ -38,7 +37,6 @@ export function handleDeprecatedCommandNames(command: string[]): void {
 
       break;
     case 'downstack':
-    case 'ds':
       if ('sync' === command[1]) {
         composeSplog().error(GET_WARNING);
         // eslint-disable-next-line no-restricted-syntax
@@ -46,10 +44,8 @@ export function handleDeprecatedCommandNames(command: string[]): void {
       }
       break;
     case 'upstack':
-    case 'us':
     case 'stack':
-    case 's':
-      if (['fix', 'f'].includes(command[1])) {
+      if ('fix' === command[1]) {
         composeSplog().warn(FIX_WARNING);
       }
   }

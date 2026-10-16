@@ -21,7 +21,6 @@ const args = {
 type argsT = yargs.Arguments<yargs.InferredOptionTypes<typeof args>>;
 
 export const command = 'track [branch]';
-export const aliases = ['tr'];
 export const description =
   "Track a series of untracked branches, by specifying each's parent. Starts at the current (or provided) branch and stops when you reach a tracked branch.";
 export const builder = args;

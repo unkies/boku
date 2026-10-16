@@ -15,7 +15,6 @@ const args = {
 type argsT = yargs.Arguments<yargs.InferredOptionTypes<typeof args>>;
 
 export const command = 'continue';
-export const aliases = ['cont'];
 export const description =
   'Continues the most recent Boku command halted by a merge conflict.';
 export const builder = args;

@@ -15,7 +15,6 @@ const args = {
 type argsT = yargs.Arguments<yargs.InferredOptionTypes<typeof args>>;
 
 export const command = 'up [steps]';
-export const aliases = ['u'];
 export const description = 'Switch to the parent of the current branch.';
 export const builder = args;
 export const handler = async (argv: argsT): Promise<void> =>

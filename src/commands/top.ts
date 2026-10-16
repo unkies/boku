@@ -7,7 +7,6 @@ const args = {} as const;
 type argsT = yargs.Arguments<yargs.InferredOptionTypes<typeof args>>;
 
 export const command = 'top';
-export const aliases = ['t'];
 export const description =
   'Switch to the tip branch of the current stack. Prompts if ambiguous.';
 export const builder = args;

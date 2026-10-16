@@ -7,7 +7,6 @@ const commands = [onto, restack] as unknown as yargs.CommandModule[];
 export const command = 'upstack <command>';
 export const desc =
   'Commands that operate on a branch and its descendants. Run `bk upstack --help` to learn more.';
-export const aliases = ['us'];
 export const builder = function (yargs: yargs.Argv): yargs.Argv {
   return yargs.command(commands).strict().demandCommand();
 };

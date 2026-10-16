@@ -21,7 +21,6 @@ const args = {
 type argsT = yargs.Arguments<yargs.InferredOptionTypes<typeof args>>;
 
 export const command = 'split';
-export const aliases = ['sp'];
 export const description =
   'Split the current branch into multiple single-commit branches.';
 export const builder = args;

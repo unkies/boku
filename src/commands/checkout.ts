@@ -23,7 +23,6 @@ type argsT = yargs.Arguments<yargs.InferredOptionTypes<typeof args>>;
 export const command = 'checkout [branch]';
 export const description =
   'Switch to a branch. If no branch is provided, opens an interactive selector.';
-export const aliases = ['co'];
 export const builder = args;
 
 export const handler = async (argv: argsT): Promise<void> =>

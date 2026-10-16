@@ -21,7 +21,6 @@ const args = {
 type argsT = yargs.Arguments<yargs.InferredOptionTypes<typeof args>>;
 
 export const command = 'info';
-export const aliases = ['i'];
 export const description = 'Display information about the current branch.';
 export const builder = args;
 export const handler = async (argv: argsT): Promise<void> => {

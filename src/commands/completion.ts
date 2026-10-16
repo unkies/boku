@@ -18,30 +18,17 @@ export function registerCompletion(yargs: Argv): Argv {
 }
 
 function shouldCompleteBranch(current: string, argv: Arguments): boolean {
-  // this handles both with and without --branch because it's the only string arg
   return (
     ((argv['_'].length <= 3 &&
-      // bk bco, bdl, btr, but
-      // Check membership in argv to ensure that "bco" is its own entry (and not
-      // a substring of another command). Since we're dealing with a positional,
-      // we also want to make sure that the current argument is the positional
-      // (position 3).
-      ['bco', 'bdl', 'btr', 'but', 'dpr', 'uso'].includes('' + argv['_'][1])) ||
-      // same as above, but one position further
+      ['checkout', 'delete', 'track', 'untrack'].includes(
+        String(argv['_'][1])
+      )) ||
       (argv['_'].length <= 4 &&
-        ['b', 'branch'].includes('' + argv['_'][1]) &&
-        [
-          'co',
-          'checkout',
-          'dl',
-          'delete',
-          'tr',
-          'track',
-          'ut',
-          'untrack',
-        ].includes('' + argv['_'][2])) ||
-      (['us', 'upstack'].includes('' + argv['_'][1]) &&
-        ['o', 'onto'].includes('' + argv['_'][2]))) &&
+        argv['_'][1] === 'downstack' &&
+        argv['_'][2] === 'get') ||
+      (argv['_'].length <= 4 &&
+        argv['_'][1] === 'upstack' &&
+        argv['_'][2] === 'onto')) &&
     typeof current === 'string'
   );
 }

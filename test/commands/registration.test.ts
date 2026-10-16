@@ -14,6 +14,12 @@ describe('command registration', () => {
     expect(commandNames).not.toContain('feedback <command>');
   });
 
+  it('does not register top-level command aliases', () => {
+    for (const command of commands) {
+      expect(command.aliases).toBeUndefined();
+    }
+  });
+
   it('does not expose removed provider-specific options', () => {
     expect(info.builder).not.toHaveProperty('body');
     expect(rename.builder).not.toHaveProperty('force');

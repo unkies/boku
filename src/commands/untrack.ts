@@ -21,7 +21,6 @@ const args = {
 type argsT = yargs.Arguments<yargs.InferredOptionTypes<typeof args>>;
 
 export const command = 'untrack [branch]';
-export const aliases = ['ut'];
 export const description =
   'Stop tracking a branch with Boku. If the branch has children, they will also be untracked. Default to the current branch if none is passed in.';
 export const builder = args;

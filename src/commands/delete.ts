@@ -21,7 +21,6 @@ const args = {
 } as const;
 type argsT = yargs.Arguments<yargs.InferredOptionTypes<typeof args>>;
 
-export const aliases = ['dl'];
 export const command = 'delete [name]';
 export const description =
   'Delete a branch and its corresponding Boku metadata.';

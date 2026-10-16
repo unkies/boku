@@ -20,7 +20,6 @@ const args = {
 type argsT = yargs.Arguments<yargs.InferredOptionTypes<typeof args>>;
 
 export const command = 'init';
-export const aliases = ['i'];
 export const description = `Create or regenerate a \`${BOKU_REPO_CONFIG_FILENAME}\` file.`;
 export const builder = args;
 export const handler = async (argv: argsT): Promise<void> =>

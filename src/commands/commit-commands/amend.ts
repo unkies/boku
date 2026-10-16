@@ -41,7 +41,6 @@ const args = {
 type argsT = yargs.Arguments<yargs.InferredOptionTypes<typeof args>>;
 
 export const command = 'amend';
-export const aliases = ['a'];
 export const description =
   'Amend the most recent commit and restack upstack branches.';
 export const builder = args;

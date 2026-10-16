@@ -11,7 +11,6 @@ const args = {
 } as const;
 type argsT = yargs.Arguments<yargs.InferredOptionTypes<typeof args>>;
 
-export const aliases = ['r', 'fix', 'f'];
 export const command = 'restack';
 export const description =
   'Ensure each branch in the current stack is based on its parent, rebasing if necessary.';

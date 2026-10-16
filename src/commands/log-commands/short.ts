@@ -42,7 +42,6 @@ export const command = 'short';
 export const description =
   'Log all stacks tracked by Boku, arranged to show dependencies.';
 export const builder = args;
-export const aliases = ['s'];
 
 type argsT = yargs.Arguments<yargs.InferredOptionTypes<typeof args>>;
 export const handler = async (argv: argsT): Promise<void> =>

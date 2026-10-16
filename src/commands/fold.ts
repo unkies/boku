@@ -13,7 +13,6 @@ const args = {
 } as const;
 type argsT = yargs.Arguments<yargs.InferredOptionTypes<typeof args>>;
 
-export const aliases = ['f'];
 export const command = 'fold';
 export const description =
   "Fold a branch's changes into its parent, update dependencies of descendants of the new combined branch, and restack.";

@@ -16,7 +16,6 @@ export const command = 'edit';
 export const description =
   'Edit the order of the branches between trunk and the current branch, restacking all of their descendants.';
 export const builder = args;
-export const aliases = ['e'];
 
 export const handler = async (argv: argsT): Promise<void> => {
   return runWithRepo(argv, async (context) => {

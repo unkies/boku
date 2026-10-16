@@ -34,7 +34,6 @@ const args = {
 } as const;
 
 export const command = 'absorb';
-export const aliases = ['ab'];
 export const description =
   'Amend staged changes to the relevant commits in the current stack. Relevance is calculated by checking the changes in each commit downstack from the current commit, and finding the first commit that each staged hunk (consecutive lines of changes) can be applied to deterministically. If there is no clear commit to absorb a hunk into, it will not be absorbed. Prompts for confirmation before amending the commits, and restacks the branches upstack of the current branch.';
 export const builder = args;

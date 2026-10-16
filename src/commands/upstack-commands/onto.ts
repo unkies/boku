@@ -22,7 +22,6 @@ const args = {
 } as const;
 
 export const command = 'onto [branch]';
-export const aliases = ['o'];
 export const description =
   'Rebase the current branch onto the latest commit of the target branch and restack all of its descendants. If no branch is passed in, opens an interactive selector.';
 export const builder = args;

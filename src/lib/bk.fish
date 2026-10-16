@@ -25,7 +25,7 @@ complete -c bk -f
 complete -c bk -a "(__bk_command_completions)"
 
 # commands that take branches
-complete -c bk -x -n "__fish_seen_subcommand_from checkout co bco delete onto track untrack" -a "(__fish_git_local_branches)"
+complete -c bk -x -n "__fish_seen_subcommand_from checkout delete onto track untrack" -a "(__fish_git_local_branches)"
 
 # bk downstack get takes remote branches
-complete -c bk -x -n "__fish_seen_subcommand_from downstack ds dsg" -n "__fish_seen_subcommand_from get dsg" -a "(__fish_git_remote_branches)"
+complete -c bk -x -n "__fish_seen_subcommand_from downstack" -n "__fish_seen_subcommand_from get" -a "(__fish_git_remote_branches)"

@@ -27,7 +27,6 @@ const args = {
 type argsT = yargs.Arguments<yargs.InferredOptionTypes<typeof args>>;
 
 export const command = 'squash';
-export const aliases = ['sq'];
 export const description =
   'Squash all commits in the current branch and restack upstack branches.';
 export const builder = args;
