@@ -17,6 +17,7 @@ process.on('uncaughtException', (err) => {
 });
 
 await registerCompletion(yargs(getYargsInput()))
+  .scriptName('bk')
   .version(version)
   .command(commands)
   .help()

@@ -15,12 +15,12 @@ const steps: SmokeStep[] = [
   {
     name: 'source --help',
     cmd: [process.execPath, 'src/index.ts', '--help'],
-    expectedOutput: 'Commands:',
+    expectedOutput: '  bk completion',
   },
   {
     name: 'bundle --help',
     cmd: [process.execPath, 'dist/index.js', '--help'],
-    expectedOutput: 'Commands:',
+    expectedOutput: '  bk completion',
   },
   {
     name: 'compile binary',
@@ -29,7 +29,7 @@ const steps: SmokeStep[] = [
   {
     name: 'binary --help',
     cmd: ['./pkg/bk', '--help'],
-    expectedOutput: 'Commands:',
+    expectedOutput: '  bk completion',
   },
   {
     name: 'binary --version outside repository',
