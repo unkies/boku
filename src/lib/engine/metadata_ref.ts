@@ -8,12 +8,8 @@ const metaSchema = z.object({
 });
 export type TMeta = z.infer<typeof metaSchema>;
 
-export function writeMetadataRef(
-  branchName: string,
-  meta: TMeta,
-  cwd?: string
-): void {
-  const metaSha = runGitCommand({
+export function hashMetadataRef(meta: TMeta, cwd?: string): string {
+  return runGitCommand({
     args: [`hash-object`, `-w`, `--stdin`],
     options: {
       input: cuteString(meta),
@@ -21,6 +17,21 @@ export function writeMetadataRef(
     },
     onError: 'throw',
   });
+}
+
+export function getMetadataRefRevision(branchName: string): string {
+  return runGitCommand({
+    args: [`rev-parse`, `refs/branch-metadata/${branchName}`],
+    onError: 'throw',
+  });
+}
+
+export function writeMetadataRef(
+  branchName: string,
+  meta: TMeta,
+  cwd?: string
+): void {
+  const metaSha = hashMetadataRef(meta, cwd);
   runGitCommand({
     args: [`update-ref`, `refs/branch-metadata/${branchName}`, metaSha],
     options: {

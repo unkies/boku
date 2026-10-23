@@ -20,6 +20,8 @@ import { TChangedFile, TStatusFile } from '../git/changed_files';
 import {
   deleteMetadataRef,
   getMetadataRefList,
+  getMetadataRefRevision,
+  hashMetadataRef,
   writeMetadataRef,
 } from './metadata_ref';
 import { validateOrFixParentBranchRevision } from './parse_branches_and_meta';
@@ -97,6 +99,11 @@ export type TEngine = {
     branchPoints: number[];
   }) => void;
   forceCheckoutBranch: (branchToSplit: string) => void;
+  /**
+   * Point branches at rewritten revisions (parents before children), keeping
+   * the index and working tree untouched, and update their metadata.
+   */
+  setRewrittenRevisions: (newRevisions: Map<string, string>) => void;
 
   restackBranch: (branchName: string) =>
     | {
@@ -319,7 +326,8 @@ export function composeEngine({
   // Revalidates 'INVALID_PARENT' children
   const updateMeta = (
     branchName: string,
-    newCachedMeta: TValidCachedMetaExceptTrunk
+    newCachedMeta: TValidCachedMetaExceptTrunk,
+    persist = true
   ) => {
     // Get current meta and ensure this branch isn't trunk.
     const oldCachedMeta = cache.branches[branchName] ?? {
@@ -349,10 +357,12 @@ export function composeEngine({
     }
 
     // Write to disk
-    writeMetadataRef(branchName, {
-      parentBranchName: newCachedMeta.parentBranchName,
-      parentBranchRevision: newCachedMeta.parentBranchRevision,
-    });
+    if (persist) {
+      writeMetadataRef(branchName, {
+        parentBranchName: newCachedMeta.parentBranchName,
+        parentBranchRevision: newCachedMeta.parentBranchRevision,
+      });
+    }
 
     splog.debug(
       `Updated cached meta for branch ${branchName}:\n${cuteString(
@@ -790,6 +800,54 @@ export function composeEngine({
     },
     forceCheckoutBranch: (branchToSplit: string) => {
       git.switchBranch(branchToSplit, { force: true });
+    },
+    setRewrittenRevisions: (newRevisions: Map<string, string>) => {
+      const checkedOutBranches = git
+        .getOtherWorktreeBranches()
+        .filter(({ branchName }) => newRevisions.has(branchName));
+      if (checkedOutBranches.length > 0) {
+        throw new PreconditionsFailedError(
+          [
+            'Cannot rewrite branches checked out in other worktrees:',
+            ...checkedOutBranches.map(
+              ({ branchName, worktreePath }) =>
+                `  ${branchName}: ${worktreePath}`
+            ),
+          ].join('\n')
+        );
+      }
+      const newMetas = new Map<string, TValidCachedMetaExceptTrunk>();
+      const updates: { refName: string; newSha: string; oldSha: string }[] = [];
+      newRevisions.forEach((newSha, branchName) => {
+        const cachedMeta = assertBranchIsValidAndNotTrunkAndGetMeta(branchName);
+        const newMeta = {
+          ...cachedMeta,
+          branchRevision: newSha,
+          parentBranchRevision:
+            newRevisions.get(cachedMeta.parentBranchName) ??
+            cachedMeta.parentBranchRevision,
+        };
+        newMetas.set(branchName, newMeta);
+        updates.push(
+          {
+            refName: `refs/heads/${branchName}`,
+            newSha,
+            oldSha: cachedMeta.branchRevision,
+          },
+          {
+            refName: `refs/branch-metadata/${branchName}`,
+            newSha: hashMetadataRef({
+              parentBranchName: newMeta.parentBranchName,
+              parentBranchRevision: newMeta.parentBranchRevision,
+            }),
+            oldSha: getMetadataRefRevision(branchName),
+          }
+        );
+      });
+      git.updateRefs(updates);
+      newMetas.forEach((newMeta, branchName) =>
+        updateMeta(branchName, newMeta, false)
+      );
     },
     restackBranch: (branchName: string) => {
       const cachedMeta = assertBranchIsValidOrTrunkAndGetMeta(branchName);
