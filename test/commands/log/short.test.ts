@@ -9,7 +9,9 @@ for (const scene of [new TrailingProdScene()]) {
     configureTest(scene);
 
     it('Can log short', () => {
-      expect(() => scene.repo.runCliCommand([`ls`])).not.toThrow(Error);
+      expect(() => scene.repo.runCliCommand([`log`, `short`])).not.toThrow(
+        Error
+      );
     });
 
     it("Can print stacks if a branch's parent has been deleted", () => {
@@ -26,13 +28,17 @@ for (const scene of [new TrailingProdScene()]) {
       execSync(`git -C ${scene.repo.dir} rebase prod`);
 
       // b's now has no git-parents, but it's meta points to "a" which still exists but is not off main.
-      expect(() => scene.repo.runCliCommand([`ls`])).not.toThrow(Error);
+      expect(() => scene.repo.runCliCommand([`log`, `short`])).not.toThrow(
+        Error
+      );
     });
 
     it('Doesnt error when creating an empty branch because of empty commits', () => {
       scene.repo.runCliCommand([`create`, `a`, `-m`, `a`]);
       scene.repo.checkoutBranch('main');
-      expect(() => scene.repo.runCliCommand([`ls`])).not.toThrow(Error);
+      expect(() => scene.repo.runCliCommand([`log`, `short`])).not.toThrow(
+        Error
+      );
     });
 
     it('Works if branch and file have same name', () => {
@@ -47,7 +53,9 @@ for (const scene of [new TrailingProdScene()]) {
 
       // bk log should work - using "test.txt" as a revision rather than a path
       expect(() => scene.repo.runCliCommand([`log`])).not.toThrow(Error);
-      expect(() => scene.repo.runCliCommand([`ls`])).not.toThrow(Error);
+      expect(() => scene.repo.runCliCommand([`log`, `short`])).not.toThrow(
+        Error
+      );
     });
   });
 }

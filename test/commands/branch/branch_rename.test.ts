@@ -17,7 +17,7 @@ for (const scene of allScenes) {
       scene.repo.checkoutBranch('a');
       scene.repo.runCliCommand([`rename`, `a1`]);
 
-      expect(() => scene.repo.runCliCommand([`ls`])).not.toThrow();
+      expect(() => scene.repo.runCliCommand([`log`, `short`])).not.toThrow();
 
       scene.repo.checkoutBranch('b');
 
@@ -39,7 +39,7 @@ for (const scene of allScenes) {
       scene.repo.checkoutBranch('a');
       scene.repo.runCliCommand([`rename`, `a`]);
 
-      expect(() => scene.repo.runCliCommand([`ls`])).not.toThrow();
+      expect(() => scene.repo.runCliCommand([`log`, `short`])).not.toThrow();
       expect(() => scene.repo.runCliCommand([`up`])).not.toThrow();
       expectCommits(scene.repo, 'b, a, 1');
     });

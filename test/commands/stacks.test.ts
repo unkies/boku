@@ -7,7 +7,9 @@ for (const scene of allScenes) {
     configureTest(scene);
 
     it('Can log short', () => {
-      expect(() => scene.repo.runCliCommand([`ls`])).not.toThrow(Error);
+      expect(() => scene.repo.runCliCommand([`log`, `short`])).not.toThrow(
+        Error
+      );
     });
 
     it("Can print stacks if a branch's parent has been deleted", () => {
@@ -20,9 +22,9 @@ for (const scene of allScenes) {
       scene.repo.checkoutBranch('main');
       scene.repo.createChangeAndCommit('2', '2');
 
-      expect(() => scene.repo.runCliCommandAndGetOutput([`ls`])).not.toThrow(
-        Error
-      );
+      expect(() =>
+        scene.repo.runCliCommandAndGetOutput([`log`, `short`])
+      ).not.toThrow(Error);
     });
   });
 }

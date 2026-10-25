@@ -13,11 +13,13 @@ for (const scene of [new BasicScene()]) {
     configureTest(scene);
 
     it('Can read the existing repo config from a subfolder', () => {
-      expect(() => scene.repo.runCliCommand(['ls'])).not.toThrow(Error);
+      expect(() => scene.repo.runCliCommand(['log', 'short'])).not.toThrow(
+        Error
+      );
       const subDir = path.join(scene.dir, 'tmpDir');
       fs.mkdirSync(subDir);
       expect(() =>
-        scene.repo.runCliCommand(['ls'], { cwd: subDir })
+        scene.repo.runCliCommand(['log', 'short'], { cwd: subDir })
       ).not.toThrow(Error);
     });
 
@@ -33,9 +35,12 @@ for (const scene of [new BasicScene()]) {
         ]);
 
         expect(() =>
-          scene.repo.runCliCommand(['ls', '--no-interactive', '--quiet'], {
-            cwd: linkedWorktree.name,
-          })
+          scene.repo.runCliCommand(
+            ['log', 'short', '--no-interactive', '--quiet'],
+            {
+              cwd: linkedWorktree.name,
+            }
+          )
         ).not.toThrow(Error);
         expect(
           fs.existsSync(
