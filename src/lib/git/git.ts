@@ -48,10 +48,12 @@ import {
 import { rebaseInProgress } from './rebase_in_progress';
 import { hardReset, mixedReset, softReset, trackedReset } from './reset_branch';
 import { restoreFile } from './restore_file';
+import { updateRefs } from './rewrite';
 import { setRemoteTracking } from './set_remote_tracking';
 import { showCommits } from './show_commits';
 import { getBranchNamesAndRevisions } from './sorted_branch_names';
 import { getStatus } from './status';
+import { getOtherWorktreeBranches } from './worktree';
 
 export type TGit = ReturnType<typeof composeGitInternal>;
 export function composeGit(): TGit {
@@ -114,5 +116,7 @@ function composeGitInternal() {
     getBranchNamesAndRevisions,
     clean,
     restoreFile,
+    updateRefs,
+    getOtherWorktreeBranches,
   };
 }

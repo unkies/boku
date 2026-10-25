@@ -3,12 +3,20 @@ import { TContext } from '../lib/context';
 import { SCOPE } from '../lib/engine/scope_spec';
 import { runGitCommand } from '../lib/git/runner';
 import {
+  assertMergeTreeSupported,
+  commitTreeFromTemplate,
+  mergeTrees,
+  withTemporaryGitObjects,
+  writeTreeWithPatches,
+} from '../lib/git/rewrite';
+import {
   PreconditionsFailedError,
   BlockedDuringRebaseError,
 } from '../lib/errors';
 import { parseDiffIntoHunks, Hunk } from '../lib/utils/diff_parser';
 import { findTargetCommit, Commit } from '../lib/utils/blame_matcher';
-import { restackBranches } from './restack';
+
+type TStackCommit = Commit & { branch: string };
 
 export async function absorbAction(
   opts: {
@@ -35,55 +43,42 @@ export async function absorbAction(
     );
   }
 
-  // Stage changes if requested
-  if (opts.all) {
-    context.engine.addAll();
-  } else if (opts.patch) {
-    // Run git add --patch interactively
-    runGitCommand({
-      args: ['add', '--patch'],
-      options: { stdio: 'inherit' },
-      onError: 'throw',
-    });
-  }
+  const hunks = stageAndGetHunks(opts, context);
 
-  // Check for staged changes by getting diff between index and HEAD
-  const stagedDiff = runGitCommand({
-    args: ['diff', '--cached'],
-    onError: 'throw',
-  });
-
-  if (!stagedDiff || stagedDiff.trim().length === 0) {
-    throw new PreconditionsFailedError(
-      'No staged changes to absorb. Stage changes with git add or use --all flag.'
-    );
-  }
-
-  context.splog.info('Analyzing staged changes...');
-
-  // Parse diff into hunks
-  const hunks = parseDiffIntoHunks(stagedDiff);
-  if (hunks.length === 0) {
-    throw new PreconditionsFailedError('No hunks found in staged changes.');
-  }
-
-  // Get downstack commits and match hunks
-  const { commits, hunkToCommitMap, unmatchedHunks } = matchHunksToCommits(
+  // Get stack commits and match hunks
+  const commits = getStackCommits(currentBranch, context);
+  const { hunkToCommitMap, unmatchedHunks } = matchHunksToCommits(
     hunks,
-    currentBranch,
-    context
+    commits
   );
 
   if (hunkToCommitMap.size === 0) {
-    context.splog.warn('No hunks could be matched to downstack commits.');
+    context.splog.warn('No hunks could be matched to commits in the stack.');
     context.splog.tip(
-      'Hunks can only be absorbed if they modify lines that were introduced by commits in the current stack.'
+      'Hunks can only be absorbed if the lines they modify, or the lines around the lines they add, were introduced by a single commit in the current stack.'
     );
     return;
   }
 
+  assertMergeTreeSupported();
+
+  // Rewrite the stack in a temporary object database before showing the
+  // plan, so that it only lists hunks that can be absorbed without
+  // conflicts and nothing is persisted until the user confirms.
+  const { newRevisions, absorbed, conflictingHunks } = withTemporaryGitObjects(
+    (env) => planRewrite({ hunkToCommitMap, commits }, context, env)
+  );
+
   // Display plan
-  displayAbsorbPlan({ hunkToCommitMap, unmatchedHunks, commits }, context);
+  displayAbsorbPlan(
+    { hunkToCommitMap: absorbed, unmatchedHunks, conflictingHunks, commits },
+    context
+  );
+
+  if (!newRevisions) {
+    context.splog.warn('No hunks could be absorbed without conflicts.');
+    return;
+  }
 
   // Confirm (unless --force or --dry-run)
   if (!opts.force && !opts.dryRun && context.interactive) {
@@ -107,42 +102,98 @@ export async function absorbAction(
     return;
   }
 
-  // Apply fixups and rebase
-  applyAndRebase({ hunkToCommitMap, commits, currentBranch }, context);
+  // Re-run the rewrite in the real object database now that the plan is
+  // confirmed, then move the branches all at once. The index and working
+  // tree are left untouched, so absorbed hunks disappear from the staged
+  // diff while everything else stays as it was.
+  const applied = planRewrite({ hunkToCommitMap, commits }, context);
+  if (!applied.newRevisions) {
+    throw new PreconditionsFailedError(
+      'The stack changed while absorb was being confirmed. Run bk absorb again.'
+    );
+  }
+  context.engine.setRewrittenRevisions(applied.newRevisions);
+
+  context.splog.info(
+    chalk.green(
+      `✓ Successfully absorbed changes into ${applied.absorbed.size} commit${
+        applied.absorbed.size === 1 ? '' : 's'
+      }.`
+    )
+  );
 }
 
 /**
- * Match hunks to commits in the downstack.
+ * Stage changes if requested and parse the staged diff into hunks.
  */
-function matchHunksToCommits(
-  hunks: Hunk[],
-  currentBranch: string,
+function stageAndGetHunks(
+  opts: { all: boolean; patch: boolean },
   context: TContext
-): {
-  commits: Commit[];
-  hunkToCommitMap: Map<string, Hunk[]>;
-  unmatchedHunks: Hunk[];
-} {
-  // Get downstack commits (excluding current branch)
-  const downstackBranches = context.engine.getRelativeStack(currentBranch, {
-    recursiveParents: true,
-    currentBranch: false,
-    recursiveChildren: false,
+): Hunk[] {
+  if (opts.all) {
+    runGitCommand({ args: ['add', '--update'], onError: 'throw' });
+  } else if (opts.patch) {
+    // Run git add --patch interactively
+    runGitCommand({
+      args: ['add', '--patch'],
+      options: { stdio: 'inherit' },
+      onError: 'throw',
+    });
+  }
+
+  // Zero-context diff so that blame only considers the modified lines. Keep
+  // the trailing newline, otherwise the last hunk is a corrupt patch.
+  const stagedDiff = runGitCommand({
+    args: ['diff', '--cached', '--unified=0', '--no-color', '--no-ext-diff'],
+    options: { noTrim: true },
+    onError: 'throw',
   });
 
-  // If no downstack branches, get commits from parent branch directly
-  const commits =
-    downstackBranches.length > 0
-      ? getCommitsFromBranches(downstackBranches, context)
-      : getCommitsFromParent(currentBranch, context);
-
-  if (commits.length === 0) {
+  if (stagedDiff.trim().length === 0) {
     throw new PreconditionsFailedError(
-      'No commits in downstack to absorb into. The current branch must have parent commits.'
+      'No staged changes to absorb. Stage changes with git add or use --all flag.'
     );
   }
 
-  // Match hunks to commits
+  context.splog.info('Analyzing staged changes...');
+
+  // Parse diff into hunks
+  const hunks = parseDiffIntoHunks(stagedDiff);
+  if (hunks.length === 0) {
+    throw new PreconditionsFailedError('No hunks found in staged changes.');
+  }
+  return hunks;
+}
+
+/**
+ * Commits from the bottom of the stack (excluding trunk) up to the current
+ * branch, oldest first.
+ */
+function getStackCommits(
+  currentBranch: string,
+  context: TContext
+): TStackCommit[] {
+  return context.engine
+    .getRelativeStack(currentBranch, SCOPE.DOWNSTACK)
+    .flatMap((branch) => {
+      const subjects = context.engine.getAllCommits(branch, 'SUBJECT');
+      return context.engine
+        .getAllCommits(branch, 'SHA')
+        .map((sha, i) => ({ sha, subject: subjects[i], branch }))
+        .reverse();
+    });
+}
+
+/**
+ * Match hunks to commits in the stack.
+ */
+function matchHunksToCommits(
+  hunks: Hunk[],
+  commits: TStackCommit[]
+): {
+  hunkToCommitMap: Map<string, Hunk[]>;
+  unmatchedHunks: Hunk[];
+} {
   const hunkToCommitMap = new Map<string, Hunk[]>();
   const unmatchedHunks: Hunk[] = [];
 
@@ -159,95 +210,7 @@ function matchHunksToCommits(
     }
   }
 
-  return { commits, hunkToCommitMap, unmatchedHunks };
-}
-
-/**
- * Apply fixup commits, rebase, and restack.
- */
-function applyAndRebase(
-  params: {
-    hunkToCommitMap: Map<string, Hunk[]>;
-    commits: Commit[];
-    currentBranch: string;
-  },
-  context: TContext
-): void {
-  const { hunkToCommitMap, commits, currentBranch } = params;
-  // Apply fixups
-  context.splog.info('Creating fixup commits...');
-  const fixupCommits = applyFixups(hunkToCommitMap, commits, context);
-
-  // Autosquash rebase
-  context.splog.info('Rebasing and squashing fixups...');
-  autosquashRebase(commits, context);
-
-  // Restack upstack branches
-  const upstackBranches = context.engine.getRelativeStack(
-    currentBranch,
-    SCOPE.UPSTACK_EXCLUSIVE
-  );
-  if (upstackBranches.length > 0) {
-    context.splog.info('Restacking upstack branches...');
-    restackBranches(upstackBranches, context);
-  }
-
-  context.splog.info(
-    chalk.green(
-      `✓ Successfully absorbed changes into ${fixupCommits.length} commit${
-        fixupCommits.length === 1 ? '' : 's'
-      }.`
-    )
-  );
-}
-
-/**
- * Get commits from the parent branch of the current branch.
- */
-function getCommitsFromParent(
-  currentBranch: string,
-  context: TContext
-): Commit[] {
-  const parentBranch = context.engine.getParentOrPrev(currentBranch);
-  return getCommitsFromBranches([parentBranch], context);
-}
-
-/**
- * Get all commits from the given branches in order (oldest to newest).
- * Includes all commits up to and including each branch head.
- */
-function getCommitsFromBranches(
-  branches: string[],
-  _context: TContext
-): Commit[] {
-  const commits: Commit[] = [];
-  const seenShas = new Set<string>();
-
-  for (const branch of branches) {
-    // Get all commits in this branch (from trunk to branch head)
-    const branchCommits = runGitCommand({
-      args: ['rev-list', '--reverse', branch],
-      onError: 'throw',
-    })
-      .trim()
-      .split('\n')
-      .filter((s) => s.length > 0);
-
-    for (const commitSha of branchCommits) {
-      // Skip if we've already seen this commit
-      if (seenShas.has(commitSha)) continue;
-      seenShas.add(commitSha);
-
-      const subject = runGitCommand({
-        args: ['log', '-1', '--format=%s', commitSha],
-        onError: 'throw',
-      }).trim();
-
-      commits.push({ sha: commitSha, subject });
-    }
-  }
-
-  return commits;
+  return { hunkToCommitMap, unmatchedHunks };
 }
 
 /**
@@ -257,158 +220,240 @@ function displayAbsorbPlan(
   plan: {
     hunkToCommitMap: Map<string, Hunk[]>;
     unmatchedHunks: Hunk[];
-    commits: Commit[];
+    conflictingHunks: Hunk[];
+    commits: TStackCommit[];
   },
   context: TContext
 ): void {
-  const { hunkToCommitMap, unmatchedHunks, commits } = plan;
-  context.splog.info(
-    `Found ${chalk.cyan(hunkToCommitMap.size.toString())} commit${
-      hunkToCommitMap.size === 1 ? '' : 's'
-    } to absorb into:\n`
-  );
-
-  // Create a map for quick commit lookup
-  const commitMap = new Map(commits.map((c) => [c.sha, c]));
-
-  for (const [sha, hunks] of hunkToCommitMap) {
-    const commit = commitMap.get(sha);
-    if (commit) {
-      context.splog.info(
-        `  ${chalk.yellow(sha.substring(0, 7))} ${chalk.dim(commit.subject)}`
-      );
-      for (const hunk of hunks) {
-        context.splog.info(
-          `    • ${hunk.file} (lines ${hunk.oldStart}-${
-            hunk.oldStart + hunk.oldLines - 1
-          })`
-        );
-      }
-      context.splog.info('');
-    }
+  const { hunkToCommitMap, unmatchedHunks, conflictingHunks, commits } = plan;
+  if (hunkToCommitMap.size > 0) {
+    context.splog.info(
+      `Found ${chalk.cyan(hunkToCommitMap.size.toString())} commit${
+        hunkToCommitMap.size === 1 ? '' : 's'
+      } to absorb into:\n`
+    );
   }
 
-  if (unmatchedHunks.length > 0) {
-    context.splog.warn(
-      `${chalk.yellow('⚠')} ${unmatchedHunks.length} hunk${
-        unmatchedHunks.length === 1 ? '' : 's'
-      } could not be matched (will remain staged):\n`
+  for (const commit of commits) {
+    const hunks = hunkToCommitMap.get(commit.sha);
+    if (!hunks) {
+      continue;
+    }
+    context.splog.info(
+      `  ${chalk.cyan(commit.branch)} ${chalk.yellow(
+        commit.sha.substring(0, 7)
+      )} ${chalk.dim(commit.subject)}`
     );
-    for (const hunk of unmatchedHunks) {
-      context.splog.info(
-        `  • ${hunk.file} (lines ${hunk.newStart}-${
-          hunk.newStart + hunk.newLines - 1
-        })`
-      );
+    for (const hunk of hunks) {
+      context.splog.info(`    • ${describeHunk(hunk)}`);
+    }
+    context.splog.info('');
+  }
+
+  for (const [skipped, reason] of [
+    [unmatchedHunks, 'could not be matched'],
+    [conflictingHunks, 'would cause conflicts'],
+  ] as const) {
+    if (skipped.length === 0) {
+      continue;
+    }
+    context.splog.warn(
+      `${chalk.yellow('⚠')} ${skipped.length} hunk${
+        skipped.length === 1 ? '' : 's'
+      } ${reason} (will remain staged):\n`
+    );
+    for (const hunk of skipped) {
+      context.splog.info(`  • ${describeHunk(hunk)}`);
     }
     context.splog.info('');
   }
 }
 
-/**
- * Apply fixup commits for each target commit.
- */
-function applyFixups(
-  hunkToCommitMap: Map<string, Hunk[]>,
-  commits: Commit[],
-  context: TContext
-): string[] {
-  const fixupCommits: string[] = [];
-  const commitMap = new Map(commits.map((c) => [c.sha, c]));
-
-  // Save the current staged changes
-  runGitCommand({
-    args: ['stash', 'push', '--keep-index', '-m', 'absorb-temp-stash'],
-    onError: 'throw',
-  });
-
-  try {
-    // Reset the index
-    runGitCommand({
-      args: ['reset', 'HEAD'],
-      onError: 'throw',
-    });
-
-    for (const [sha, hunks] of hunkToCommitMap) {
-      const commit = commitMap.get(sha);
-      if (!commit) continue;
-
-      // Apply each hunk's patch to the index
-      for (const hunk of hunks) {
-        try {
-          runGitCommand({
-            args: ['apply', '--cached', '--unidiff-zero'],
-            options: { input: hunk.patch },
-            onError: 'throw',
-          });
-        } catch {
-          context.splog.warn(
-            `Failed to apply hunk in ${hunk.file}, skipping...`
-          );
-        }
-      }
-
-      // Create fixup commit
-      const fixupMessage = `fixup! ${commit.subject}`;
-      runGitCommand({
-        args: ['commit', '-m', fixupMessage, '--no-verify'],
-        onError: 'throw',
-      });
-
-      const fixupSha = runGitCommand({
-        args: ['rev-parse', 'HEAD'],
-        onError: 'throw',
-      }).trim();
-      fixupCommits.push(fixupSha);
-
-      // Reset index for next iteration
-      runGitCommand({
-        args: ['reset', 'HEAD'],
-        onError: 'throw',
-      });
-    }
-  } finally {
-    // Restore any remaining staged changes
-    try {
-      runGitCommand({
-        args: ['stash', 'pop'],
-        onError: 'ignore',
-      });
-    } catch {
-      // Ignore errors if stash is empty
-    }
-  }
-
-  return fixupCommits;
+function describeHunk(hunk: Hunk): string {
+  return hunk.oldLines > 0
+    ? `${hunk.file} (lines ${hunk.oldStart}-${
+        hunk.oldStart + hunk.oldLines - 1
+      })`
+    : `${hunk.file} (new lines ${hunk.newStart}-${
+        hunk.newStart + hunk.newLines - 1
+      })`;
 }
 
 /**
- * Run interactive rebase with autosquash to merge fixup commits.
+ * Rewrites the stack with as many matched hunks as possible. If absorbing
+ * everything conflicts, hunks are added one at a time and any hunk that
+ * conflicts is left out (and stays staged).
  */
-function autosquashRebase(commits: Commit[], _context: TContext): void {
-  if (commits.length === 0) return;
+function planRewrite(
+  plan: {
+    hunkToCommitMap: Map<string, Hunk[]>;
+    commits: TStackCommit[];
+  },
+  context: TContext,
+  env?: NodeJS.ProcessEnv
+): {
+  newRevisions: Map<string, string> | undefined;
+  absorbed: Map<string, Hunk[]>;
+  conflictingHunks: Hunk[];
+} {
+  const allRevisions = rewriteStack(plan, context, env);
+  if (allRevisions) {
+    return {
+      newRevisions: allRevisions,
+      absorbed: plan.hunkToCommitMap,
+      conflictingHunks: [],
+    };
+  }
 
-  // Rebase onto the parent of the first commit in our downstack; if that
-  // commit is the root commit, rebase from --root instead
-  const firstSha = commits[0].sha;
-  const hasParent =
-    runGitCommand({
-      args: ['rev-parse', '--verify', '--quiet', `${firstSha}^`],
-      onError: 'ignore',
-    }).length > 0;
+  let newRevisions: Map<string, string> | undefined;
+  let absorbed = new Map<string, Hunk[]>();
+  const conflictingHunks: Hunk[] = [];
+  for (const [sha, hunks] of plan.hunkToCommitMap) {
+    for (const hunk of hunks) {
+      const candidate = new Map(absorbed).set(sha, [
+        ...(absorbed.get(sha) ?? []),
+        hunk,
+      ]);
+      const revisions = rewriteStack(
+        { hunkToCommitMap: candidate, commits: plan.commits },
+        context,
+        env
+      );
+      if (revisions) {
+        newRevisions = revisions;
+        absorbed = candidate;
+      } else {
+        conflictingHunks.push(hunk);
+      }
+    }
+  }
+  return { newRevisions, absorbed, conflictingHunks };
+}
 
-  runGitCommand({
-    args: [
-      'rebase',
-      '--interactive',
-      '--autosquash',
-      '--keep-empty',
-      '--update-refs',
-      ...(hasParent ? [`${firstSha}^`] : ['--root']),
-    ],
-    options: {
-      env: { ...process.env, GIT_SEQUENCE_EDITOR: 'true' },
-    },
+/**
+ * Replays every branch from the lowest target branch upwards (including
+ * siblings), folding each target's hunks into its commit. Returns the new
+ * revision of every rewritten branch, parents before children, or undefined
+ * if any step conflicts. Only creates git objects; no refs are changed.
+ */
+function rewriteStack(
+  plan: {
+    hunkToCommitMap: Map<string, Hunk[]>;
+    commits: TStackCommit[];
+  },
+  context: TContext,
+  env?: NodeJS.ProcessEnv
+): Map<string, string> | undefined {
+  const head = runGitCommand({
+    args: ['rev-parse', 'HEAD'],
+    options: { env: { ...process.env, ...env } },
     onError: 'throw',
   });
+  const fixupTrees = new Map(
+    [...plan.hunkToCommitMap].map(([sha, hunks]) => [
+      sha,
+      writeTreeWithPatches(head, sortHunksForApply(hunks), env),
+    ])
+  );
+
+  const lowestBranch = plan.commits.find((c) => fixupTrees.has(c.sha))!.branch;
+  const branches = [
+    lowestBranch,
+    ...context.engine.getRelativeStack(lowestBranch, SCOPE.UPSTACK_EXCLUSIVE),
+  ];
+
+  const newRevisions = new Map<string, string>();
+  for (const branch of branches) {
+    let onto =
+      newRevisions.get(context.engine.getParentPrecondition(branch)) ??
+      context.engine.getBaseRevision(branch);
+    for (const sha of context.engine.getAllCommits(branch, 'SHA').reverse()) {
+      const replayed = replayCommit({
+        sha,
+        onto,
+        fixup: fixupTrees.has(sha)
+          ? { base: `${head}^{tree}`, tree: fixupTrees.get(sha)! }
+          : undefined,
+        env,
+      });
+      if (!replayed) {
+        return undefined;
+      }
+      onto = replayed;
+    }
+    newRevisions.set(branch, onto);
+  }
+  return newRevisions;
+}
+
+/**
+ * Within each file, apply the bottom-most hunk first so that the line
+ * numbers of the remaining zero-context hunks stay valid. An addition after
+ * line N goes before a change to line N.
+ */
+function sortHunksForApply(hunks: Hunk[]): string[] {
+  return [...hunks]
+    .sort((a, b) =>
+      a.file !== b.file
+        ? a.file.localeCompare(b.file)
+        : b.oldStart - a.oldStart || a.oldLines - b.oldLines
+    )
+    .map((hunk) => hunk.patch);
+}
+
+/**
+ * Cherry-picks `sha` onto `onto` in memory, optionally merging in a fixup
+ * tree. Returns the new commit, or undefined on conflict.
+ */
+function replayCommit(args: {
+  sha: string;
+  onto: string;
+  fixup?: { base: string; tree: string };
+  env?: NodeJS.ProcessEnv;
+}): string | undefined {
+  const parents = runGitCommand({
+    args: ['rev-list', '--parents', '-n', '1', args.sha],
+    options: { env: { ...process.env, ...args.env } },
+    onError: 'throw',
+  }).split(' ');
+  if (parents.length !== 2) {
+    throw new PreconditionsFailedError(
+      `Cannot absorb into a stack containing merge commit ${args.sha.substring(
+        0,
+        7
+      )}.`
+    );
+  }
+  const parent = parents[1];
+  if (parent === args.onto && !args.fixup) {
+    return args.sha;
+  }
+
+  const pickedTree =
+    parent === args.onto
+      ? `${args.sha}^{tree}`
+      : mergeTrees({
+          base: `${parent}^{tree}`,
+          ours: `${args.onto}^{tree}`,
+          theirs: `${args.sha}^{tree}`,
+          env: args.env,
+        });
+  const tree =
+    pickedTree && args.fixup
+      ? mergeTrees({
+          base: args.fixup.base,
+          ours: pickedTree,
+          theirs: args.fixup.tree,
+          env: args.env,
+        })
+      : pickedTree;
+
+  return tree
+    ? commitTreeFromTemplate({
+        tree,
+        parent: args.onto,
+        template: args.sha,
+        env: args.env,
+      })
+    : undefined;
 }

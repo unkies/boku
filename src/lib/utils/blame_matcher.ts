@@ -7,48 +7,55 @@ export interface Commit {
 }
 
 /**
- * Find which commit in the provided list last touched the lines
- * that are being modified in this hunk.
+ * Find the commit in the provided list that owns this hunk. Expects
+ * zero-context hunks (`git diff -U0`).
+ *
+ * - Modifications and deletions: the single commit that last touched every
+ *   modified line.
+ * - Pure additions: the single commit in the list that last touched the lines
+ *   directly above and below the insertion point.
  *
  * Returns null if no clear match is found (ambiguous or not in the commit list).
  */
 export function findTargetCommit(hunk: Hunk, commits: Commit[]): Commit | null {
-  // Skip hunks with no old lines (new file additions)
-  if (hunk.oldLines === 0) {
+  const blamedShas =
+    hunk.oldLines > 0
+      ? blameLines(hunk.file, hunk.oldStart, hunk.oldLines)
+      : new Set(
+          // An addition at `-N,0` is inserted after old line N
+          [hunk.oldStart, hunk.oldStart + 1]
+            .filter((line) => line >= 1)
+            .flatMap((line) => [...blameLines(hunk.file, line, 1)])
+            .filter((sha) => commits.some((commit) => commit.sha === sha))
+        );
+
+  // Only absorb when a single commit in the list owns the hunk
+  if (blamedShas.size !== 1) {
     return null;
   }
+  const [blamedSha] = blamedShas;
+  return commits.find((commit) => commit.sha === blamedSha) ?? null;
+}
 
-  try {
-    // Run git blame on the range of lines being modified
-    const blameOutput = runGitCommand({
+/**
+ * Blame a range of lines at HEAD. Returns no SHAs if blame fails (e.g. the
+ * file doesn't exist at HEAD or the range is past the end of the file).
+ */
+function blameLines(file: string, start: number, count: number): Set<string> {
+  return parseBlameOutput(
+    runGitCommand({
       args: [
         'blame',
         '--porcelain',
         '-L',
-        `${hunk.oldStart},${hunk.oldStart + hunk.oldLines - 1}`,
+        `${start},+${count}`,
         'HEAD',
         '--',
-        hunk.file,
+        file,
       ],
-      onError: 'throw',
-    });
-
-    // Parse blame output to extract commit SHAs
-    const blamedShas = parseBlameOutput(blameOutput);
-
-    // Find the most recent commit in our downstack that touched these lines
-    // We iterate in reverse order (most recent first)
-    for (const commit of [...commits].reverse()) {
-      if (blamedShas.has(commit.sha)) {
-        return commit;
-      }
-    }
-
-    return null;
-  } catch {
-    // If blame fails (e.g., file doesn't exist at HEAD), skip this hunk
-    return null;
-  }
+      onError: 'ignore',
+    })
+  );
 }
 
 /**

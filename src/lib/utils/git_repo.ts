@@ -76,7 +76,10 @@ export class GitRepo {
     );
   }
 
-  runCliCommandAndGetOutput(args: string[]): string {
+  runCliCommandAndGetOutput(
+    args: string[],
+    opts?: { env?: NodeJS.ProcessEnv }
+  ): string {
     const command = cliCommand(args);
     return (
       spawnSync(command[0], command.slice(1), {
@@ -86,6 +89,7 @@ export class GitRepo {
           ...process.env,
           FORCE_COLOR: '0',
           [BOKU_USER_CONFIG_PATH_ENV]: this.userConfigPath,
+          ...opts?.env,
         },
       }).stdout?.trim() ?? ''
     );

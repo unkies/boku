@@ -123,7 +123,11 @@ function finalizeHunk(
   },
   hunks: Hunk[]
 ): void {
-  const { hunk, hunkLines, file, oldPath } = params;
+  const { hunk, file, oldPath } = params;
+  const hunkLines = [...params.hunkLines];
+  while (hunkLines.length > 0 && hunkLines[hunkLines.length - 1] === '') {
+    hunkLines.pop();
+  }
   if (
     hunk.oldStart !== undefined &&
     hunk.oldLines !== undefined &&
@@ -140,8 +144,9 @@ function finalizeHunk(
       newLines: hunk.newLines,
       preImage: hunk.preImage,
       postImage: hunk.postImage,
-      // git apply needs the file headers, not just the bare @@ fragment
-      patch: [`--- ${oldPath}`, `+++ b/${file}`, ...hunkLines].join('\n'),
+      // git apply needs the file headers, not just the bare @@ fragment, and
+      // a trailing newline, otherwise the last line is a corrupt patch
+      patch: [`--- ${oldPath}`, `+++ b/${file}`, ...hunkLines, ''].join('\n'),
     });
   }
 }
