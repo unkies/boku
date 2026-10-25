@@ -1,10 +1,50 @@
 import { describe, it, expect } from 'bun:test';
 import fs from 'fs-extra';
+import { syncAction } from '../../../src/actions/sync/sync';
 import { allScenes } from '../../lib/scenes/all_scenes';
 import { configureTest } from '../../lib/utils/configure_test';
 import { expectBranches } from '../../lib/utils/expect_branches';
 import { expectCommits } from '../../lib/utils/expect_commits';
 import { fakeGitSquashAndMerge } from '../../lib/utils/fake_squash_and_merge';
+
+function addEmptyBranchRegressionTests(
+  scene: (typeof allScenes)[number]
+): void {
+  it('Does not prompt to delete a newly created branch', async () => {
+    scene.repo.runCliCommand(['create', 'empty']);
+    const context = scene.getContext(true);
+    context.prompts = async () => {
+      throw new Error('Sync unexpectedly prompted to delete an empty branch.');
+    };
+
+    await syncAction(
+      {
+        pull: false,
+        force: false,
+        delete: true,
+        showDeleteProgress: false,
+        restack: false,
+      },
+      context
+    );
+
+    expectBranches(scene.repo, 'empty, main');
+  });
+
+  it('Reparents an empty child when its merged parent is deleted', async () => {
+    scene.repo.createChange('2', 'a');
+    scene.repo.runCliCommand(['create', 'a', '-m', 'a']);
+    scene.repo.runCliCommand(['create', 'empty']);
+
+    fakeGitSquashAndMerge(scene.repo, 'a', 'squash');
+    scene.repo.runCliCommand(['sync', '-f', '--no-pull']);
+
+    expectBranches(scene.repo, 'empty, main');
+    expect(scene.getContext().engine.getParentPrecondition('empty')).toBe(
+      'main'
+    );
+  });
+}
 
 for (const scene of allScenes) {
   describe(`(${scene}): repo sync`, function () {
@@ -32,6 +72,18 @@ for (const scene of allScenes) {
 
       expectBranches(scene.repo, 'empty, main');
     });
+
+    it('Does not delete a newly created branch with no commits', () => {
+      scene.repo.runCliCommand(['create', 'empty']);
+
+      expectBranches(scene.repo, 'empty, main');
+
+      scene.repo.runCliCommand(['sync', '-f', '--no-pull']);
+
+      expectBranches(scene.repo, 'empty, main');
+    });
+
+    addEmptyBranchRegressionTests(scene);
 
     it('Can noop sync if there are no stacks', () => {
       expect(() =>

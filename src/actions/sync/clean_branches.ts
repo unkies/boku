@@ -177,7 +177,11 @@ async function shouldDeleteBranch(
   },
   context: TContext
 ): Promise<boolean> {
-  if (!context.engine.isMergedIntoTrunk(args.branchName)) {
+  // Empty branches have no changes that sync can identify as merged.
+  if (
+    context.engine.isBranchEmpty(args.branchName) ||
+    !context.engine.isMergedIntoTrunk(args.branchName)
+  ) {
     return false;
   }
 
